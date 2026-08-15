@@ -1,181 +1,135 @@
-# 📋 TaskFlow — умная система управления задачами для команд
+# TaskFlow — управление задачами для команд
 
-**TaskFlow** — это полноценное веб-приложение для управления задачами в команде.  
-Оно помогает создавать задачи, назначать исполнителей, отслеживать статусы, обсуждать задачи в комментариях и получать уведомления.
-
-Проект написан на **Python + FastAPI** с использованием **SQLite**, **JWT-авторизации** и **Docker**.  
-Фронтенд — чистый **HTML + CSS + JS** с тёмной темой и адаптивным дизайном.
+**TaskFlow** — это веб-приложение для управления задачами в команде.  
+Позволяет создавать задачи, назначать исполнителей, отслеживать статусы и получать уведомления.
 
 ---
 
-## 🎯 Для чего это
+## Возможности
 
-TaskFlow подходит для:
-
-- 📌 Управления проектами в небольших командах
-- 📋 Личного планирования задач и дедлайнов
-- 🎓 Обучения современному веб-стеку
-- 🧪 Портфолио для собеседований
+- Регистрация и вход (JWT)
+- Создание, редактирование, удаление задач
+- 4 статуса: ожидает → в работе → на проверке → выполнена
+- Статистика задач
+- Тёмная тема
+- Docker
 
 ---
 
-## 🚀 Быстрый старт для новичков
+## Как это работает
 
-### 1️⃣ Установи Python
+1. Ты открываешь сайт в браузере
+2. Регистрируешься или входишь
+3. Создаёшь задачи, меняешь статусы
+4. Данные сохраняются в базе данных
 
-Перейди на сайт: https://www.python.org/downloads/  
-Скачай **Python 3.11** или выше.  
-⚠️ **Важно:** при установке поставь галочку «Add Python to PATH».
+---
 
-### 2️⃣ Скачай проект с GitHub
+## Быстрый старт
 
-Открой командную строку и выполни:
+### 1. Установи Python 3.11+
+
+Скачай с python.org
+
+### 2. Склонируй проект
 
 git clone https://github.com/Oncillaa/taskflow.git
 cd taskflow
 
-Если нет Git — скачай с https://git-scm.com/downloads
-
-### 3️⃣ Создай виртуальное окружение
+### 3. Создай виртуальное окружение
 
 python -m venv venv
 
 Активируй:
 
-**Windows:**
-venv\Scripts\activate
+Windows: venv\Scripts\activate
+Mac/Linux: source venv/bin/activate
 
-**Mac / Linux:**
-source venv/bin/activate
-
-### 4️⃣ Установи зависимости
+### 4. Установи зависимости
 
 pip install -r requirements.txt
 
-### 5️⃣ Создай файл .env
-
-В папке проекта создай файл .env и вставь:
+### 5. Создай файл .env
 
 SECRET_KEY=taskflow_secret_key_2026
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=60
 DATABASE_URL=sqlite:///./taskflow.db
 
-### 6️⃣ Запусти сервер
+### 6. Запусти сервер
 
 uvicorn app.main:app --reload
 
-### 7️⃣ Открой сайт в браузере
+### 7. Открой в браузере
 
 http://127.0.0.1:8000/static/index.html
 
-### 8️⃣ Зарегистрируйся и войди
-
-- Username: например, oncyber
-- Email: например, test@mail.com
-- Password: например, qwerty123
-
 ---
 
-## 🐳 Запуск через Docker
+## Запуск через Docker
 
 docker-compose up --build
 
-Открой: http://127.0.0.1:8000/static/index.html
-
 ---
 
-## 📁 Структура проекта
+## Структура проекта
 
 taskflow/
 ├── app/
 │   ├── api/v1/endpoints/
-│   │   ├── auth.py
-│   │   ├── tasks.py
-│   │   ├── users.py
-│   │   ├── teams.py
-│   │   ├── comments.py
-│   │   └── notifications.py
 │   ├── core/
-│   │   ├── database.py
-│   │   └── security.py
 │   ├── models/
-│   │   ├── user.py
-│   │   ├── task.py
-│   │   ├── team.py
-│   │   ├── comment.py
-│   │   └── notification.py
 │   ├── schemas/
 │   ├── static/
-│   │   └── index.html
 │   └── main.py
 ├── migrations/
 ├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
 ├── .env
-├── .gitignore
 ├── README.md
 └── LICENSE
 
 ---
 
-## 📡 API-эндпоинты
+## API-эндпоинты
 
-Метод | Эндпоинт | Описание | Токен
-POST | /api/v1/auth/register | Регистрация | ❌
-POST | /api/v1/auth/login | Вход | ❌
-GET | /api/v1/users/me | Профиль | ✅
-POST | /api/v1/tasks/ | Создать задачу | ✅
-GET | /api/v1/tasks/ | Список задач | ✅
-GET | /api/v1/tasks/{id} | Получить задачу | ✅
-PUT | /api/v1/tasks/{id} | Обновить задачу | ✅
-DELETE | /api/v1/tasks/{id} | Удалить задачу | ✅
-PATCH | /api/v1/tasks/{id}/status | Изменить статус | ✅
+POST /api/v1/auth/register — регистрация
+POST /api/v1/auth/login — вход
+GET /api/v1/users/me — профиль
+POST /api/v1/tasks/ — создать задачу
+GET /api/v1/tasks/ — список задач
+GET /api/v1/tasks/{id} — получить задачу
+PUT /api/v1/tasks/{id} — обновить задачу
+DELETE /api/v1/tasks/{id} — удалить задачу
+PATCH /api/v1/tasks/{id}/status — изменить статус
 
-💡 Токен передаётся в заголовке: Authorization: Bearer <токен>
-
----
-
-## 🛠️ Технологии
-
-Технология | Назначение
-Python 3.11+ | Язык программирования
-FastAPI | Бэкенд-фреймворк
-SQLAlchemy | ORM
-SQLite | База данных
-JWT | Авторизация
-Alembic | Миграции
-Docker | Контейнеризация
-HTML + CSS + JS | Фронтенд
+Токен передаётся в заголовке: Authorization: Bearer <токен>
 
 ---
 
-## 👥 Авторы
+## Технологии
 
-- **Oncillaa** — фронтенд, авторизация, задачи, Docker, миграции
-- **ivan345234** — команды, комментарии, уведомления, тесты
+Python 3.11+
+FastAPI
+SQLAlchemy
+SQLite
+JWT
+Alembic
+Docker
+HTML + CSS + JS
 
 ---
 
-## 📄 Лицензия
+## Авторы
 
-MIT. Подробнее в файле LICENSE.
+Oncillaa — фронтенд, авторизация, задачи, Docker, миграции
+ivan345234 — команды, комментарии, уведомления, тесты
 
 ---
 
-## ❓ Частые вопросы
+## Лицензия
 
-Ошибка: No module named '...'
-pip install -r requirements.txt
-
-Ошибка: unable to open database file
-echo. > taskflow.db
-
-Ошибка: порт 8000 занят
-uvicorn app.main:app --reload --port 8001
-
-Как остановить сервер?
-Нажми Ctrl + C.
+MIT
 
 ---
