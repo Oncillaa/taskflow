@@ -1,16 +1,20 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+import hashlib
+
 from app.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Соль для хэширования
+SALT = "taskflow_salt_2026"
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    """Проверяет пароль с SHA256 хешем"""
+    return get_password_hash(plain_password) == hashed_password
 
 def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+    """Генерирует SHA256 хеш пароля с солью"""
+    return hashlib.sha256((SALT + password).encode()).hexdigest()
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
