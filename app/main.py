@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app.api.v1.endpoints import auth, users
+from app.api.v1.endpoints import auth, users, tasks
 from app.core.database import engine, Base
 
 Base.metadata.create_all(bind=engine)
@@ -23,6 +23,7 @@ app.add_middleware(
 
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(users.router, prefix="/api/v1")
+app.include_router(tasks.router, prefix="/api/v1")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 

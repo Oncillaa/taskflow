@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TaskFlow — управление задачами</title>
+    <style>
+        /* ===== ГЛОБАЛЬНЫЕ СТИЛИ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #0d1117;
+            color: #c9d1d9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        /* ===== КАРТОЧКИ ===== */
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            color: #f0f6fc;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 10px;
+        }
+
+        /* ===== ФОРМЫ ===== */
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #8b949e;
+            margin-bottom: 4px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            color: #c9d1d9;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1f6feb;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            min-width: 160px;
+        }
+
+        /* ===== КНОПКИ ===== */
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: #1f6feb;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #388bfd;
+        }
+
+        .btn-success {
+            background: #238636;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #2ea043;
+        }
+
+        .btn-danger {
+            background: #da3633;
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #f85149;
+        }
+
+        .btn-secondary {
+            background: #21262d;
+            color: #c9d1d9;
+        }
+        .btn-secondary:hover {
+            background: #30363d;
+        }
+
+        .btn-warning {
+            background: #d29922;
+            color: #fff;
+        }
+        .btn-warning:hover {
+            background: #e3b341;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ===== АВТОРИЗАЦИЯ ===== */
+        .auth-grid {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .auth-grid .card {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        /* ===== ШАПКА ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 16px 0;
+            border-bottom: 1px solid #30363d;
+            margin-bottom: 24px;
+        }
+
+        .header .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #58a6ff, #7ee8fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+        }
+
+        .header .user-info .username {
+            color: #f0f6fc;
+        }
+
+        /* ===== ВКЛАДКИ ===== */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .tabs .tab {
+            padding: 8px 18px;
+            background: #21262d;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #8b949e;
+            transition: all 0.2s;
+        }
+
+        .tabs .tab.active {
+            background: #1f6feb;
+            color: #fff;
+        }
+
+        .tabs .tab:hover {
+            background: #30363d;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ===== ЗАДАЧИ ===== */
+        .task-item {
+            background: #0d1117;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .task-item .task-info {
+            flex: 1;
+        }
+
+        .task-item .task-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .task-item .task-meta {
+            font-size: 0.8rem;
+            color: #8b949e;
+            margin-top: 4px;
+        }
+
+        .task-item .task-status {
+            font-size: 0.75rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .task-status.pending {
+            background: #d29922;
+            color: #0d1117;
+        }
+        .task-status.in_progress {
+            background: #1f6feb;
+            color: #fff;
+        }
+        .task-status.review {
+            background: #bc8cff;
+            color: #0d1117;
+        }
+        .task-status.completed {
+            background: #238636;
+            color: #fff;
+        }
+
+        .task-item .task-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .task-item .task-actions .btn {
+            padding: 4px 12px;
+            font-size: 0.75rem;
+        }
+
+        /* ===== КОМАНДЫ ===== */
+        .team-card {
+            background: #0d1117;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid #1f6feb;
+        }
+
+        .team-card .team-name {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .team-card .team-meta {
+            font-size: 0.8rem;
+            color: #8b949e;
+        }
+
+        /* ===== УВЕДОМЛЕНИЯ ===== */
+        .notification-item {
+            padding: 10px 14px;
+            background: #0d1117;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid #1f6feb;
+        }
+
+        .notification-item.read {
+            opacity: 0.6;
+            border-left-color: #30363d;
+        }
+
+        .notification-item .notif-text {
+            font-size: 0.9rem;
+        }
+
+        .notification-item .notif-time {
+            font-size: 0.7rem;
+            color: #8b949e;
+        }
+
+        /* ===== МОДАЛКА ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 560px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .modal .modal-header h3 {
+            font-size: 1.3rem;
+            color: #f0f6fc;
+        }
+
+        .modal .modal-close {
+            background: none;
+            border: none;
+            color: #8b949e;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal .modal-close:hover {
+            color: #f85149;
+        }
+
+        /* ===== ЛОГ ===== */
+        .log {
+            background: #0d1117;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            max-height: 160px;
+            overflow-y: auto;
+            border: 1px solid #30363d;
+            margin-top: 8px;
+            white-space: pre-wrap;
+        }
+
+        .log .log-info {
+            color: #58a6ff;
+        }
+        .log .log-success {
+            color: #3fb950;
+        }
+        .log .log-error {
+            color: #f85149;
+        }
+        .log .log-warning {
+            color: #d29922;
+        }
+
+        /* ===== СКРЫТОЕ ===== */
+        .hidden {
+            display: none !important;
+        }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 600px) {
+            .auth-grid {
+                flex-direction: column;
+            }
+            .form-row {
+                flex-direction: column;
+            }
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .header .user-info {
+                justify-content: center;
+            }
+        }
+
+        /* ===== СТАТИСТИКА ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: #0d1117;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #30363d;
+        }
+
+        .stat-card .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f0f6fc;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.8rem;
+            color: #8b949e;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="app">
+
+        <!-- ===== АВТОРИЗАЦИЯ ===== -->
+        <div id="authSection">
+            <div class="auth-grid">
+                <!-- Регистрация -->
+                <div class="card">
+                    <h2>📝 Регистрация</h2>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="regUsername" placeholder="username" />
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="regEmail" placeholder="email@example.com" />
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="regPassword" placeholder="пароль" />
+                    </div>
+                    <button class="btn btn-primary" id="registerBtn">Зарегистрироваться</button>
+                </div>
+
+                <!-- Вход -->
+                <div class="card">
+                    <h2>🔐 Вход</h2>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="loginUsername" placeholder="username" />
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="пароль" />
+                    </div>
+                    <button class="btn btn-success" id="loginBtn">Войти</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ОСНОВНОЙ ИНТЕРФЕЙС ===== -->
+        <div id="mainSection" class="hidden">
+
+            <!-- Шапка -->
+            <div class="header">
+                <div class="logo">📋 TaskFlow</div>
+                <div class="user-info">
+                    <span class="username" id="currentUsername">user</span>
+                    <button class="btn btn-danger" id="logoutBtn">Выйти</button>
+                </div>
+            </div>
+
+            <!-- Вкладки -->
+            <div class="tabs">
+                <span class="tab active" data-tab="tab-tasks">📌 Задачи</span>
+                <span class="tab" data-tab="tab-teams">👥 Команды</span>
+                <span class="tab" data-tab="tab-notifications">🔔 Уведомления</span>
+                <span class="tab" data-tab="tab-stats">📊 Статистика</span>
+            </div>
+
+            <!-- ===== ВКЛАДКА: ЗАДАЧИ ===== -->
+            <div id="tab-tasks" class="tab-content active">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <h2 style="margin:0; border:none; padding:0;">Список задач</h2>
+                        <button class="btn btn-primary" id="createTaskBtn">➕ Новая задача</button>
+                    </div>
+                    <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+                        <select id="filterStatus" class="form-group" style="width:auto; padding:6px 12px;">
+                            <option value="">Все статусы</option>
+                            <option value="pending">Ожидает</option>
+                            <option value="in_progress">В работе</option>
+                            <option value="review">На проверке</option>
+                            <option value="completed">Выполнена</option>
+                        </select>
+                        <button class="btn btn-secondary" id="refreshTasksBtn">🔄 Обновить</button>
+                    </div>
+                    <div id="tasksList" style="margin-top:12px;">
+                        <p style="color:#8b949e;">Загрузка задач...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ВКЛАДКА: КОМАНДЫ ===== -->
+            <div id="tab-teams" class="tab-content">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <h2 style="margin:0; border:none; padding:0;">👥 Команды</h2>
+                        <button class="btn btn-primary" id="createTeamBtn">➕ Создать команду</button>
+                    </div>
+                    <div id="teamsList" style="margin-top:12px;">
+                        <p style="color:#8b949e;">Загрузка команд...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ВКЛАДКА: УВЕДОМЛЕНИЯ ===== -->
+            <div id="tab-notifications" class="tab-content">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <h2 style="margin:0; border:none; padding:0;">🔔 Уведомления</h2>
+                        <button class="btn btn-secondary" id="refreshNotifsBtn">🔄 Обновить</button>
+                    </div>
+                    <div id="notificationsList" style="margin-top:12px;">
+                        <p style="color:#8b949e;">Загрузка уведомлений...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ВКЛАДКА: СТАТИСТИКА ===== -->
+            <div id="tab-stats" class="tab-content">
+                <div class="card">
+                    <h2>📊 Статистика задач</h2>
+                    <div class="stats-grid" id="statsGrid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="statTotal">0</div>
+                            <div class="stat-label">Всего задач</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="statPending">0</div>
+                            <div class="stat-label">Ожидают</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="statInProgress">0</div>
+                            <div class="stat-label">В работе</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="statCompleted">0</div>
+                            <div class="stat-label">Выполнено</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" id="refreshStatsBtn">🔄 Обновить статистику</button>
+                </div>
+            </div>
+
+            <!-- ===== ЛОГ ===== -->
+            <div class="card">
+                <h2>📜 Лог</h2>
+                <div id="logContainer" class="log">Готов к работе.</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== МОДАЛКА СОЗДАНИЯ ЗАДАЧИ ===== -->
+    <div class="modal-overlay" id="taskModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="taskModalTitle">📌 Новая задача</h3>
+                <button class="modal-close" id="taskModalClose">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Название</label>
+                <input type="text" id="taskTitle" placeholder="Название задачи" />
+            </div>
+            <div class="form-group">
+                <label>Описание</label>
+                <textarea id="taskDescription" placeholder="Описание задачи"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Статус</label>
+                    <select id="taskStatus">
+                        <option value="pending">Ожидает</option>
+                        <option value="in_progress">В работе</option>
+                        <option value="review">На проверке</option>
+                        <option value="completed">Выполнена</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Приоритет</label>
+                    <select id="taskPriority">
+                        <option value="low">Низкий</option>
+                        <option value="medium" selected>Средний</option>
+                        <option value="high">Высокий</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Дедлайн</label>
+                <input type="datetime-local" id="taskDeadline" />
+            </div>
+            <div class="form-group">
+                <label>Назначить (ID пользователя)</label>
+                <input type="number" id="taskAssignedTo" placeholder="ID пользователя" />
+            </div>
+            <input type="hidden" id="taskEditId" value="" />
+            <button class="btn btn-primary" id="taskSaveBtn">💾 Сохранить</button>
+        </div>
+    </div>
+
+    <!-- ===== МОДАЛКА СОЗДАНИЯ КОМАНДЫ ===== -->
+    <div class="modal-overlay" id="teamModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>👥 Новая команда</h3>
+                <button class="modal-close" id="teamModalClose">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Название</label>
+                <input type="text" id="teamName" placeholder="Название команды" />
+            </div>
+            <div class="form-group">
+                <label>Описание</label>
+                <textarea id="teamDescription" placeholder="Описание команды"></textarea>
+            </div>
+            <button class="btn btn-primary" id="teamSaveBtn">💾 Создать</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  🔧 КОНФИГУРАЦИЯ
+        // ============================================================
+        const API = 'http://127.0.0.1:8000/api/v1';
+        const TOKEN_KEY = 'taskflow_token';
+
+        // ============================================================
+        //  🧰 ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        // ============================================================
+        const $ = id => document.getElementById(id);
+        const log = (msg, type = 'info') => {
+            const colors = { info: 'log-info', success: 'log-success', error: 'log-error', warning: 'log-warning' };
+            const el = document.createElement('div');
+            el.className = colors[type] || 'log-info';
+            el.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            const container = $('logContainer');
+            container.appendChild(el);
+            container.scrollTop = container.scrollHeight;
+        };
+
+        const getToken = () => localStorage.getItem(TOKEN_KEY);
+        const setToken = (t) => localStorage.setItem(TOKEN_KEY, t);
+        const clearToken = () => localStorage.removeItem(TOKEN_KEY);
+        const isLoggedIn = () => !!getToken();
+
+        // ============================================================
+        //  🌐 API-ЗАПРОСЫ
+        // ============================================================
+        async function apiRequest(endpoint, options = {}) {
+            const token = getToken();
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            const response = await fetch(`${API}${endpoint}`, {
+                ...options,
+                headers: { ...headers, ...(options.headers || {}) }
+            });
+
+            const data = await response.json().catch(() => null);
+            if (!response.ok) {
+                const msg = data?.detail || data?.message || `Ошибка ${response.status}`;
+                throw new Error(msg);
+            }
+            return data;
+        }
+
+        // ============================================================
+        //  🔐 АВТОРИЗАЦИЯ
+        // ============================================================
+        const registerBtn = $('registerBtn');
+        registerBtn.onclick = async () => {
+            const username = $('regUsername').value.trim();
+            const email = $('regEmail').value.trim();
+            const password = $('regPassword').value.trim();
+            if (!username || !email || !password) {
+                log('Заполните все поля регистрации.', 'error');
+                return;
+            }
+            registerBtn.disabled = true;
+            registerBtn.textContent = '...';
+            try {
+                const data = await apiRequest('/auth/register', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, email, password })
+                });
+                log(`✅ Зарегистрирован: ${data.username} (ID: ${data.id})`, 'success');
+                $('regUsername').value = '';
+                $('regEmail').value = '';
+                $('regPassword').value = '';
+            } catch (e) {
+                log(`❌ Ошибка регистрации: ${e.message}`, 'error');
+            }
+            registerBtn.disabled = false;
+            registerBtn.textContent = 'Зарегистрироваться';
+        };
+
+        const loginBtn = $('loginBtn');
+        loginBtn.onclick = async () => {
+            const username = $('loginUsername').value.trim();
+            const password = $('loginPassword').value.trim();
+            if (!username || !password) {
+                log('Введите username и password.', 'error');
+                return;
+            }
+            loginBtn.disabled = true;
+            loginBtn.textContent = '...';
+            try {
+                const form = new URLSearchParams();
+                form.append('username', username);
+                form.append('password', password);
+                const response = await fetch(`${API}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: form
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || 'Ошибка входа');
+                setToken(data.access_token);
+                log('✅ Вход выполнен!', 'success');
+                $('loginUsername').value = '';
+                $('loginPassword').value = '';
+                updateUI();
+            } catch (e) {
+                log(`❌ Ошибка входа: ${e.message}`, 'error');
+            }
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Войти';
+        };
+
+        const logoutBtn = $('logoutBtn');
+        logoutBtn.onclick = () => {
+            clearToken();
+            log('Выход выполнен.', 'warning');
+            updateUI();
+        };
+
+        // ============================================================
+        //  🖥️ UI
+        // ============================================================
+        function updateUI() {
+            const auth = $('authSection');
+            const main = $('mainSection');
+            if (isLoggedIn()) {
+                auth.classList.add('hidden');
+                main.classList.remove('hidden');
+                loadUserInfo();
+                loadTasks();
+                loadTeams();
+                loadNotifications();
+                loadStats();
+            } else {
+                auth.classList.remove('hidden');
+                main.classList.add('hidden');
+            }
+        }
+
+        async function loadUserInfo() {
+            try {
+                const data = await apiRequest('/users/me');
+                $('currentUsername').textContent = data.username || 'user';
+            } catch (e) {
+                log(`❌ Ошибка загрузки профиля: ${e.message}`, 'error');
+            }
+        }
+
+        // ============================================================
+        //  📌 ЗАДАЧИ
+        // ============================================================
+        async function loadTasks() {
+            const status = $('filterStatus').value;
+            let url = '/tasks/';
+            if (status) url += `?status=${status}`;
+            try {
+                const data = await apiRequest(url);
+                renderTasks(data.tasks || []);
+            } catch (e) {
+                log(`❌ Ошибка загрузки задач: ${e.message}`, 'error');
+                $('tasksList').innerHTML = `<p style="color:#f85149;">Ошибка: ${e.message}</p>`;
+            }
+        }
+
+        function renderTasks(tasks) {
+            const container = $('tasksList');
+            if (!tasks.length) {
+                container.innerHTML = '<p style="color:#8b949e;">Нет задач. Создайте первую!</p>';
+                return;
+            }
+            container.innerHTML = tasks.map(t => `
+                <div class="task-item">
+                    <div class="task-info">
+                        <div class="task-title">${t.title}</div>
+                        <div class="task-meta">
+                            ${t.description || 'Нет описания'} &bull;
+                            Приоритет: ${t.priority || 'средний'} &bull;
+                            ${t.deadline ? 'Дедлайн: ' + new Date(t.deadline).toLocaleDateString() : 'Без дедлайна'}
+                        </div>
+                        <div class="task-meta">
+                            Создал: ID ${t.created_by} &bull;
+                            ${t.assigned_to ? 'Назначена: ID ' + t.assigned_to : 'Не назначена'}
+                        </div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+                        <span class="task-status ${t.status}">${translateStatus(t.status)}</span>
+                        <div class="task-actions">
+                            <button class="btn btn-secondary" onclick="editTask(${t.id})">✏️</button>
+                            <button class="btn btn-danger" onclick="deleteTask(${t.id})">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function translateStatus(status) {
+            const map = {
+                'pending': 'Ожидает',
+                'in_progress': 'В работе',
+                'review': 'На проверке',
+                'completed': 'Выполнена'
+            };
+            return map[status] || status;
+        }
+
+        // ===== СОЗДАНИЕ / РЕДАКТИРОВАНИЕ ЗАДАЧИ =====
+        $('createTaskBtn').onclick = () => {
+            $('taskModalTitle').textContent = '📌 Новая задача';
+            $('taskEditId').value = '';
+            $('taskTitle').value = '';
+            $('taskDescription').value = '';
+            $('taskStatus').value = 'pending';
+            $('taskPriority').value = 'medium';
+            $('taskDeadline').value = '';
+            $('taskAssignedTo').value = '';
+            $('taskModal').classList.add('open');
+        };
+
+        $('taskModalClose').onclick = () => $('taskModal').classList.remove('open');
+        $('taskModal').onclick = (e) => {
+            if (e.target === e.currentTarget) $('taskModal').classList.remove('open');
+        };
+
+        window.editTask = async (id) => {
+            try {
+                const data = await apiRequest(`/tasks/${id}`);
+                $('taskModalTitle').textContent = '✏️ Редактировать задачу';
+                $('taskEditId').value = data.id;
+                $('taskTitle').value = data.title;
+                $('taskDescription').value = data.description || '';
+                $('taskStatus').value = data.status || 'pending';
+                $('taskPriority').value = data.priority || 'medium';
+                $('taskDeadline').value = data.deadline ? data.deadline.slice(0, 16) : '';
+                $('taskAssignedTo').value = data.assigned_to || '';
+                $('taskModal').classList.add('open');
+            } catch (e) {
+                log(`❌ Ошибка загрузки задачи: ${e.message}`, 'error');
+            }
+        };
+
+        $('taskSaveBtn').onclick = async () => {
+            const id = $('taskEditId').value;
+            const payload = {
+                title: $('taskTitle').value.trim(),
+                description: $('taskDescription').value.trim(),
+                status: $('taskStatus').value,
+                priority: $('taskPriority').value,
+                deadline: $('taskDeadline').value || null,
+                assigned_to: parseInt($('taskAssignedTo').value) || null
+            };
+            if (!payload.title) { log('Введите название задачи.', 'error'); return; }
+            try {
+                const endpoint = id ? `/tasks/${id}` : '/tasks/';
+                const method = id ? 'PUT' : 'POST';
+                const data = await apiRequest(endpoint, { method, body: JSON.stringify(payload) });
+                log(id ? `✅ Задача ${data.id} обновлена` : `✅ Задача ${data.id} создана`, 'success');
+                $('taskModal').classList.remove('open');
+                loadTasks();
+                loadStats();
+            } catch (e) {
+                log(`❌ Ошибка сохранения: ${e.message}`, 'error');
+            }
+        };
+
+        window.deleteTask = async (id) => {
+            if (!confirm(`Удалить задачу #${id}?`)) return;
+            try {
+                await apiRequest(`/tasks/${id}`, { method: 'DELETE' });
+                log(`🗑️ Задача #${id} удалена`, 'warning');
+                loadTasks();
+                loadStats();
+            } catch (e) {
+                log(`❌ Ошибка удаления: ${e.message}`, 'error');
+            }
+        };
+
+        $('refreshTasksBtn').onclick = () => { loadTasks();
+            log('Список задач обновлён.', 'info'); };
+        $('filterStatus').onchange = () => loadTasks();
+
+        // ============================================================
+        //  👥 КОМАНДЫ
+        // ============================================================
+        async function loadTeams() {
+            try {
+                const data = await apiRequest('/teams/');
+                renderTeams(data.teams || []);
+            } catch (e) {
+                log(`❌ Ошибка загрузки команд: ${e.message}`, 'error');
+                $('teamsList').innerHTML = `<p style="color:#f85149;">Ошибка: ${e.message}</p>`;
+            }
+        }
+
+        function renderTeams(teams) {
+            const container = $('teamsList');
+            if (!teams.length) {
+                container.innerHTML = '<p style="color:#8b949e;">Нет команд. Создайте первую!</p>';
+                return;
+            }
+            container.innerHTML = teams.map(t => `
+                <div class="team-card">
+                    <div class="team-name">${t.name}</div>
+                    <div class="team-meta">${t.description || 'Нет описания'}</div>
+                    <div class="team-meta">Создатель: ID ${t.created_by} &bull; Участников: ${(t.members || []).length}</div>
+                </div>
+            `).join('');
+        }
+
+        // ===== СОЗДАНИЕ КОМАНДЫ =====
+        $('createTeamBtn').onclick = () => {
+            $('teamName').value = '';
+            $('teamDescription').value = '';
+            $('teamModal').classList.add('open');
+        };
+
+        $('teamModalClose').onclick = () => $('teamModal').classList.remove('open');
+        $('teamModal').onclick = (e) => {
+            if (e.target === e.currentTarget) $('teamModal').classList.remove('open');
+        };
+
+        $('teamSaveBtn').onclick = async () => {
+            const name = $('teamName').value.trim();
+            const description = $('teamDescription').value.trim();
+            if (!name) { log('Введите название команды.', 'error'); return; }
+            try {
+                const data = await apiRequest('/teams/', {
+                    method: 'POST',
+                    body: JSON.stringify({ name, description })
+                });
+                log(`✅ Команда "${data.name}" создана (ID: ${data.id})`, 'success');
+                $('teamModal').classList.remove('open');
+                loadTeams();
+            } catch (e) {
+                log(`❌ Ошибка создания команды: ${e.message}`, 'error');
+            }
+        };
+
+        // ============================================================
+        //  🔔 УВЕДОМЛЕНИЯ
+        // ============================================================
+        async function loadNotifications() {
+            try {
+                const data = await apiRequest('/notifications/');
+                renderNotifications(data || []);
+            } catch (e) {
+                log(`❌ Ошибка загрузки уведомлений: ${e.message}`, 'error');
+                $('notificationsList').innerHTML = `<p style="color:#f85149;">Ошибка: ${e.message}</p>`;
+            }
+        }
+
+        function renderNotifications(notifs) {
+            const container = $('notificationsList');
+            if (!notifs.length) {
+                container.innerHTML = '<p style="color:#8b949e;">Нет уведомлений.</p>';
+                return;
+            }
+            container.innerHTML = notifs.map(n => `
+                <div class="notification-item ${n.is_read ? 'read' : ''}">
+                    <div>
+                        <div class="notif-text">${n.message}</div>
+                        <div class="notif-time">${new Date(n.created_at).toLocaleString()}</div>
+                    </div>
+                    ${!n.is_read ? `<button class="btn btn-secondary" onclick="markNotifRead(${n.id})">✅ Прочитано</button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        window.markNotifRead = async (id) => {
+            try {
+                await apiRequest(`/notifications/${id}/read`, { method: 'PATCH' });
+                loadNotifications();
+            } catch (e) {
+                log(`❌ Ошибка: ${e.message}`, 'error');
+            }
+        };
+
+        $('refreshNotifsBtn').onclick = () => { loadNotifications();
+            log('Уведомления обновлены.', 'info'); };
+
+        // ============================================================
+        //  📊 СТАТИСТИКА
+        // ============================================================
+        async function loadStats() {
+            try {
+                const data = await apiRequest('/tasks/');
+                const tasks = data.tasks || [];
+                const total = tasks.length;
+                const pending = tasks.filter(t => t.status === 'pending').length;
+                const inProgress = tasks.filter(t => t.status === 'in_progress').length;
+                const completed = tasks.filter(t => t.status === 'completed').length;
+
+                $('statTotal').textContent = total;
+                $('statPending').textContent = pending;
+                $('statInProgress').textContent = inProgress;
+                $('statCompleted').textContent = completed;
+            } catch (e) {
+                log(`❌ Ошибка загрузки статистики: ${e.message}`, 'error');
+            }
+        }
+
+        $('refreshStatsBtn').onclick = () => { loadStats();
+            log('Статистика обновлена.', 'info'); };
+
+        // ============================================================
+        //  📌 ВКЛАДКИ
+        // ============================================================
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.onclick = () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            };
+        });
+
+        // ============================================================
+        //  🔄 АВТООБНОВЛЕНИЕ
+        // ============================================================
+        setInterval(() => {
+            if (isLoggedIn()) {
+                loadTasks();
+                loadNotifications();
+                loadStats();
+            }
+        }, 15000);
+
+        // ============================================================
+        //  🚀 СТАРТ
+        // ============================================================
+        updateUI();
+        log('📋 TaskFlow v1.0 загружен', 'info');
+        log(`🌐 API: ${API}`, 'info');
+    </script>
+
+</body>
+</html>
