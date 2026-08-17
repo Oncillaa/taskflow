@@ -23,3 +23,14 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 @router.get("/me", response_model=UserResponse)
 def get_current_user_info(current_user: User = Depends(get_current_user)):
     return current_user
+
+@router.get("/search/")
+def search_users(
+    query: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    users = db.query(User).filter(
+        (User.username.contains(query)) | (User.email.contains(query))
+    ).limit(10).all()
+    return [{"id": u.id, "username": u.username, "email": u.email} for u in users]

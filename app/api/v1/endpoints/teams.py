@@ -1,15 +1,12 @@
-from datetime import datetime, UTC
-
-import zid
-from fastapi import APIRouter, Depends
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from typing import List
 
-from app.api.v1.endpoints.users import get_current_user
 from app.core.database import get_db
-from app.models.teams import Team
+from app.api.v1.endpoints.users import get_current_user
 from app.models.user import User
-from app.schemas.teams import TeamCreate
+from app.models.team import Team, team_members
+from app.schemas.team import TeamCreate, TeamUpdate, TeamResponse, TeamListResponse
 
 router = APIRouter(prefix="/teams", tags=["Команды"])
 @router.post("")
@@ -32,3 +29,180 @@ async def get_teams_func(current_user: User = Depends(get_current_user), new_tea
     all_teams = db.query(Team).all()
     my_teams = [i for i in all_teams if current_user.username in i.members]
     return {"teams": my_teams, "total": len(my_teams)}
+=======
+from app.models.user import User
+from app.models.team import Team, team_members
+from app.schemas.team import TeamCreate, TeamUpdate, TeamResponse, TeamListResponse
+
+router = APIRouter(prefix="/teams", tags=["teams"])
+
+@router.post("/", response_model=TeamResponse, status_code=status.HTTP_201_CREATED)
+def create_team(
+    team_data: TeamCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    new_team = Team(
+        name=team_data.name,
+        description=team_data.description,
+        created_by=current_user.id
+    )
+    db.add(new_team)
+    db.commit()
+    db.refresh(new_team)
+
+    return {
+        "id": new_team.id,
+        "name": new_team.name,
+        "description": new_team.description,
+        "created_by": new_team.created_by,
+        "created_at": new_team.created_at,
+        "members": []
+    }
+
+@router.get("/", response_model=TeamListResponse)
+def list_teams(
+    skip: int = 0,
+    limit: int = 20,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    teams = db.query(Team).offset(skip).limit(limit).all()
+    total = db.query(Team).count()
+
+    result = []
+    for team in teams:
+        result.append({
+            "id": team.id,
+            "name": team.name,
+            "description": team.description,
+            "created_by": team.created_by,
+            "created_at": team.created_at,
+            "members": [user.id for user in team.members]
+        })
+
+    return {"teams": result, "total": total}
+
+@router.get("/{team_id}", response_model=TeamResponse)
+def get_team(
+    team_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    team = db.query(Team).filter(Team.id == team_id).first()
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+
+    return {
+        "id": team.id,
+        "name": team.name,
+        "description": team.description,
+        "created_by": team.created_by,
+        "created_at": team.created_at,
+        "members": [user.id for user in team.members]
+    }
+
+@router.put("/{team_id}", response_model=TeamResponse)
+def update_team(
+    team_id: int,
+    team_data: TeamUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    team = db.query(Team).filter(Team.id == team_id).first()
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+    if team.created_by != current_user.id:
+        raise HTTPException(status_code=403, detail="Only creator can update team")
+
+    if team_data.name is not None:
+        team.name = team_data.name
+    if team_data.description is not None:
+        team.description = team_data.description
+
+    db.commit()
+    db.refresh(team)
+
+    return {
+        "id": team.id,
+        "name": team.name,
+        "description": team.description,
+        "created_by": team.created_by,
+        "created_at": team.created_at,
+        "members": [user.id for user in team.members]
+    }
+
+@router.delete("/{team_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_team(
+    team_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    team = db.query(Team).filter(Team.id == team_id).first()
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+    if team.created_by != current_user.id:
+        raise HTTPException(status_code=403, detail="Only creator can delete team")
+
+    db.delete(team)
+    db.commit()
+    return None
+
+@router.post("/{team_id}/members/{user_id}")
+def add_member(
+    team_id: int,
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    team = db.query(Team).filter(Team.id == team_id).first()
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+    if team.created_by != current_user.id:
+        raise HTTPException(status_code=403, detail="Only creator can add members")
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user in team.members:
+        raise HTTPException(status_code=400, detail="User already in team")
+
+    team.members.append(user)
+    db.commit()
+    return {"message": f"User {user_id} added to team {team_id}"}
+
+@router.delete("/{team_id}/members/{user_id}")
+def remove_member(
+    team_id: int,
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    team = db.query(Team).filter(Team.id == team_id).first()
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+    if team.created_by != current_user.id:
+        raise HTTPException(status_code=403, detail="Only creator can remove members")
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user not in team.members:
+        raise HTTPException(status_code=400, detail="User not in team")
+
+    team.members.remove(user)
+    db.commit()
+    return {"message": f"User {user_id} removed from team {team_id}"}
+
+@router.get("/{team_id}/members", response_model=List[dict])
+def get_team_members(
+    team_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    team = db.query(Team).filter(Team.id == team_id).first()
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+
+    return [{"id": u.id, "username": u.username, "email": u.email} for u in team.members]
+>>>>>>> 6d905bf (Сохраняю локальные изменения перед pull)
