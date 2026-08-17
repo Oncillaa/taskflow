@@ -9,7 +9,6 @@
     <script src="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.css" />
     <style>
-        /* ===== ГЛОБАЛЬНЫЕ ===== */
         * {
             margin: 0;
             padding: 0;
@@ -31,8 +30,6 @@
         .hidden {
             display: none !important;
         }
-
-        /* ===== КАРТОЧКИ ===== */
         .card {
             background: #161b22;
             border: 1px solid #30363d;
@@ -58,8 +55,6 @@
             border-radius: 20px;
             font-weight: 400;
         }
-
-        /* ===== ФОРМЫ ===== */
         .form-group {
             margin-bottom: 14px;
         }
@@ -101,8 +96,6 @@
             flex: 1;
             min-width: 160px;
         }
-
-        /* ===== КНОПКИ ===== */
         .btn {
             padding: 10px 24px;
             border: none;
@@ -161,8 +154,10 @@
             cursor: not-allowed;
             transform: none !important;
         }
-
-        /* ===== ШАПКА ===== */
+        .btn-sm {
+            padding: 4px 12px;
+            font-size: 0.75rem;
+        }
         .header {
             display: flex;
             justify-content: space-between;
@@ -200,8 +195,6 @@
             margin-right: 6px;
             color: #58a6ff;
         }
-
-        /* ===== ВКЛАДКИ ===== */
         .tabs {
             display: flex;
             gap: 4px;
@@ -248,8 +241,6 @@
                 transform: translateY(0);
             }
         }
-
-        /* ===== ЗАДАЧИ ===== */
         .task-item {
             background: #0d1117;
             padding: 14px 18px;
@@ -327,8 +318,6 @@
                 transform: translateX(0);
             }
         }
-
-        /* ===== СТАТИСТИКА ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -361,8 +350,6 @@
             margin-bottom: 4px;
             color: #1f6feb;
         }
-
-        /* ===== ГРАФ ===== */
         #graphContainer {
             width: 100%;
             height: 500px;
@@ -371,8 +358,6 @@
             border-radius: 8px;
             margin-top: 12px;
         }
-
-        /* ===== КАНБАН ===== */
         .kanban-columns {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -415,8 +400,6 @@
             color: #8b949e;
             margin-top: 4px;
         }
-
-        /* ===== МОДАЛКА ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -476,8 +459,6 @@
         .modal .modal-close:hover {
             color: #f85149;
         }
-
-        /* ===== ТОСТЫ ===== */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -537,8 +518,6 @@
         .toast .toast-close:hover {
             color: #fff;
         }
-
-        /* ===== ПУСТОЙ СПИСОК ===== */
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -555,8 +534,6 @@
         .empty-state .btn {
             margin-top: 12px;
         }
-
-        /* ===== КАРТА ===== */
         #mapContainer {
             width: 100%;
             height: 400px;
@@ -569,8 +546,56 @@
             justify-content: center;
             color: #8b949e;
         }
-
-        /* ===== АДАПТИВ ===== */
+        .team-card {
+            background: #0d1117;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid #1f6feb;
+        }
+        .team-card .team-name {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+        .team-card .team-meta {
+            font-size: 0.8rem;
+            color: #8b949e;
+            margin-top: 4px;
+        }
+        .team-member-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #21262d;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 4px 4px 0 0;
+        }
+        .team-member-item .remove-member {
+            color: #f85149;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .team-member-item .remove-member:hover {
+            color: #ff6b6b;
+        }
+        .search-results {
+            max-height: 150px;
+            overflow-y: auto;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            margin-top: 4px;
+        }
+        .search-result-item {
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .search-result-item:hover {
+            background: #21262d;
+        }
         @media (max-width: 600px) {
             .form-row {
                 flex-direction: column;
@@ -680,7 +705,9 @@
                             <i class="fas fa-list-check"></i> Список задач
                             <span class="badge" id="taskCount">0</span>
                         </h2>
-                        <button class="btn btn-primary" id="createTaskBtn"><i class="fas fa-plus"></i> Новая задача</button>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button class="btn btn-primary" id="createTaskBtn"><i class="fas fa-plus"></i> Новая задача</button>
+                        </div>
                     </div>
                     <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
                         <select id="filterStatus" style="padding:6px 12px; background:#0d1117; border:1px solid #30363d; border-radius:8px; color:#c9d1d9;">
@@ -708,7 +735,7 @@
                 </div>
             </div>
 
-            <!-- ===== ДОСКА (КАНБАН) ===== -->
+            <!-- ===== ДОСКА ===== -->
             <div id="tab-board" class="tab-content">
                 <div class="card">
                     <h2><i class="fas fa-columns"></i> Доска задач</h2>
@@ -751,10 +778,10 @@
             <div id="tab-map" class="tab-content">
                 <div class="card">
                     <h2><i class="fas fa-map"></i> Карта задач</h2>
-                    <p style="color:#8b949e; margin-bottom:12px;">Для работы карты нужен API-ключ Google Maps. Пока заглушка.</p>
+                    <p style="color:#8b949e; margin-bottom:12px;">Для работы карты нужен API-ключ Google Maps.</p>
                     <div id="mapContainer">
                         <i class="fas fa-map" style="font-size:3rem; color:#30363d; margin-right:12px;"></i>
-                        <span>Карта появится после подключения API-ключа</span>
+                        <span>Подключите API-ключ в коде</span>
                     </div>
                 </div>
             </div>
@@ -877,13 +904,42 @@
         </div>
     </div>
 
+    <!-- ===== МОДАЛКА СВЯЗИ ЗАДАЧ ===== -->
+    <div class="modal-overlay" id="linkModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-link"></i> Связать задачи</h3>
+                <button class="modal-close" id="linkModalClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="form-group">
+                <label>Текущая задача (ID)</label>
+                <input type="number" id="linkTaskFrom" readonly />
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-arrow-right"></i> Связать с задачей (ID)</label>
+                <input type="number" id="linkTaskTo" placeholder="ID задачи" />
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-tag"></i> Тип связи</label>
+                <select id="linkType">
+                    <option value="related_to">Связана с</option>
+                    <option value="depends_on">Зависит от</option>
+                    <option value="blocks">Блокирует</option>
+                    <option value="subtask">Подзадача</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" id="linkSaveBtn"><i class="fas fa-link"></i> Связать</button>
+        </div>
+    </div>
+
     <!-- ===== МОДАЛКА КОМАНДЫ ===== -->
     <div class="modal-overlay" id="teamModal">
         <div class="modal">
             <div class="modal-header">
-                <h3><i class="fas fa-users"></i> Новая команда</h3>
+                <h3 id="teamModalTitle"><i class="fas fa-users"></i> Новая команда</h3>
                 <button class="modal-close" id="teamModalClose"><i class="fas fa-times"></i></button>
             </div>
+            <input type="hidden" id="teamEditId" value="" />
             <div class="form-group">
                 <label><i class="fas fa-heading"></i> Название</label>
                 <input type="text" id="teamName" placeholder="Название команды" />
@@ -892,7 +948,27 @@
                 <label><i class="fas fa-align-left"></i> Описание</label>
                 <textarea id="teamDescription" placeholder="Описание команды"></textarea>
             </div>
-            <button class="btn btn-primary" id="teamSaveBtn"><i class="fas fa-save"></i> Создать</button>
+            <button class="btn btn-primary" id="teamSaveBtn"><i class="fas fa-save"></i> Сохранить</button>
+        </div>
+    </div>
+
+    <!-- ===== МОДАЛКА УЧАСТНИКОВ ===== -->
+    <div class="modal-overlay" id="membersModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> Участники команды</h3>
+                <button class="modal-close" id="membersModalClose"><i class="fas fa-times"></i></button>
+            </div>
+            <input type="hidden" id="membersTeamId" value="" />
+            <div class="form-group">
+                <label><i class="fas fa-search"></i> Поиск пользователя</label>
+                <input type="text" id="memberSearch" placeholder="Введите username или email" />
+                <div id="memberSearchResults" class="search-results" style="display:none;"></div>
+            </div>
+            <button class="btn btn-success" id="addMemberBtn"><i class="fas fa-user-plus"></i> Добавить</button>
+            <hr style="border-color:#30363d; margin:16px 0;" />
+            <h4 style="margin-bottom:10px;">Текущие участники</h4>
+            <div id="membersList"></div>
         </div>
     </div>
 
@@ -904,6 +980,7 @@
         const TOKEN_KEY = 'taskflow_token';
         let statsChart = null;
         let graphNetwork = null;
+        let linkTaskFrom = null;
 
         // ============================================================
         //  📢 TOAST
@@ -1083,6 +1160,7 @@
                     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
                         <span class="task-status ${t.status}">${statusMap[t.status] || t.status}</span>
                         <div class="task-actions">
+                            <button class="btn btn-secondary" onclick="openLinkModal(${t.id})" title="Связать задачи"><i class="fas fa-link"></i></button>
                             <button class="btn btn-secondary" onclick="editTask(${t.id})"><i class="fas fa-pen"></i></button>
                             <button class="btn btn-danger" onclick="deleteTask(${t.id})"><i class="fas fa-trash"></i></button>
                         </div>
@@ -1091,73 +1169,43 @@
             `).join('');
         }
 
-        function openTaskModal(data = null) {
-            const isEdit = !!data;
-            $('taskModalTitle').innerHTML = isEdit ? '<i class="fas fa-pen"></i> Редактировать задачу' :
-                '<i class="fas fa-plus-circle"></i> Новая задача';
-            $('taskEditId').value = isEdit ? data.id : '';
-            $('taskTitle').value = isEdit ? data.title : '';
-            $('taskDescription').value = isEdit ? (data.description || '') : '';
-            $('taskStatus').value = isEdit ? (data.status || 'pending') : 'pending';
-            $('taskPriority').value = isEdit ? (data.priority || 'medium') : 'medium';
-            $('taskDeadline').value = isEdit && data.deadline ? data.deadline.slice(0, 16) : '';
-            $('taskAssignedTo').value = isEdit ? (data.assigned_to || '') : '';
-            $('taskModal').classList.add('open');
+        // ============================================================
+        //  🔗 СВЯЗИ ЗАДАЧ
+        // ============================================================
+        function openLinkModal(taskId) {
+            linkTaskFrom = taskId;
+            $('linkTaskFrom').value = taskId;
+            $('linkTaskTo').value = '';
+            $('linkType').value = 'related_to';
+            $('linkModal').classList.add('open');
         }
 
-        $('createTaskBtn').onclick = () => openTaskModal();
-        document.getElementById('emptyCreateBtn')?.addEventListener('click', () => openTaskModal());
-        $('taskModalClose').onclick = () => $('taskModal').classList.remove('open');
-        $('taskModal').onclick = (e) => { if (e.target === e.currentTarget) $('taskModal').classList.remove('open'); };
+        $('linkModalClose').onclick = () => $('linkModal').classList.remove('open');
+        $('linkModal').onclick = (e) => { if (e.target === e.currentTarget) $('linkModal').classList.remove('open'); };
 
-        window.editTask = async (id) => {
-            try {
-                const data = await apiRequest(`/tasks/${id}`);
-                openTaskModal(data);
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        };
+        $('linkSaveBtn').onclick = async () => {
+            const task_from = parseInt($('linkTaskFrom').value);
+            const task_to = parseInt($('linkTaskTo').value);
+            const link_type = $('linkType').value;
 
-        $('taskSaveBtn').onclick = async () => {
-            const id = $('taskEditId').value;
-            const payload = {
-                title: $('taskTitle').value.trim(),
-                description: $('taskDescription').value.trim(),
-                status: $('taskStatus').value,
-                priority: $('taskPriority').value,
-                deadline: $('taskDeadline').value || null,
-                assigned_to: parseInt($('taskAssignedTo').value) || null
-            };
-            if (!payload.title) { toast('Введите название.', 'error'); return; }
+            if (!task_from || !task_to) { toast('Введите ID задачи.', 'error'); return; }
+            if (task_from === task_to) { toast('Нельзя связать задачу с собой.', 'error'); return; }
+
             try {
-                const endpoint = id ? `/tasks/${id}` : '/tasks/';
-                const method = id ? 'PUT' : 'POST';
-                const data = await apiRequest(endpoint, { method, body: JSON.stringify(payload) });
-                toast(id ? `✅ Задача ${data.id} обновлена` : `✅ Задача ${data.id} создана`, 'success');
-                $('taskModal').classList.remove('open');
+                await apiRequest('/links/', {
+                    method: 'POST',
+                    body: JSON.stringify({ task_from, task_to, link_type })
+                });
+                toast(`✅ Задачи ${task_from} и ${task_to} связаны`, 'success');
+                $('linkModal').classList.remove('open');
                 loadTasks();
-                loadKanban();
-                loadStats();
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+            } catch (e) {
+                toast(`❌ ${e.message}`, 'error');
+            }
         };
-
-        window.deleteTask = async (id) => {
-            if (!confirm(`Удалить задачу #${id}?`)) return;
-            try {
-                await apiRequest(`/tasks/${id}`, { method: 'DELETE' });
-                toast(`🗑️ Задача #${id} удалена`, 'warning');
-                loadTasks();
-                loadKanban();
-                loadStats();
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        };
-
-        $('refreshTasksBtn').onclick = () => { loadTasks();
-            toast('Список обновлён.', 'info'); };
-        $('filterStatus').onchange = () => loadTasks();
-        $('filterPriority').onchange = () => loadTasks();
 
         // ============================================================
-        //  📋 КАНБАН-ДОСКА
+        //  📋 КАНБАН
         // ============================================================
         async function loadKanban() {
             try {
@@ -1177,7 +1225,8 @@
                 const container = document.getElementById(`kanban-${status}`);
                 const filtered = tasks.filter(t => t.status === status);
                 if (!filtered.length) {
-                    container.innerHTML = `<div style="color:#8b949e; text-align:center; padding:20px 0; font-size:0.85rem;">Нет задач</div>`;
+                    container.innerHTML =
+                    `<div style="color:#8b949e; text-align:center; padding:20px 0; font-size:0.85rem;">Нет задач</div>`;
                     return;
                 }
                 container.innerHTML = filtered.map(t => `
@@ -1269,6 +1318,8 @@
         // ============================================================
         //  👥 КОМАНДЫ
         // ============================================================
+        let currentTeamId = null;
+
         async function loadTeams() {
             try {
                 const data = await apiRequest('/teams/');
@@ -1276,7 +1327,7 @@
             } catch (e) {
                 if (e.message.includes('404')) {
                     $('teamsList').innerHTML =
-                        `<div class="empty-state"><i class="fas fa-users"></i><p>Команды появятся после того, как друг напишет бэкенд.</p></div>`;
+                        `<div class="empty-state"><i class="fas fa-users"></i><p>Нет команд. Создайте первую!</p></div>`;
                 } else {
                     toast(`❌ ${e.message}`, 'error');
                 }
@@ -1291,30 +1342,157 @@
                 return;
             }
             container.innerHTML = teams.map(t => `
-                <div class="team-card" style="background:#0d1117; padding:14px 18px; border-radius:8px; margin-bottom:8px; border-left:4px solid #1f6feb;">
-                    <div class="team-name"><i class="fas fa-users"></i> ${t.name}</div>
+                <div class="team-card">
+                    <div class="team-name">
+                        <i class="fas fa-users"></i> ${t.name}
+                        <span style="font-weight:400; font-size:0.8rem; color:#8b949e; margin-left:8px;">Создатель: ID ${t.created_by}</span>
+                    </div>
                     <div class="team-meta"><i class="fas fa-align-left"></i> ${t.description || 'Нет описания'}</div>
-                    <div class="team-meta"><i class="fas fa-user"></i> Создатель: ID ${t.created_by}</div>
+                    <div class="team-meta" style="margin-top:8px;">
+                        <button class="btn btn-secondary btn-sm" onclick="openMembersModal(${t.id})"><i class="fas fa-user-group"></i> Участники</button>
+                        <button class="btn btn-secondary btn-sm" onclick="editTeam(${t.id})"><i class="fas fa-pen"></i> Редактировать</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteTeam(${t.id})"><i class="fas fa-trash"></i> Удалить</button>
+                    </div>
                 </div>
             `).join('');
         }
 
-        $('createTeamBtn').onclick = () => {
-            $('teamName').value = '';
-            $('teamDescription').value = '';
+        // ===== СОЗДАНИЕ/РЕДАКТИРОВАНИЕ КОМАНДЫ =====
+        function openTeamModal(data = null) {
+            const isEdit = !!data;
+            $('teamModalTitle').innerHTML = isEdit ? '<i class="fas fa-pen"></i> Редактировать команду' :
+                '<i class="fas fa-users"></i> Новая команда';
+            $('teamEditId').value = isEdit ? data.id : '';
+            $('teamName').value = isEdit ? data.name : '';
+            $('teamDescription').value = isEdit ? (data.description || '') : '';
             $('teamModal').classList.add('open');
-        };
+        }
+
+        $('createTeamBtn').onclick = () => openTeamModal(null);
         $('teamModalClose').onclick = () => $('teamModal').classList.remove('open');
         $('teamModal').onclick = (e) => { if (e.target === e.currentTarget) $('teamModal').classList.remove('open'); };
+
+        window.editTeam = async (id) => {
+            try {
+                const data = await apiRequest(`/teams/${id}`);
+                openTeamModal(data);
+            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+        };
+
         $('teamSaveBtn').onclick = async () => {
+            const id = $('teamEditId').value;
             const name = $('teamName').value.trim();
             const description = $('teamDescription').value.trim();
             if (!name) { toast('Введите название.', 'error'); return; }
             try {
-                const data = await apiRequest('/teams/', { method: 'POST', body: JSON.stringify({ name, description }) });
-                toast(`✅ Команда "${data.name}" создана`, 'success');
+                const endpoint = id ? `/teams/${id}` : '/teams/';
+                const method = id ? 'PUT' : 'POST';
+                const data = await apiRequest(endpoint, { method, body: JSON.stringify({ name, description }) });
+                toast(id ? `✅ Команда "${data.name}" обновлена` : `✅ Команда "${data.name}" создана`, 'success');
                 $('teamModal').classList.remove('open');
                 loadTeams();
+            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+        };
+
+        window.deleteTeam = async (id) => {
+            if (!confirm('Удалить команду?')) return;
+            try {
+                await apiRequest(`/teams/${id}`, { method: 'DELETE' });
+                toast('🗑️ Команда удалена', 'warning');
+                loadTeams();
+            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+        };
+
+        // ===== УЧАСТНИКИ =====
+        async function openMembersModal(teamId) {
+            currentTeamId = teamId;
+            $('membersTeamId').value = teamId;
+            $('memberSearch').value = '';
+            $('memberSearchResults').style.display = 'none';
+            $('membersModal').classList.add('open');
+            await loadMembers(teamId);
+        }
+
+        $('membersModalClose').onclick = () => $('membersModal').classList.remove('open');
+        $('membersModal').onclick = (e) => { if (e.target === e.currentTarget) $('membersModal').classList.remove('open'); };
+
+        async function loadMembers(teamId) {
+            try {
+                const data = await apiRequest(`/teams/${teamId}/members`);
+                renderMembers(data || []);
+            } catch (e) { toast(`❌ Ошибка загрузки участников: ${e.message}`, 'error'); }
+        }
+
+        function renderMembers(members) {
+            const container = $('membersList');
+            if (!members.length) {
+                container.innerHTML = '<p style="color:#8b949e;">Нет участников</p>';
+                return;
+            }
+            container.innerHTML = members.map(u => `
+                <div class="team-member-item">
+                    ${u.username} (${u.email})
+                    <span class="remove-member" onclick="removeMember(${u.id})"><i class="fas fa-times-circle"></i></span>
+                </div>
+            `).join('');
+        }
+
+        window.removeMember = async (userId) => {
+            if (!confirm('Удалить участника?')) return;
+            try {
+                await apiRequest(`/teams/${currentTeamId}/members/${userId}`, { method: 'DELETE' });
+                toast('✅ Участник удалён', 'success');
+                await loadMembers(currentTeamId);
+            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+        };
+
+        // ===== ПОИСК ПОЛЬЗОВАТЕЛЕЙ =====
+        let searchTimeout = null;
+        $('memberSearch').oninput = function() {
+            clearTimeout(searchTimeout);
+            const query = this.value.trim();
+            if (query.length < 2) {
+                $('memberSearchResults').style.display = 'none';
+                return;
+            }
+            searchTimeout = setTimeout(async () => {
+                try {
+                    const data = await apiRequest(`/users/search/?query=${encodeURIComponent(query)}`);
+                    const container = $('memberSearchResults');
+                    if (!data.length) {
+                        container.innerHTML = '<div style="padding:10px; color:#8b949e;">Пользователи не найдены</div>';
+                        container.style.display = 'block';
+                        return;
+                    }
+                    container.innerHTML = data.map(u =>
+                        `<div class="search-result-item" onclick="selectUser(${u.id}, '${u.username}')">${u.username} (${u.email})</div>`
+                    ).join('');
+                    container.style.display = 'block';
+                } catch (e) {
+                    toast(`❌ ${e.message}`, 'error');
+                }
+            }, 300);
+        };
+
+        window.selectUser = async (userId, username) => {
+            $('memberSearch').value = username;
+            $('memberSearchResults').style.display = 'none';
+            try {
+                await apiRequest(`/teams/${currentTeamId}/members/${userId}`, { method: 'POST' });
+                toast(`✅ ${username} добавлен в команду`, 'success');
+                await loadMembers(currentTeamId);
+                $('memberSearch').value = '';
+            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+        };
+
+        $('addMemberBtn').onclick = async () => {
+            const userId = parseInt($('memberSearch').value.trim());
+            if (!userId) { toast('Введите ID или выберите пользователя.', 'error'); return; }
+            try {
+                await apiRequest(`/teams/${currentTeamId}/members/${userId}`, { method: 'POST' });
+                toast(`✅ Пользователь ${userId} добавлен`, 'success');
+                await loadMembers(currentTeamId);
+                $('memberSearch').value = '';
             } catch (e) { toast(`❌ ${e.message}`, 'error'); }
         };
 
@@ -1328,7 +1506,7 @@
             } catch (e) {
                 if (e.message.includes('404')) {
                     $('notificationsList').innerHTML =
-                        `<div class="empty-state"><i class="fas fa-bell-slash"></i><p>Уведомления появятся после того, как друг напишет бэкенд.</p></div>`;
+                        `<div class="empty-state"><i class="fas fa-bell-slash"></i><p>Нет уведомлений.</p></div>`;
                 } else {
                     toast(`❌ ${e.message}`, 'error');
                 }
@@ -1347,7 +1525,7 @@
                         <div class="notif-text"><i class="fas fa-bell"></i> ${n.message}</div>
                         <div class="notif-time"><i class="fas fa-clock"></i> ${new Date(n.created_at).toLocaleString()}</div>
                     </div>
-                    ${!n.is_read ? `<button class="btn btn-secondary" onclick="markNotifRead(${n.id})"><i class="fas fa-check"></i> Прочитано</button>` : ''}
+                    ${!n.is_read ? `<button class="btn btn-secondary btn-sm" onclick="markNotifRead(${n.id})"><i class="fas fa-check"></i> Прочитано</button>` : ''}
                 </div>
             `).join('');
         }
@@ -1362,7 +1540,7 @@
             toast('Уведомления обновлены.', 'info'); };
 
         // ============================================================
-        //  📊 СТАТИСТИКА + ГРАФИК
+        //  📊 СТАТИСТИКА
         // ============================================================
         async function loadStats() {
             try {
