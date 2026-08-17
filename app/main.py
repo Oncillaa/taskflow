@@ -25,6 +25,7 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(users.router, prefix="/api/v1")
 app.include_router(tasks.router, prefix="/api/v1")
+app.include_router(teams.router, prefix="/api/v1")
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
