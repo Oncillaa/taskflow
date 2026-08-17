@@ -6,11 +6,17 @@
     <title>TaskFlow</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.css" />
     <style>
-        /* ===== БАЗА ===== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ===== ГЛОБАЛЬНЫЕ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
             background: #0d1117;
             color: #c9d1d9;
             min-height: 100vh;
@@ -18,8 +24,13 @@
             justify-content: center;
             padding: 20px;
         }
-        .container { max-width: 1100px; width: 100%; }
-        .hidden { display: none !important; }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+        .hidden {
+            display: none !important;
+        }
 
         /* ===== КАРТОЧКИ ===== */
         .card {
@@ -28,9 +39,7 @@
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 20px;
-            transition: border-color 0.3s;
         }
-        .card:hover { border-color: #4f8cc9; }
         .card h2 {
             font-size: 1.2rem;
             margin-bottom: 16px;
@@ -51,14 +60,18 @@
         }
 
         /* ===== ФОРМЫ ===== */
-        .form-group { margin-bottom: 14px; }
+        .form-group {
+            margin-bottom: 14px;
+        }
         .form-group label {
             display: block;
             font-size: 0.85rem;
             color: #8b949e;
             margin-bottom: 4px;
         }
-        .form-group input, .form-group select, .form-group textarea {
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 10px 14px;
             background: #0d1117;
@@ -68,14 +81,26 @@
             font-size: 0.95rem;
             transition: border-color 0.3s, box-shadow 0.3s;
         }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
             border-color: #1f6feb;
-            box-shadow: 0 0 0 3px rgba(31,111,235,0.2);
+            box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.2);
         }
-        .form-group textarea { resize: vertical; min-height: 80px; }
-        .form-row { display: flex; gap: 14px; flex-wrap: wrap; }
-        .form-row .form-group { flex: 1; min-width: 160px; }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .form-row .form-group {
+            flex: 1;
+            min-width: 160px;
+        }
 
         /* ===== КНОПКИ ===== */
         .btn {
@@ -90,22 +115,52 @@
             align-items: center;
             gap: 8px;
         }
-        .btn:active { transform: scale(0.96); }
-        .btn-primary { background: #1f6feb; color: #fff; }
-        .btn-primary:hover { background: #388bfd; box-shadow: 0 0 20px rgba(31,111,235,0.3); }
-        .btn-success { background: #238636; color: #fff; }
-        .btn-success:hover { background: #2ea043; box-shadow: 0 0 20px rgba(35,134,54,0.3); }
-        .btn-danger { background: #da3633; color: #fff; }
-        .btn-danger:hover { background: #f85149; box-shadow: 0 0 20px rgba(218,54,51,0.3); }
-        .btn-secondary { background: #21262d; color: #c9d1d9; }
-        .btn-secondary:hover { background: #30363d; }
-        .btn-warning { background: #d29922; color: #fff; }
-        .btn-warning:hover { background: #e3b341; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
-
-        /* ===== АВТОРИЗАЦИЯ ===== */
-        .auth-grid { display: flex; gap: 24px; flex-wrap: wrap; }
-        .auth-grid .card { flex: 1; min-width: 280px; }
+        .btn:active {
+            transform: scale(0.96);
+        }
+        .btn-primary {
+            background: #1f6feb;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #388bfd;
+            box-shadow: 0 0 20px rgba(31, 111, 235, 0.3);
+        }
+        .btn-success {
+            background: #238636;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #2ea043;
+            box-shadow: 0 0 20px rgba(35, 134, 54, 0.3);
+        }
+        .btn-danger {
+            background: #da3633;
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #f85149;
+            box-shadow: 0 0 20px rgba(218, 54, 51, 0.3);
+        }
+        .btn-secondary {
+            background: #21262d;
+            color: #c9d1d9;
+        }
+        .btn-secondary:hover {
+            background: #30363d;
+        }
+        .btn-warning {
+            background: #d29922;
+            color: #fff;
+        }
+        .btn-warning:hover {
+            background: #e3b341;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
 
         /* ===== ШАПКА ===== */
         .header {
@@ -128,7 +183,9 @@
             align-items: center;
             gap: 10px;
         }
-        .header .logo i { -webkit-text-fill-color: #58a6ff; }
+        .header .logo i {
+            -webkit-text-fill-color: #58a6ff;
+        }
         .header .user-info {
             display: flex;
             align-items: center;
@@ -139,7 +196,10 @@
             color: #f0f6fc;
             font-weight: 600;
         }
-        .header .user-info .username i { margin-right: 6px; color: #58a6ff; }
+        .header .user-info .username i {
+            margin-right: 6px;
+            color: #58a6ff;
+        }
 
         /* ===== ВКЛАДКИ ===== */
         .tabs {
@@ -163,13 +223,30 @@
             align-items: center;
             gap: 8px;
         }
-        .tabs .tab.active { background: #1f6feb; color: #fff; }
-        .tabs .tab:hover:not(.active) { background: #21262d; color: #f0f6fc; }
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
+        .tabs .tab.active {
+            background: #1f6feb;
+            color: #fff;
+        }
+        .tabs .tab:hover:not(.active) {
+            background: #21262d;
+            color: #f0f6fc;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ===== ЗАДАЧИ ===== */
@@ -187,11 +264,25 @@
             transition: border-color 0.3s, background 0.2s;
             animation: slideIn 0.3s ease;
         }
-        .task-item:hover { background: #161b22; }
-        .task-item .task-info { flex: 1; }
-        .task-item .task-title { font-weight: 600; font-size: 1.05rem; }
-        .task-item .task-meta { font-size: 0.8rem; color: #8b949e; margin-top: 4px; }
-        .task-item .task-meta i { margin-right: 4px; font-size: 0.75rem; }
+        .task-item:hover {
+            background: #161b22;
+        }
+        .task-item .task-info {
+            flex: 1;
+        }
+        .task-item .task-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+        .task-item .task-meta {
+            font-size: 0.8rem;
+            color: #8b949e;
+            margin-top: 4px;
+        }
+        .task-item .task-meta i {
+            margin-right: 4px;
+            font-size: 0.75rem;
+        }
         .task-item .task-status {
             font-size: 0.75rem;
             padding: 4px 14px;
@@ -201,15 +292,40 @@
             align-items: center;
             gap: 4px;
         }
-        .task-status.pending { background: #d29922; color: #0d1117; }
-        .task-status.in_progress { background: #1f6feb; color: #fff; }
-        .task-status.review { background: #bc8cff; color: #0d1117; }
-        .task-status.completed { background: #238636; color: #fff; }
-        .task-item .task-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-        .task-item .task-actions .btn { padding: 4px 12px; font-size: 0.75rem; }
+        .task-status.pending {
+            background: #d29922;
+            color: #0d1117;
+        }
+        .task-status.in_progress {
+            background: #1f6feb;
+            color: #fff;
+        }
+        .task-status.review {
+            background: #bc8cff;
+            color: #0d1117;
+        }
+        .task-status.completed {
+            background: #238636;
+            color: #fff;
+        }
+        .task-item .task-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .task-item .task-actions .btn {
+            padding: 4px 12px;
+            font-size: 0.75rem;
+        }
         @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         /* ===== СТАТИСТИКА ===== */
@@ -227,16 +343,138 @@
             border: 1px solid #30363d;
             transition: border-color 0.2s;
         }
-        .stat-card:hover { border-color: #1f6feb; }
-        .stat-card .stat-number { font-size: 2rem; font-weight: 700; color: #f0f6fc; }
-        .stat-card .stat-label { font-size: 0.8rem; color: #8b949e; margin-top: 4px; }
-        .stat-card .stat-icon { font-size: 1.5rem; margin-bottom: 4px; color: #1f6feb; }
+        .stat-card:hover {
+            border-color: #1f6feb;
+        }
+        .stat-card .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f0f6fc;
+        }
+        .stat-card .stat-label {
+            font-size: 0.8rem;
+            color: #8b949e;
+            margin-top: 4px;
+        }
+        .stat-card .stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+            color: #1f6feb;
+        }
 
-        /* ===== ГРАФИК ===== */
-        .chart-container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 16px;
+        /* ===== ГРАФ ===== */
+        #graphContainer {
+            width: 100%;
+            height: 500px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        /* ===== КАНБАН ===== */
+        .kanban-columns {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 12px;
+        }
+        .kanban-column {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 12px;
+            min-height: 200px;
+        }
+        .kanban-column h3 {
+            font-size: 0.9rem;
+            color: #8b949e;
+            text-align: center;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #30363d;
+            margin-bottom: 10px;
+        }
+        .kanban-card {
+            background: #161b22;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: grab;
+            border-left: 3px solid #1f6feb;
+            transition: background 0.2s;
+        }
+        .kanban-card:hover {
+            background: #21262d;
+        }
+        .kanban-card .kanban-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .kanban-card .kanban-meta {
+            font-size: 0.7rem;
+            color: #8b949e;
+            margin-top: 4px;
+        }
+
+        /* ===== МОДАЛКА ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        .modal {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 560px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .modal .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .modal .modal-header h3 {
+            font-size: 1.3rem;
+            color: #f0f6fc;
+        }
+        .modal .modal-close {
+            background: none;
+            border: none;
+            color: #8b949e;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .modal .modal-close:hover {
+            color: #f85149;
         }
 
         /* ===== ТОСТЫ ===== */
@@ -259,28 +497,46 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
             animation: slideInRight 0.4s ease;
-            border-left: 4px solid rgba(255,255,255,0.2);
+            border-left: 4px solid rgba(255, 255, 255, 0.2);
         }
-        .toast i { font-size: 1.2rem; }
-        .toast-success { background: #238636; }
-        .toast-error { background: #da3633; }
-        .toast-warning { background: #d29922; }
-        .toast-info { background: #1f6feb; }
+        .toast i {
+            font-size: 1.2rem;
+        }
+        .toast-success {
+            background: #238636;
+        }
+        .toast-error {
+            background: #da3633;
+        }
+        .toast-warning {
+            background: #d29922;
+        }
+        .toast-info {
+            background: #1f6feb;
+        }
         @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(50px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
         .toast .toast-close {
             margin-left: auto;
             background: none;
             border: none;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
             cursor: pointer;
             font-size: 1.2rem;
         }
-        .toast .toast-close:hover { color: #fff; }
+        .toast .toast-close:hover {
+            color: #fff;
+        }
 
         /* ===== ПУСТОЙ СПИСОК ===== */
         .empty-state {
@@ -288,722 +544,917 @@
             padding: 40px 20px;
             color: #8b949e;
         }
-        .empty-state i { font-size: 3rem; color: #30363d; margin-bottom: 16px; }
-        .empty-state p { font-size: 1rem; }
-        .empty-state .btn { margin-top: 12px; }
-
-        /* ===== МОДАЛКА ===== */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            justify-content: center; align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(4px);
-            animation: fadeIn 0.2s ease;
-        }
-        .modal-overlay.open { display: flex; }
-        .modal {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 16px;
-            padding: 28px;
-            max-width: 560px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease;
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .modal .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .empty-state i {
+            font-size: 3rem;
+            color: #30363d;
             margin-bottom: 16px;
         }
-        .modal .modal-header h3 { font-size: 1.3rem; color: #f0f6fc; }
-        .modal .modal-close {
-            background: none;
-            border: none;
-            color: #8b949e;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.2s;
+        .empty-state p {
+            font-size: 1rem;
         }
-        .modal .modal-close:hover { color: #f85149; }
+        .empty-state .btn {
+            margin-top: 12px;
+        }
+
+        /* ===== КАРТА ===== */
+        #mapContainer {
+            width: 100%;
+            height: 400px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8b949e;
+        }
 
         /* ===== АДАПТИВ ===== */
         @media (max-width: 600px) {
-            .auth-grid { flex-direction: column; }
-            .form-row { flex-direction: column; }
-            .header { flex-direction: column; align-items: stretch; text-align: center; }
-            .header .user-info { justify-content: center; }
-            .tabs { flex-direction: column; }
-            .tabs .tab { justify-content: center; }
-            .modal { margin: 16px; padding: 20px; }
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-            .toast-container { top: 10px; right: 10px; left: 10px; max-width: 100%; }
-            .chart-container { max-width: 100%; }
+            .form-row {
+                flex-direction: column;
+            }
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .header .user-info {
+                justify-content: center;
+            }
+            .tabs {
+                flex-direction: column;
+            }
+            .tabs .tab {
+                justify-content: center;
+            }
+            .modal {
+                margin: 16px;
+                padding: 20px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .toast-container {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: 100%;
+            }
+            .kanban-columns {
+                grid-template-columns: 1fr;
+            }
+            #graphContainer {
+                height: 300px;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="container" id="app">
+    <div class="container" id="app">
 
-    <!-- ===== АВТОРИЗАЦИЯ ===== -->
-    <div id="authSection">
-        <div class="auth-grid">
-            <div class="card">
-                <h2><i class="fas fa-user-plus"></i> Регистрация</h2>
-                <div class="form-group">
-                    <label><i class="fas fa-user"></i> Username</label>
-                    <input type="text" id="regUsername" placeholder="username" />
+        <!-- ===== АВТОРИЗАЦИЯ ===== -->
+        <div id="authSection">
+            <div class="auth-grid" style="display:flex; gap:24px; flex-wrap:wrap;">
+                <div class="card" style="flex:1; min-width:280px;">
+                    <h2><i class="fas fa-user-plus"></i> Регистрация</h2>
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="regUsername" placeholder="username" />
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="regEmail" placeholder="email@example.com" />
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="regPassword" placeholder="пароль" />
+                    </div>
+                    <button class="btn btn-primary" id="registerBtn"><i class="fas fa-user-plus"></i> Зарегистрироваться</button>
                 </div>
-                <div class="form-group">
-                    <label><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" id="regEmail" placeholder="email@example.com" />
+                <div class="card" style="flex:1; min-width:280px;">
+                    <h2><i class="fas fa-sign-in-alt"></i> Вход</h2>
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="loginUsername" placeholder="username" />
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="loginPassword" placeholder="пароль" />
+                    </div>
+                    <button class="btn btn-success" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Войти</button>
                 </div>
-                <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Password</label>
-                    <input type="password" id="regPassword" placeholder="пароль" />
-                </div>
-                <button class="btn btn-primary" id="registerBtn"><i class="fas fa-user-plus"></i> Зарегистрироваться</button>
             </div>
-            <div class="card">
-                <h2><i class="fas fa-sign-in-alt"></i> Вход</h2>
-                <div class="form-group">
-                    <label><i class="fas fa-user"></i> Username</label>
-                    <input type="text" id="loginUsername" placeholder="username" />
+        </div>
+
+        <!-- ===== ОСНОВНОЙ ИНТЕРФЕЙС ===== -->
+        <div id="mainSection" class="hidden">
+
+            <!-- Шапка -->
+            <div class="header">
+                <div class="logo"><i class="fas fa-tasks"></i> TaskFlow</div>
+                <div class="user-info">
+                    <span class="username"><i class="fas fa-user-circle"></i> <span id="currentUsername">user</span></span>
+                    <button class="btn btn-danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
                 </div>
-                <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Password</label>
-                    <input type="password" id="loginPassword" placeholder="пароль" />
-                </div>
-                <button class="btn btn-success" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Войти</button>
             </div>
+
+            <!-- Вкладки -->
+            <div class="tabs">
+                <span class="tab active" data-tab="tab-tasks"><i class="fas fa-list-check"></i> Задачи</span>
+                <span class="tab" data-tab="tab-board"><i class="fas fa-columns"></i> Доска</span>
+                <span class="tab" data-tab="tab-graph"><i class="fas fa-project-diagram"></i> Граф</span>
+                <span class="tab" data-tab="tab-map"><i class="fas fa-map"></i> Карта</span>
+                <span class="tab" data-tab="tab-teams"><i class="fas fa-users"></i> Команды</span>
+                <span class="tab" data-tab="tab-notifications"><i class="fas fa-bell"></i> Уведомления</span>
+                <span class="tab" data-tab="tab-stats"><i class="fas fa-chart-pie"></i> Статистика</span>
+            </div>
+
+            <!-- ===== ЗАДАЧИ ===== -->
+            <div id="tab-tasks" class="tab-content active">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <h2 style="margin:0; border:none; padding:0;">
+                            <i class="fas fa-list-check"></i> Список задач
+                            <span class="badge" id="taskCount">0</span>
+                        </h2>
+                        <button class="btn btn-primary" id="createTaskBtn"><i class="fas fa-plus"></i> Новая задача</button>
+                    </div>
+                    <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+                        <select id="filterStatus" style="padding:6px 12px; background:#0d1117; border:1px solid #30363d; border-radius:8px; color:#c9d1d9;">
+                            <option value="">Все статусы</option>
+                            <option value="pending">⏳ Ожидает</option>
+                            <option value="in_progress">🔄 В работе</option>
+                            <option value="review">🔍 На проверке</option>
+                            <option value="completed">✅ Выполнена</option>
+                        </select>
+                        <select id="filterPriority" style="padding:6px 12px; background:#0d1117; border:1px solid #30363d; border-radius:8px; color:#c9d1d9;">
+                            <option value="">Все приоритеты</option>
+                            <option value="low">🟢 Низкий</option>
+                            <option value="medium">🟡 Средний</option>
+                            <option value="high">🔴 Высокий</option>
+                        </select>
+                        <button class="btn btn-secondary" id="refreshTasksBtn"><i class="fas fa-rotate"></i> Обновить</button>
+                    </div>
+                    <div id="tasksList" style="margin-top:12px;">
+                        <div class="empty-state">
+                            <i class="fas fa-tasks"></i>
+                            <p>Нет задач. Создайте первую!</p>
+                            <button class="btn btn-primary" id="emptyCreateBtn"><i class="fas fa-plus"></i> Создать задачу</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ДОСКА (КАНБАН) ===== -->
+            <div id="tab-board" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-columns"></i> Доска задач</h2>
+                    <div class="kanban-columns" id="kanbanBoard">
+                        <div class="kanban-column" data-status="pending">
+                            <h3>⏳ Ожидает</h3>
+                            <div class="kanban-items" id="kanban-pending"></div>
+                        </div>
+                        <div class="kanban-column" data-status="in_progress">
+                            <h3>🔄 В работе</h3>
+                            <div class="kanban-items" id="kanban-in_progress"></div>
+                        </div>
+                        <div class="kanban-column" data-status="review">
+                            <h3>🔍 На проверке</h3>
+                            <div class="kanban-items" id="kanban-review"></div>
+                        </div>
+                        <div class="kanban-column" data-status="completed">
+                            <h3>✅ Выполнена</h3>
+                            <div class="kanban-items" id="kanban-completed"></div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" id="refreshBoardBtn"><i class="fas fa-rotate"></i> Обновить доску</button>
+                </div>
+            </div>
+
+            <!-- ===== ГРАФ ===== -->
+            <div id="tab-graph" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-project-diagram"></i> Граф связей задач</h2>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+                        <input type="number" id="graphTaskId" placeholder="ID задачи" style="padding:8px 14px; background:#0d1117; border:1px solid #30363d; border-radius:8px; color:#c9d1d9; width:200px;" />
+                        <button class="btn btn-primary" id="loadGraphBtn"><i class="fas fa-eye"></i> Показать граф</button>
+                        <button class="btn btn-secondary" id="refreshGraphBtn"><i class="fas fa-rotate"></i> Обновить</button>
+                    </div>
+                    <div id="graphContainer"></div>
+                </div>
+            </div>
+
+            <!-- ===== КАРТА ===== -->
+            <div id="tab-map" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-map"></i> Карта задач</h2>
+                    <p style="color:#8b949e; margin-bottom:12px;">Для работы карты нужен API-ключ Google Maps. Пока заглушка.</p>
+                    <div id="mapContainer">
+                        <i class="fas fa-map" style="font-size:3rem; color:#30363d; margin-right:12px;"></i>
+                        <span>Карта появится после подключения API-ключа</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== КОМАНДЫ ===== -->
+            <div id="tab-teams" class="tab-content">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <h2 style="margin:0; border:none; padding:0;"><i class="fas fa-users"></i> Команды</h2>
+                        <button class="btn btn-primary" id="createTeamBtn"><i class="fas fa-plus"></i> Создать команду</button>
+                    </div>
+                    <div id="teamsList" style="margin-top:12px;">
+                        <div class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <p>Нет команд. Создайте первую!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== УВЕДОМЛЕНИЯ ===== -->
+            <div id="tab-notifications" class="tab-content">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <h2 style="margin:0; border:none; padding:0;"><i class="fas fa-bell"></i> Уведомления</h2>
+                        <button class="btn btn-secondary" id="refreshNotifsBtn"><i class="fas fa-rotate"></i> Обновить</button>
+                    </div>
+                    <div id="notificationsList" style="margin-top:12px;">
+                        <div class="empty-state">
+                            <i class="fas fa-bell-slash"></i>
+                            <p>Нет уведомлений.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== СТАТИСТИКА ===== -->
+            <div id="tab-stats" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-chart-pie"></i> Статистика задач</h2>
+                    <div class="stats-grid" id="statsGrid">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-tasks"></i></div>
+                            <div class="stat-number" id="statTotal">0</div>
+                            <div class="stat-label">Всего задач</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-clock" style="color:#d29922;"></i></div>
+                            <div class="stat-number" id="statPending">0</div>
+                            <div class="stat-label">Ожидают</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-spinner" style="color:#1f6feb;"></i></div>
+                            <div class="stat-number" id="statInProgress">0</div>
+                            <div class="stat-label">В работе</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-check-circle" style="color:#238636;"></i></div>
+                            <div class="stat-number" id="statCompleted">0</div>
+                            <div class="stat-label">Выполнено</div>
+                        </div>
+                    </div>
+                    <div class="chart-container" style="max-width:400px; margin:0 auto; padding:16px;">
+                        <canvas id="statsChart"></canvas>
+                    </div>
+                    <button class="btn btn-secondary" id="refreshStatsBtn"><i class="fas fa-rotate"></i> Обновить статистику</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- ===== ОСНОВНОЙ ИНТЕРФЕЙС ===== -->
-    <div id="mainSection" class="hidden">
+    <!-- ===== ТОСТЫ ===== -->
+    <div class="toast-container" id="toastContainer"></div>
 
-        <!-- Шапка -->
-        <div class="header">
-            <div class="logo"><i class="fas fa-tasks"></i> TaskFlow</div>
-            <div class="user-info">
-                <span class="username"><i class="fas fa-user-circle"></i> <span id="currentUsername">user</span></span>
-                <button class="btn btn-danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+    <!-- ===== МОДАЛКА ЗАДАЧИ ===== -->
+    <div class="modal-overlay" id="taskModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="taskModalTitle"><i class="fas fa-plus-circle"></i> Новая задача</h3>
+                <button class="modal-close" id="taskModalClose"><i class="fas fa-times"></i></button>
             </div>
-        </div>
-
-        <!-- Вкладки -->
-        <div class="tabs">
-            <span class="tab active" data-tab="tab-tasks"><i class="fas fa-list-check"></i> Задачи</span>
-            <span class="tab" data-tab="tab-teams"><i class="fas fa-users"></i> Команды</span>
-            <span class="tab" data-tab="tab-notifications"><i class="fas fa-bell"></i> Уведомления</span>
-            <span class="tab" data-tab="tab-stats"><i class="fas fa-chart-pie"></i> Статистика</span>
-        </div>
-
-        <!-- ===== ВКЛАДКА: ЗАДАЧИ ===== -->
-        <div id="tab-tasks" class="tab-content active">
-            <div class="card">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <h2 style="margin:0; border:none; padding:0;">
-                        <i class="fas fa-list-check"></i> Список задач
-                        <span class="badge" id="taskCount">0</span>
-                    </h2>
-                    <button class="btn btn-primary" id="createTaskBtn"><i class="fas fa-plus"></i> Новая задача</button>
-                </div>
-                <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
-                    <select id="filterStatus" class="form-group" style="width:auto; padding:6px 12px;">
-                        <option value="">Все статусы</option>
+            <div class="form-group">
+                <label><i class="fas fa-heading"></i> Название</label>
+                <input type="text" id="taskTitle" placeholder="Название задачи" />
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-align-left"></i> Описание</label>
+                <textarea id="taskDescription" placeholder="Описание задачи"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-flag"></i> Статус</label>
+                    <select id="taskStatus">
                         <option value="pending">⏳ Ожидает</option>
                         <option value="in_progress">🔄 В работе</option>
                         <option value="review">🔍 На проверке</option>
                         <option value="completed">✅ Выполнена</option>
                     </select>
-                    <select id="filterPriority" class="form-group" style="width:auto; padding:6px 12px;">
-                        <option value="">Все приоритеты</option>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-arrow-up"></i> Приоритет</label>
+                    <select id="taskPriority">
                         <option value="low">🟢 Низкий</option>
-                        <option value="medium">🟡 Средний</option>
+                        <option value="medium" selected>🟡 Средний</option>
                         <option value="high">🔴 Высокий</option>
                     </select>
-                    <button class="btn btn-secondary" id="refreshTasksBtn"><i class="fas fa-rotate"></i> Обновить</button>
                 </div>
-                <div id="tasksList" style="margin-top:12px;">
-                    <div class="empty-state">
-                        <i class="fas fa-tasks"></i>
-                        <p>Нет задач. Создайте первую!</p>
-                        <button class="btn btn-primary" id="emptyCreateBtn"><i class="fas fa-plus"></i> Создать задачу</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== ВКЛАДКА: КОМАНДЫ ===== -->
-        <div id="tab-teams" class="tab-content">
-            <div class="card">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <h2 style="margin:0; border:none; padding:0;"><i class="fas fa-users"></i> Команды</h2>
-                    <button class="btn btn-primary" id="createTeamBtn"><i class="fas fa-plus"></i> Создать команду</button>
-                </div>
-                <div id="teamsList" style="margin-top:12px;">
-                    <div class="empty-state">
-                        <i class="fas fa-users"></i>
-                        <p>Нет команд. Создайте первую!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== ВКЛАДКА: УВЕДОМЛЕНИЯ ===== -->
-        <div id="tab-notifications" class="tab-content">
-            <div class="card">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <h2 style="margin:0; border:none; padding:0;"><i class="fas fa-bell"></i> Уведомления</h2>
-                    <button class="btn btn-secondary" id="refreshNotifsBtn"><i class="fas fa-rotate"></i> Обновить</button>
-                </div>
-                <div id="notificationsList" style="margin-top:12px;">
-                    <div class="empty-state">
-                        <i class="fas fa-bell-slash"></i>
-                        <p>Нет уведомлений.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== ВКЛАДКА: СТАТИСТИКА ===== -->
-        <div id="tab-stats" class="tab-content">
-            <div class="card">
-                <h2><i class="fas fa-chart-pie"></i> Статистика задач</h2>
-                <div class="stats-grid" id="statsGrid">
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-tasks"></i></div>
-                        <div class="stat-number" id="statTotal">0</div>
-                        <div class="stat-label">Всего задач</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-clock" style="color:#d29922;"></i></div>
-                        <div class="stat-number" id="statPending">0</div>
-                        <div class="stat-label">Ожидают</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-spinner" style="color:#1f6feb;"></i></div>
-                        <div class="stat-number" id="statInProgress">0</div>
-                        <div class="stat-label">В работе</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-check-circle" style="color:#238636;"></i></div>
-                        <div class="stat-number" id="statCompleted">0</div>
-                        <div class="stat-label">Выполнено</div>
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <canvas id="statsChart"></canvas>
-                </div>
-                <button class="btn btn-secondary" id="refreshStatsBtn"><i class="fas fa-rotate"></i> Обновить статистику</button>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<!-- ===== ТОСТЫ ===== -->
-<div class="toast-container" id="toastContainer"></div>
-
-<!-- ===== МОДАЛКА ЗАДАЧИ ===== -->
-<div class="modal-overlay" id="taskModal">
-    <div class="modal">
-        <div class="modal-header">
-            <h3 id="taskModalTitle"><i class="fas fa-plus-circle"></i> Новая задача</h3>
-            <button class="modal-close" id="taskModalClose"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="form-group">
-            <label><i class="fas fa-heading"></i> Название</label>
-            <input type="text" id="taskTitle" placeholder="Название задачи" />
-        </div>
-        <div class="form-group">
-            <label><i class="fas fa-align-left"></i> Описание</label>
-            <textarea id="taskDescription" placeholder="Описание задачи"></textarea>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label><i class="fas fa-flag"></i> Статус</label>
-                <select id="taskStatus">
-                    <option value="pending">⏳ Ожидает</option>
-                    <option value="in_progress">🔄 В работе</option>
-                    <option value="review">🔍 На проверке</option>
-                    <option value="completed">✅ Выполнена</option>
-                </select>
             </div>
             <div class="form-group">
-                <label><i class="fas fa-arrow-up"></i> Приоритет</label>
-                <select id="taskPriority">
-                    <option value="low">🟢 Низкий</option>
-                    <option value="medium" selected>🟡 Средний</option>
-                    <option value="high">🔴 Высокий</option>
-                </select>
+                <label><i class="fas fa-calendar"></i> Дедлайн</label>
+                <input type="datetime-local" id="taskDeadline" />
             </div>
+            <div class="form-group">
+                <label><i class="fas fa-user-tag"></i> Назначить (ID пользователя)</label>
+                <input type="number" id="taskAssignedTo" placeholder="ID пользователя" />
+            </div>
+            <input type="hidden" id="taskEditId" value="" />
+            <button class="btn btn-primary" id="taskSaveBtn"><i class="fas fa-save"></i> Сохранить</button>
         </div>
-        <div class="form-group">
-            <label><i class="fas fa-calendar"></i> Дедлайн</label>
-            <input type="datetime-local" id="taskDeadline" />
-        </div>
-        <div class="form-group">
-            <label><i class="fas fa-user-tag"></i> Назначить (ID пользователя)</label>
-            <input type="number" id="taskAssignedTo" placeholder="ID пользователя" />
-        </div>
-        <input type="hidden" id="taskEditId" value="" />
-        <button class="btn btn-primary" id="taskSaveBtn"><i class="fas fa-save"></i> Сохранить</button>
     </div>
-</div>
 
-<!-- ===== МОДАЛКА КОМАНДЫ ===== -->
-<div class="modal-overlay" id="teamModal">
-    <div class="modal">
-        <div class="modal-header">
-            <h3><i class="fas fa-users"></i> Новая команда</h3>
-            <button class="modal-close" id="teamModalClose"><i class="fas fa-times"></i></button>
+    <!-- ===== МОДАЛКА КОМАНДЫ ===== -->
+    <div class="modal-overlay" id="teamModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-users"></i> Новая команда</h3>
+                <button class="modal-close" id="teamModalClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-heading"></i> Название</label>
+                <input type="text" id="teamName" placeholder="Название команды" />
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-align-left"></i> Описание</label>
+                <textarea id="teamDescription" placeholder="Описание команды"></textarea>
+            </div>
+            <button class="btn btn-primary" id="teamSaveBtn"><i class="fas fa-save"></i> Создать</button>
         </div>
-        <div class="form-group">
-            <label><i class="fas fa-heading"></i> Название</label>
-            <input type="text" id="teamName" placeholder="Название команды" />
-        </div>
-        <div class="form-group">
-            <label><i class="fas fa-align-left"></i> Описание</label>
-            <textarea id="teamDescription" placeholder="Описание команды"></textarea>
-        </div>
-        <button class="btn btn-primary" id="teamSaveBtn"><i class="fas fa-save"></i> Создать</button>
     </div>
-</div>
 
-<script>
-// ============================================================
-//  🔧 КОНФИГ
-// ============================================================
-const API = '';
-const TOKEN_KEY = 'taskflow_token';
-let statsChart = null;
+    <script>
+        // ============================================================
+        //  🔧 КОНФИГ
+        // ============================================================
+        const API = 'http://127.0.0.1:8000';
+        const TOKEN_KEY = 'taskflow_token';
+        let statsChart = null;
+        let graphNetwork = null;
 
-// ============================================================
-//  📢 TOAST
-// ============================================================
-function toast(message, type = 'info') {
-    const container = document.getElementById('toastContainer');
-    const el = document.createElement('div');
-    el.className = `toast toast-${type}`;
-    const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-triangle-exclamation', info: 'fa-info-circle' };
-    el.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${message}</span><button class="toast-close"><i class="fas fa-times"></i></button>`;
-    el.querySelector('.toast-close').onclick = () => el.remove();
-    container.appendChild(el);
-    setTimeout(() => { if (el.parentNode) el.remove(); }, 4000);
-}
-
-// ============================================================
-//  🧰 ВСПОМОГАТЕЛЬНЫЕ
-// ============================================================
-const $ = id => document.getElementById(id);
-const getToken = () => localStorage.getItem(TOKEN_KEY);
-const setToken = (t) => localStorage.setItem(TOKEN_KEY, t);
-const clearToken = () => localStorage.removeItem(TOKEN_KEY);
-const isLoggedIn = () => !!getToken();
-
-// ============================================================
-//  🌐 API
-// ============================================================
-async function apiRequest(endpoint, options = {}) {
-    const token = getToken();
-    const headers = { 'Content-Type': 'application/json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    const response = await fetch(`${API}/api/v1${endpoint}`, {
-        ...options,
-        headers: { ...headers, ...(options.headers || {}) }
-    });
-    const data = await response.json().catch(() => null);
-    if (!response.ok) {
-        const msg = data?.detail || data?.message || `Ошибка ${response.status}`;
-        throw new Error(msg);
-    }
-    return data;
-}
-
-// ============================================================
-//  🔐 АВТОРИЗАЦИЯ
-// ============================================================
-$('registerBtn').onclick = async () => {
-    const username = $('regUsername').value.trim();
-    const email = $('regEmail').value.trim();
-    const password = $('regPassword').value.trim();
-    if (!username || !email || !password) { toast('Заполните все поля.', 'error'); return; }
-    $('registerBtn').disabled = true;
-    $('registerBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
-    try {
-        const data = await apiRequest('/auth/register', {
-            method: 'POST',
-            body: JSON.stringify({ username, email, password })
-        });
-        toast(`✅ Зарегистрирован: ${data.username}`, 'success');
-        $('regUsername').value = ''; $('regEmail').value = ''; $('regPassword').value = '';
-    } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-    $('registerBtn').disabled = false;
-    $('registerBtn').innerHTML = '<i class="fas fa-user-plus"></i> Зарегистрироваться';
-};
-
-$('loginBtn').onclick = async () => {
-    const username = $('loginUsername').value.trim();
-    const password = $('loginPassword').value.trim();
-    if (!username || !password) { toast('Введите username и password.', 'error'); return; }
-    $('loginBtn').disabled = true;
-    $('loginBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
-    try {
-        const form = new URLSearchParams();
-        form.append('username', username);
-        form.append('password', password);
-        const response = await fetch(`${API}/api/v1/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: form
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.detail || 'Ошибка входа');
-        setToken(data.access_token);
-        toast('✅ Вход выполнен!', 'success');
-        $('loginUsername').value = ''; $('loginPassword').value = '';
-        updateUI();
-    } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-    $('loginBtn').disabled = false;
-    $('loginBtn').innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
-};
-
-$('logoutBtn').onclick = () => { clearToken(); toast('👋 Выход выполнен.', 'warning'); updateUI(); };
-
-// ============================================================
-//  🖥️ UI
-// ============================================================
-function updateUI() {
-    const auth = $('authSection');
-    const main = $('mainSection');
-    if (isLoggedIn()) {
-        auth.classList.add('hidden');
-        main.classList.remove('hidden');
-        loadUserInfo();
-        loadTasks();
-        loadTeams();
-        loadNotifications();
-        loadStats();
-    } else {
-        auth.classList.remove('hidden');
-        main.classList.add('hidden');
-    }
-}
-
-async function loadUserInfo() {
-    try {
-        const data = await apiRequest('/users/me');
-        $('currentUsername').textContent = data.username || 'user';
-    } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-}
-
-// ============================================================
-//  📌 ЗАДАЧИ
-// ============================================================
-async function loadTasks() {
-    const status = $('filterStatus').value;
-    const priority = $('filterPriority').value;
-    let url = '/tasks/';
-    const params = [];
-    if (status) params.push(`status=${status}`);
-    if (priority) params.push(`priority=${priority}`);
-    if (params.length) url += '?' + params.join('&');
-    try {
-        const data = await apiRequest(url);
-        renderTasks(data.tasks || []);
-    } catch (e) {
-        toast(`❌ ${e.message}`, 'error');
-        $('tasksList').innerHTML = `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i><p>${e.message}</p></div>`;
-    }
-}
-
-function renderTasks(tasks) {
-    const container = $('tasksList');
-    $('taskCount').textContent = tasks.length;
-    if (!tasks.length) {
-        container.innerHTML = `<div class="empty-state"><i class="fas fa-tasks"></i><p>Нет задач. Создайте первую!</p><button class="btn btn-primary" id="emptyCreateBtn"><i class="fas fa-plus"></i> Создать задачу</button></div>`;
-        const emptyBtn = document.getElementById('emptyCreateBtn');
-        if (emptyBtn) emptyBtn.onclick = () => openTaskModal();
-        return;
-    }
-    const statusMap = { 'pending': '⏳ Ожидает', 'in_progress': '🔄 В работе', 'review': '🔍 На проверке', 'completed': '✅ Выполнена' };
-    const priorityMap = { 'low': '🟢 Низкий', 'medium': '🟡 Средний', 'high': '🔴 Высокий' };
-    container.innerHTML = tasks.map(t => `
-        <div class="task-item">
-            <div class="task-info">
-                <div class="task-title">${t.title}</div>
-                <div class="task-meta">
-                    <i class="fas fa-align-left"></i> ${t.description || 'Нет описания'} &bull;
-                    <i class="fas fa-arrow-up"></i> ${priorityMap[t.priority] || t.priority} &bull;
-                    ${t.deadline ? `<i class="fas fa-calendar"></i> ${new Date(t.deadline).toLocaleDateString()}` : 'Без дедлайна'}
-                </div>
-                <div class="task-meta">
-                    <i class="fas fa-user"></i> Создал: ID ${t.created_by} &bull;
-                    ${t.assigned_to ? `<i class="fas fa-user-tag"></i> Назначена: ID ${t.assigned_to}` : 'Не назначена'}
-                </div>
-            </div>
-            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
-                <span class="task-status ${t.status}">${statusMap[t.status] || t.status}</span>
-                <div class="task-actions">
-                    <button class="btn btn-secondary" onclick="editTask(${t.id})"><i class="fas fa-pen"></i></button>
-                    <button class="btn btn-danger" onclick="deleteTask(${t.id})"><i class="fas fa-trash"></i></button>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-function openTaskModal(data = null) {
-    const isEdit = !!data;
-    $('taskModalTitle').innerHTML = isEdit ? '<i class="fas fa-pen"></i> Редактировать задачу' : '<i class="fas fa-plus-circle"></i> Новая задача';
-    $('taskEditId').value = isEdit ? data.id : '';
-    $('taskTitle').value = isEdit ? data.title : '';
-    $('taskDescription').value = isEdit ? (data.description || '') : '';
-    $('taskStatus').value = isEdit ? (data.status || 'pending') : 'pending';
-    $('taskPriority').value = isEdit ? (data.priority || 'medium') : 'medium';
-    $('taskDeadline').value = isEdit && data.deadline ? data.deadline.slice(0, 16) : '';
-    $('taskAssignedTo').value = isEdit ? (data.assigned_to || '') : '';
-    $('taskModal').classList.add('open');
-}
-
-$('createTaskBtn').onclick = () => openTaskModal();
-document.getElementById('emptyCreateBtn')?.addEventListener('click', () => openTaskModal());
-$('taskModalClose').onclick = () => $('taskModal').classList.remove('open');
-$('taskModal').onclick = (e) => { if (e.target === e.currentTarget) $('taskModal').classList.remove('open'); };
-
-window.editTask = async (id) => {
-    try {
-        const data = await apiRequest(`/tasks/${id}`);
-        openTaskModal(data);
-    } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-};
-
-$('taskSaveBtn').onclick = async () => {
-    const id = $('taskEditId').value;
-    const payload = {
-        title: $('taskTitle').value.trim(),
-        description: $('taskDescription').value.trim(),
-        status: $('taskStatus').value,
-        priority: $('taskPriority').value,
-        deadline: $('taskDeadline').value || null,
-        assigned_to: parseInt($('taskAssignedTo').value) || null
-    };
-    if (!payload.title) { toast('Введите название.', 'error'); return; }
-    try {
-        const endpoint = id ? `/tasks/${id}` : '/tasks/';
-        const method = id ? 'PUT' : 'POST';
-        const data = await apiRequest(endpoint, { method, body: JSON.stringify(payload) });
-        toast(id ? `✅ Задача ${data.id} обновлена` : `✅ Задача ${data.id} создана`, 'success');
-        $('taskModal').classList.remove('open');
-        loadTasks();
-        loadStats();
-    } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-};
-
-window.deleteTask = async (id) => {
-    if (!confirm(`Удалить задачу #${id}?`)) return;
-    try {
-        await apiRequest(`/tasks/${id}`, { method: 'DELETE' });
-        toast(`🗑️ Задача #${id} удалена`, 'warning');
-        loadTasks();
-        loadStats();
-    } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-};
-
-$('refreshTasksBtn').onclick = () => { loadTasks(); toast('Список обновлён.', 'info'); };
-$('filterStatus').onchange = () => loadTasks();
-$('filterPriority').onchange = () => loadTasks();
-
-// ============================================================
-//  👥 КОМАНДЫ
-// ============================================================
-async function loadTeams() {
-    try {
-        const data = await apiRequest('/teams/');
-        renderTeams(data.teams || []);
-    } catch (e) {
-        if (e.message.includes('404')) {
-            $('teamsList').innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><p>Команды появятся после того, как друг напишет бэкенд.</p></div>`;
-        } else {
-            toast(`❌ ${e.message}`, 'error');
+        // ============================================================
+        //  📢 TOAST
+        // ============================================================
+        function toast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const el = document.createElement('div');
+            el.className = `toast toast-${type}`;
+            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-triangle-exclamation',
+                info: 'fa-info-circle' };
+            el.innerHTML =
+                `<i class="fas ${icons[type] || icons.info}"></i><span>${message}</span><button class="toast-close"><i class="fas fa-times"></i></button>`;
+            el.querySelector('.toast-close').onclick = () => el.remove();
+            container.appendChild(el);
+            setTimeout(() => { if (el.parentNode) el.remove(); }, 4000);
         }
-    }
-}
 
-function renderTeams(teams) {
-    const container = $('teamsList');
-    if (!teams.length) {
-        container.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><p>Нет команд. Создайте первую!</p></div>`;
-        return;
-    }
-    container.innerHTML = teams.map(t => `
-        <div class="team-card">
-            <div class="team-name"><i class="fas fa-users"></i> ${t.name}</div>
-            <div class="team-meta"><i class="fas fa-align-left"></i> ${t.description || 'Нет описания'}</div>
-            <div class="team-meta"><i class="fas fa-user"></i> Создатель: ID ${t.created_by}</div>
-        </div>
-    `).join('');
-}
+        // ============================================================
+        //  🧰 ВСПОМОГАТЕЛЬНЫЕ
+        // ============================================================
+        const $ = id => document.getElementById(id);
+        const getToken = () => localStorage.getItem(TOKEN_KEY);
+        const setToken = (t) => localStorage.setItem(TOKEN_KEY, t);
+        const clearToken = () => localStorage.removeItem(TOKEN_KEY);
+        const isLoggedIn = () => !!getToken();
 
-$('createTeamBtn').onclick = () => {
-    $('teamName').value = '';
-    $('teamDescription').value = '';
-    $('teamModal').classList.add('open');
-};
-$('teamModalClose').onclick = () => $('teamModal').classList.remove('open');
-$('teamModal').onclick = (e) => { if (e.target === e.currentTarget) $('teamModal').classList.remove('open'); };
-$('teamSaveBtn').onclick = async () => {
-    const name = $('teamName').value.trim();
-    const description = $('teamDescription').value.trim();
-    if (!name) { toast('Введите название.', 'error'); return; }
-    try {
-        const data = await apiRequest('/teams/', { method: 'POST', body: JSON.stringify({ name, description }) });
-        toast(`✅ Команда "${data.name}" создана`, 'success');
-        $('teamModal').classList.remove('open');
-        loadTeams();
-    } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-};
-
-// ============================================================
-//  🔔 УВЕДОМЛЕНИЯ
-// ============================================================
-async function loadNotifications() {
-    try {
-        const data = await apiRequest('/notifications/');
-        renderNotifications(data || []);
-    } catch (e) {
-        if (e.message.includes('404')) {
-            $('notificationsList').innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash"></i><p>Уведомления появятся после того, как друг напишет бэкенд.</p></div>`;
-        } else {
-            toast(`❌ ${e.message}`, 'error');
+        // ============================================================
+        //  🌐 API
+        // ============================================================
+        async function apiRequest(endpoint, options = {}) {
+            const token = getToken();
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            const response = await fetch(`${API}/api/v1${endpoint}`, {
+                ...options,
+                headers: { ...headers, ...(options.headers || {}) }
+            });
+            const data = await response.json().catch(() => null);
+            if (!response.ok) {
+                const msg = data?.detail || data?.message || `Ошибка ${response.status}`;
+                throw new Error(msg);
+            }
+            return data;
         }
-    }
-}
 
-function renderNotifications(notifs) {
-    const container = $('notificationsList');
-    if (!notifs.length) {
-        container.innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash"></i><p>Нет уведомлений.</p></div>`;
-        return;
-    }
-    container.innerHTML = notifs.map(n => `
-        <div class="notification-item ${n.is_read ? 'read' : ''}">
-            <div>
-                <div class="notif-text"><i class="fas fa-bell"></i> ${n.message}</div>
-                <div class="notif-time"><i class="fas fa-clock"></i> ${new Date(n.created_at).toLocaleString()}</div>
-            </div>
-            ${!n.is_read ? `<button class="btn btn-secondary" onclick="markNotifRead(${n.id})"><i class="fas fa-check"></i> Прочитано</button>` : ''}
-        </div>
-    `).join('');
-}
+        // ============================================================
+        //  🔐 АВТОРИЗАЦИЯ
+        // ============================================================
+        $('registerBtn').onclick = async () => {
+            const username = $('regUsername').value.trim();
+            const email = $('regEmail').value.trim();
+            const password = $('regPassword').value.trim();
+            if (!username || !email || !password) { toast('Заполните все поля.', 'error'); return; }
+            $('registerBtn').disabled = true;
+            $('registerBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
+            try {
+                const data = await apiRequest('/auth/register', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, email, password })
+                });
+                toast(`✅ Зарегистрирован: ${data.username}`, 'success');
+                $('regUsername').value = '';
+                $('regEmail').value = '';
+                $('regPassword').value = '';
+            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+            $('registerBtn').disabled = false;
+            $('registerBtn').innerHTML = '<i class="fas fa-user-plus"></i> Зарегистрироваться';
+        };
 
-window.markNotifRead = async (id) => {
-    try {
-        await apiRequest(`/notifications/${id}/read`, { method: 'PATCH' });
-        loadNotifications();
-    } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-};
-$('refreshNotifsBtn').onclick = () => { loadNotifications(); toast('Уведомления обновлены.', 'info'); };
+        $('loginBtn').onclick = async () => {
+            const username = $('loginUsername').value.trim();
+            const password = $('loginPassword').value.trim();
+            if (!username || !password) { toast('Введите username и password.', 'error'); return; }
+            $('loginBtn').disabled = true;
+            $('loginBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
+            try {
+                const form = new URLSearchParams();
+                form.append('username', username);
+                form.append('password', password);
+                const response = await fetch(`${API}/api/v1/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: form
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || 'Ошибка входа');
+                setToken(data.access_token);
+                toast('✅ Вход выполнен!', 'success');
+                $('loginUsername').value = '';
+                $('loginPassword').value = '';
+                updateUI();
+            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+            $('loginBtn').disabled = false;
+            $('loginBtn').innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
+        };
 
-// ============================================================
-//  📊 СТАТИСТИКА + ГРАФИК
-// ============================================================
-async function loadStats() {
-    try {
-        const data = await apiRequest('/tasks/');
-        const tasks = data.tasks || [];
-        const total = tasks.length;
-        const pending = tasks.filter(t => t.status === 'pending').length;
-        const inProgress = tasks.filter(t => t.status === 'in_progress').length;
-        const completed = tasks.filter(t => t.status === 'completed').length;
+        $('logoutBtn').onclick = () => { clearToken();
+            toast('👋 Выход выполнен.', 'warning');
+            updateUI(); };
 
-        $('statTotal').textContent = total;
-        $('statPending').textContent = pending;
-        $('statInProgress').textContent = inProgress;
-        $('statCompleted').textContent = completed;
+        // ============================================================
+        //  🖥️ UI
+        // ============================================================
+        function updateUI() {
+            const auth = $('authSection');
+            const main = $('mainSection');
+            if (isLoggedIn()) {
+                auth.classList.add('hidden');
+                main.classList.remove('hidden');
+                loadUserInfo();
+                loadTasks();
+                loadKanban();
+                loadTeams();
+                loadNotifications();
+                loadStats();
+            } else {
+                auth.classList.remove('hidden');
+                main.classList.add('hidden');
+            }
+        }
 
-        updateChart(total, pending, inProgress, completed);
-    } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-}
+        async function loadUserInfo() {
+            try {
+                const data = await apiRequest('/users/me');
+                $('currentUsername').textContent = data.username || 'user';
+            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+        }
 
-function updateChart(total, pending, inProgress, completed) {
-    const ctx = document.getElementById('statsChart').getContext('2d');
-    if (statsChart) { statsChart.destroy(); }
-    if (total === 0) {
-        statsChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Нет данных'],
-                datasets: [{ data: [1], backgroundColor: ['#30363d'], borderWidth: 0 }]
-            },
-            options: { responsive: true, plugins: { legend: { labels: { color: '#c9d1d9' } } } }
-        });
-        return;
-    }
-    statsChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Ожидают', 'В работе', 'Выполнены'],
-            datasets: [{
-                data: [pending, inProgress, completed],
-                backgroundColor: ['#d29922', '#1f6feb', '#238636'],
-                borderWidth: 2,
-                borderColor: '#161b22'
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    labels: { color: '#c9d1d9', font: { size: 14 } }
+        // ============================================================
+        //  📌 ЗАДАЧИ
+        // ============================================================
+        async function loadTasks() {
+            const status = $('filterStatus').value;
+            const priority = $('filterPriority').value;
+            let url = '/tasks/';
+            const params = [];
+            if (status) params.push(`status=${status}`);
+            if (priority) params.push(`priority=${priority}`);
+            if (params.length) url += '?' + params.join('&');
+            try {
+                const data = await apiRequest(url);
+                renderTasks(data.tasks || []);
+            } catch (e) {
+                toast(`❌ ${e.message}`, 'error');
+                $('tasksList').innerHTML =
+                `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i><p>${e.message}</p></div>`;
+            }
+        }
+
+        function renderTasks(tasks) {
+            const container = $('tasksList');
+            $('taskCount').textContent = tasks.length;
+            if (!tasks.length) {
+                container.innerHTML =
+                    `<div class="empty-state"><i class="fas fa-tasks"></i><p>Нет задач. Создайте первую!</p><button class="btn btn-primary" id="emptyCreateBtn"><i class="fas fa-plus"></i> Создать задачу</button></div>`;
+                const emptyBtn = document.getElementById('emptyCreateBtn');
+                if (emptyBtn) emptyBtn.onclick = () => openTaskModal();
+                return;
+            }
+            const statusMap = { 'pending': '⏳ Ожидает', 'in_progress': '🔄 В работе', 'review': '🔍 На проверке',
+                'completed': '✅ Выполнена' };
+            const priorityMap = { 'low': '🟢 Низкий', 'medium': '🟡 Средний', 'high': '🔴 Высокий' };
+            container.innerHTML = tasks.map(t => `
+                <div class="task-item">
+                    <div class="task-info">
+                        <div class="task-title">${t.title}</div>
+                        <div class="task-meta">
+                            <i class="fas fa-align-left"></i> ${t.description || 'Нет описания'} &bull;
+                            <i class="fas fa-arrow-up"></i> ${priorityMap[t.priority] || t.priority} &bull;
+                            ${t.deadline ? `<i class="fas fa-calendar"></i> ${new Date(t.deadline).toLocaleDateString()}` : 'Без дедлайна'}
+                        </div>
+                        <div class="task-meta">
+                            <i class="fas fa-user"></i> Создал: ID ${t.created_by} &bull;
+                            ${t.assigned_to ? `<i class="fas fa-user-tag"></i> Назначена: ID ${t.assigned_to}` : 'Не назначена'}
+                        </div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+                        <span class="task-status ${t.status}">${statusMap[t.status] || t.status}</span>
+                        <div class="task-actions">
+                            <button class="btn btn-secondary" onclick="editTask(${t.id})"><i class="fas fa-pen"></i></button>
+                            <button class="btn btn-danger" onclick="deleteTask(${t.id})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openTaskModal(data = null) {
+            const isEdit = !!data;
+            $('taskModalTitle').innerHTML = isEdit ? '<i class="fas fa-pen"></i> Редактировать задачу' :
+                '<i class="fas fa-plus-circle"></i> Новая задача';
+            $('taskEditId').value = isEdit ? data.id : '';
+            $('taskTitle').value = isEdit ? data.title : '';
+            $('taskDescription').value = isEdit ? (data.description || '') : '';
+            $('taskStatus').value = isEdit ? (data.status || 'pending') : 'pending';
+            $('taskPriority').value = isEdit ? (data.priority || 'medium') : 'medium';
+            $('taskDeadline').value = isEdit && data.deadline ? data.deadline.slice(0, 16) : '';
+            $('taskAssignedTo').value = isEdit ? (data.assigned_to || '') : '';
+            $('taskModal').classList.add('open');
+        }
+
+        $('createTaskBtn').onclick = () => openTaskModal();
+        document.getElementById('emptyCreateBtn')?.addEventListener('click', () => openTaskModal());
+        $('taskModalClose').onclick = () => $('taskModal').classList.remove('open');
+        $('taskModal').onclick = (e) => { if (e.target === e.currentTarget) $('taskModal').classList.remove('open'); };
+
+        window.editTask = async (id) => {
+            try {
+                const data = await apiRequest(`/tasks/${id}`);
+                openTaskModal(data);
+            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+        };
+
+        $('taskSaveBtn').onclick = async () => {
+            const id = $('taskEditId').value;
+            const payload = {
+                title: $('taskTitle').value.trim(),
+                description: $('taskDescription').value.trim(),
+                status: $('taskStatus').value,
+                priority: $('taskPriority').value,
+                deadline: $('taskDeadline').value || null,
+                assigned_to: parseInt($('taskAssignedTo').value) || null
+            };
+            if (!payload.title) { toast('Введите название.', 'error'); return; }
+            try {
+                const endpoint = id ? `/tasks/${id}` : '/tasks/';
+                const method = id ? 'PUT' : 'POST';
+                const data = await apiRequest(endpoint, { method, body: JSON.stringify(payload) });
+                toast(id ? `✅ Задача ${data.id} обновлена` : `✅ Задача ${data.id} создана`, 'success');
+                $('taskModal').classList.remove('open');
+                loadTasks();
+                loadKanban();
+                loadStats();
+            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+        };
+
+        window.deleteTask = async (id) => {
+            if (!confirm(`Удалить задачу #${id}?`)) return;
+            try {
+                await apiRequest(`/tasks/${id}`, { method: 'DELETE' });
+                toast(`🗑️ Задача #${id} удалена`, 'warning');
+                loadTasks();
+                loadKanban();
+                loadStats();
+            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+        };
+
+        $('refreshTasksBtn').onclick = () => { loadTasks();
+            toast('Список обновлён.', 'info'); };
+        $('filterStatus').onchange = () => loadTasks();
+        $('filterPriority').onchange = () => loadTasks();
+
+        // ============================================================
+        //  📋 КАНБАН-ДОСКА
+        // ============================================================
+        async function loadKanban() {
+            try {
+                const data = await apiRequest('/tasks/');
+                const tasks = data.tasks || [];
+                renderKanban(tasks);
+            } catch (e) {
+                toast(`❌ Ошибка загрузки доски: ${e.message}`, 'error');
+            }
+        }
+
+        function renderKanban(tasks) {
+            const statuses = ['pending', 'in_progress', 'review', 'completed'];
+            const labels = { 'pending': '⏳ Ожидает', 'in_progress': '🔄 В работе', 'review': '🔍 На проверке',
+                'completed': '✅ Выполнена' };
+            statuses.forEach(status => {
+                const container = document.getElementById(`kanban-${status}`);
+                const filtered = tasks.filter(t => t.status === status);
+                if (!filtered.length) {
+                    container.innerHTML = `<div style="color:#8b949e; text-align:center; padding:20px 0; font-size:0.85rem;">Нет задач</div>`;
+                    return;
+                }
+                container.innerHTML = filtered.map(t => `
+                    <div class="kanban-card" draggable="true" data-task-id="${t.id}" onclick="editTask(${t.id})">
+                        <div class="kanban-title">${t.title}</div>
+                        <div class="kanban-meta">${t.priority || 'средний'} ${t.assigned_to ? '• ID:'+t.assigned_to : ''}</div>
+                    </div>
+                `).join('');
+            });
+        }
+
+        $('refreshBoardBtn').onclick = () => { loadKanban();
+            toast('Доска обновлена.', 'info'); };
+
+        // ============================================================
+        //  🕸️ ГРАФ
+        // ============================================================
+        $('loadGraphBtn').onclick = async () => {
+            const taskId = $('graphTaskId').value.trim();
+            if (!taskId) { toast('Введите ID задачи.', 'error'); return; }
+            try {
+                const data = await apiRequest(`/tasks/${taskId}/graph`);
+                renderGraph(data);
+            } catch (e) {
+                toast(`❌ Ошибка загрузки графа: ${e.message}`, 'error');
+            }
+        };
+
+        $('refreshGraphBtn').onclick = () => {
+            const taskId = $('graphTaskId').value.trim();
+            if (taskId) $('loadGraphBtn').click();
+        };
+
+        function renderGraph(data) {
+            const container = document.getElementById('graphContainer');
+            if (graphNetwork) {
+                graphNetwork.destroy();
+                graphNetwork = null;
+            }
+            if (!data.nodes || data.nodes.length === 0) {
+                container.innerHTML =
+                `<div style="display:flex; align-items:center; justify-content:center; height:100%; color:#8b949e;">Нет данных для графа</div>`;
+                return;
+            }
+            const nodes = new vis.DataSet(data.nodes.map(n => ({
+                id: n.id,
+                label: n.label,
+                title: n.title,
+                color: getStatusColor(n.status)
+            })));
+            const edges = new vis.DataSet(data.edges.map(e => ({
+                from: e.from,
+                to: e.to,
+                label: e.label || 'связана',
+                arrows: 'to'
+            })));
+            const options = {
+                nodes: {
+                    shape: 'dot',
+                    size: 20,
+                    font: { color: '#c9d1d9', size: 14 }
+                },
+                edges: {
+                    font: { color: '#8b949e', size: 10 },
+                    color: { color: '#30363d' }
+                },
+                physics: {
+                    enabled: true,
+                    stabilization: { iterations: 100 }
+                },
+                interaction: {
+                    hover: true,
+                    navigationButtons: true
+                }
+            };
+            graphNetwork = new vis.Network(container, { nodes, edges }, options);
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                'pending': '#d29922',
+                'in_progress': '#1f6feb',
+                'review': '#bc8cff',
+                'completed': '#238636'
+            };
+            return colors[status] || '#30363d';
+        }
+
+        // ============================================================
+        //  👥 КОМАНДЫ
+        // ============================================================
+        async function loadTeams() {
+            try {
+                const data = await apiRequest('/teams/');
+                renderTeams(data.teams || []);
+            } catch (e) {
+                if (e.message.includes('404')) {
+                    $('teamsList').innerHTML =
+                        `<div class="empty-state"><i class="fas fa-users"></i><p>Команды появятся после того, как друг напишет бэкенд.</p></div>`;
+                } else {
+                    toast(`❌ ${e.message}`, 'error');
                 }
             }
         }
-    });
-}
 
-$('refreshStatsBtn').onclick = () => { loadStats(); toast('Статистика обновлена.', 'info'); };
+        function renderTeams(teams) {
+            const container = $('teamsList');
+            if (!teams.length) {
+                container.innerHTML =
+                `<div class="empty-state"><i class="fas fa-users"></i><p>Нет команд. Создайте первую!</p></div>`;
+                return;
+            }
+            container.innerHTML = teams.map(t => `
+                <div class="team-card" style="background:#0d1117; padding:14px 18px; border-radius:8px; margin-bottom:8px; border-left:4px solid #1f6feb;">
+                    <div class="team-name"><i class="fas fa-users"></i> ${t.name}</div>
+                    <div class="team-meta"><i class="fas fa-align-left"></i> ${t.description || 'Нет описания'}</div>
+                    <div class="team-meta"><i class="fas fa-user"></i> Создатель: ID ${t.created_by}</div>
+                </div>
+            `).join('');
+        }
 
-// ============================================================
-//  📌 ВКЛАДКИ
-// ============================================================
-document.querySelectorAll('.tab').forEach(tab => {
-    tab.onclick = () => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById(tab.dataset.tab).classList.add('active');
-    };
-});
+        $('createTeamBtn').onclick = () => {
+            $('teamName').value = '';
+            $('teamDescription').value = '';
+            $('teamModal').classList.add('open');
+        };
+        $('teamModalClose').onclick = () => $('teamModal').classList.remove('open');
+        $('teamModal').onclick = (e) => { if (e.target === e.currentTarget) $('teamModal').classList.remove('open'); };
+        $('teamSaveBtn').onclick = async () => {
+            const name = $('teamName').value.trim();
+            const description = $('teamDescription').value.trim();
+            if (!name) { toast('Введите название.', 'error'); return; }
+            try {
+                const data = await apiRequest('/teams/', { method: 'POST', body: JSON.stringify({ name, description }) });
+                toast(`✅ Команда "${data.name}" создана`, 'success');
+                $('teamModal').classList.remove('open');
+                loadTeams();
+            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+        };
 
-// ============================================================
-//  🔄 АВТООБНОВЛЕНИЕ
-// ============================================================
-setInterval(() => {
-    if (isLoggedIn()) {
-        loadTasks();
-        loadNotifications();
-        loadStats();
-    }
-}, 15000);
+        // ============================================================
+        //  🔔 УВЕДОМЛЕНИЯ
+        // ============================================================
+        async function loadNotifications() {
+            try {
+                const data = await apiRequest('/notifications/');
+                renderNotifications(data || []);
+            } catch (e) {
+                if (e.message.includes('404')) {
+                    $('notificationsList').innerHTML =
+                        `<div class="empty-state"><i class="fas fa-bell-slash"></i><p>Уведомления появятся после того, как друг напишет бэкенд.</p></div>`;
+                } else {
+                    toast(`❌ ${e.message}`, 'error');
+                }
+            }
+        }
 
-// ============================================================
-//  🚀 СТАРТ
-// ============================================================
-updateUI();
-toast('📋 TaskFlow v2.0 загружен', 'info');
-</script>
+        function renderNotifications(notifs) {
+            const container = $('notificationsList');
+            if (!notifs.length) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash"></i><p>Нет уведомлений.</p></div>`;
+                return;
+            }
+            container.innerHTML = notifs.map(n => `
+                <div class="notification-item ${n.is_read ? 'read' : ''}" style="padding:10px 14px; background:#0d1117; border-radius:6px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; border-left:3px solid ${n.is_read ? '#30363d' : '#1f6feb'};">
+                    <div>
+                        <div class="notif-text"><i class="fas fa-bell"></i> ${n.message}</div>
+                        <div class="notif-time"><i class="fas fa-clock"></i> ${new Date(n.created_at).toLocaleString()}</div>
+                    </div>
+                    ${!n.is_read ? `<button class="btn btn-secondary" onclick="markNotifRead(${n.id})"><i class="fas fa-check"></i> Прочитано</button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        window.markNotifRead = async (id) => {
+            try {
+                await apiRequest(`/notifications/${id}/read`, { method: 'PATCH' });
+                loadNotifications();
+            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+        };
+        $('refreshNotifsBtn').onclick = () => { loadNotifications();
+            toast('Уведомления обновлены.', 'info'); };
+
+        // ============================================================
+        //  📊 СТАТИСТИКА + ГРАФИК
+        // ============================================================
+        async function loadStats() {
+            try {
+                const data = await apiRequest('/tasks/');
+                const tasks = data.tasks || [];
+                const total = tasks.length;
+                const pending = tasks.filter(t => t.status === 'pending').length;
+                const inProgress = tasks.filter(t => t.status === 'in_progress').length;
+                const completed = tasks.filter(t => t.status === 'completed').length;
+
+                $('statTotal').textContent = total;
+                $('statPending').textContent = pending;
+                $('statInProgress').textContent = inProgress;
+                $('statCompleted').textContent = completed;
+
+                updateChart(total, pending, inProgress, completed);
+            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+        }
+
+        function updateChart(total, pending, inProgress, completed) {
+            const ctx = document.getElementById('statsChart').getContext('2d');
+            if (statsChart) { statsChart.destroy(); }
+            if (total === 0) {
+                statsChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Нет данных'],
+                        datasets: [{ data: [1], backgroundColor: ['#30363d'], borderWidth: 0 }]
+                    },
+                    options: { responsive: true, plugins: { legend: { labels: { color: '#c9d1d9' } } } }
+                });
+                return;
+            }
+            statsChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Ожидают', 'В работе', 'Выполнены'],
+                    datasets: [{
+                        data: [pending, inProgress, completed],
+                        backgroundColor: ['#d29922', '#1f6feb', '#238636'],
+                        borderWidth: 2,
+                        borderColor: '#161b22'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#c9d1d9', font: { size: 14 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        $('refreshStatsBtn').onclick = () => { loadStats();
+            toast('Статистика обновлена.', 'info'); };
+
+        // ============================================================
+        //  📌 ВКЛАДКИ
+        // ============================================================
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.onclick = () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+                if (tab.dataset.tab === 'tab-graph') {
+                    const taskId = $('graphTaskId').value.trim();
+                    if (taskId) $('loadGraphBtn').click();
+                }
+            };
+        });
+
+        // ============================================================
+        //  🔄 АВТООБНОВЛЕНИЕ
+        // ============================================================
+        setInterval(() => {
+            if (isLoggedIn()) {
+                loadTasks();
+                loadKanban();
+                loadNotifications();
+                loadStats();
+            }
+        }, 15000);
+
+        // ============================================================
+        //  🚀 СТАРТ
+        // ============================================================
+        updateUI();
+        toast('📋 TaskFlow v3.0 загружен', 'info');
+    </script>
+
 </body>
 </html>
