@@ -1,10 +1,17 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 
-from app.api.v1.endpoints import auth, users, tasks, teams
 from app.core.database import engine, Base
+from app.api.v1.endpoints import (
+    auth_router,
+    users_router,
+    tasks_router,
+    teams_router,
+    comments_router,
+    notifications_router,
+    links_router
+)
 
 Base.metadata.create_all(bind=engine)
 
@@ -22,14 +29,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth.router, prefix="/api/v1")
-app.include_router(users.router, prefix="/api/v1")
-app.include_router(tasks.router, prefix="/api/v1")
-app.include_router(teams.router, prefix="/api/v1")
-
+# Подключаем роутеры
+app.include_router(auth_router, prefix="/api/v1")
+app.include_router(users_router, prefix="/api/v1")
+app.include_router(tasks_router, prefix="/api/v1")
+app.include_router(teams_router, prefix="/api/v1")
+app.include_router(comments_router, prefix="/api/v1")
+app.include_router(notifications_router, prefix="/api/v1")
+app.include_router(links_router, prefix="/api/v1")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
 def root():
-    return FileResponse("static/index.html")
+    return {"message": "TaskFlow is running. Documentation: /docs"}
