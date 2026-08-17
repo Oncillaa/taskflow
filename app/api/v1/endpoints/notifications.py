@@ -1,9 +1,20 @@
+<<<<<<< HEAD
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
 from app.core.database import get_db
 from app.api.v1.endpoints.users import get_current_user
+=======
+from datetime import datetime, UTC
+
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from sqlalchemy.sql.functions import current_user
+from app.api.v1.endpoints.users import get_current_user
+from app.core.database import get_db, SessionLocal
+from app.models.notifications import Notification
+>>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)
 from app.models.user import User
 from app.models.notification import Notification
 from app.schemas.notification import NotificationResponse
@@ -34,4 +45,21 @@ def mark_as_read(
 
     notification.is_read = True
     db.commit()
+<<<<<<< HEAD
     return {"message": "Notification marked as read"}
+=======
+    return {"detail": "Уведомление помечено как прочитанное."}
+
+def create_notification(message: str, current_user: User):
+    with SessionLocal() as db:
+        new_notification = Notification(
+            message=message,
+            is_read=False,
+            created_at=datetime.now(UTC),
+            user_id=current_user.id,
+            username=current_user.username
+        )
+        db.add(new_notification)
+        db.commit()
+        db.refresh(new_notification)
+>>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)

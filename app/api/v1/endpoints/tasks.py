@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime
 
+from app.api.v1.endpoints.notifications import create_notification
 from app.core.database import get_db
 from app.api.v1.endpoints.users import get_current_user
 from app.models.user import User
@@ -29,6 +30,10 @@ def create_task(
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
+<<<<<<< HEAD
+=======
+    create_notification(f"Задача '{new_task.title}' создана", current_user)
+>>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)
     return new_task
 
 @router.get("/", response_model=TaskListResponse)
@@ -79,6 +84,10 @@ def update_task(
         setattr(task, key, value)
     task.updated_at = datetime.now()
     db.commit()
+<<<<<<< HEAD
+=======
+    create_notification(f"Задача '{task.title}' обновлена", current_user)
+>>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)
     db.refresh(task)
     return task
 
@@ -95,6 +104,7 @@ def delete_task(
         raise HTTPException(status_code=403, detail="Only creator can delete task")
     db.delete(task)
     db.commit()
+    create_notification(message=f"Задача '{task.title}' удалена", current_user=current_user)
     return None
 
 @router.patch("/{task_id}/status", response_model=TaskResponse)
@@ -114,6 +124,7 @@ def change_task_status(
     task.updated_at = datetime.now()
     db.commit()
     db.refresh(task)
+    create_notification(message=f"Задача '{task.title}' обновлена", current_user=current_user)
     return task
 
 @router.get("/my/", response_model=TaskListResponse)
