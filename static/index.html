@@ -9,11 +9,7 @@
     <script src="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.css" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, sans-serif;
             background: #0d1117;
@@ -23,13 +19,8 @@
             justify-content: center;
             padding: 20px;
         }
-        .container {
-            max-width: 1200px;
-            width: 100%;
-        }
-        .hidden {
-            display: none !important;
-        }
+        .container { max-width: 1200px; width: 100%; }
+        .hidden { display: none !important; }
         .card {
             background: #161b22;
             border: 1px solid #30363d;
@@ -55,9 +46,7 @@
             border-radius: 20px;
             font-weight: 400;
         }
-        .form-group {
-            margin-bottom: 14px;
-        }
+        .form-group { margin-bottom: 14px; }
         .form-group label {
             display: block;
             font-size: 0.85rem;
@@ -82,19 +71,9 @@
             border-color: #1f6feb;
             box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.2);
         }
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        .form-row {
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-        .form-row .form-group {
-            flex: 1;
-            min-width: 160px;
-        }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .form-row { display: flex; gap: 14px; flex-wrap: wrap; }
+        .form-row .form-group { flex: 1; min-width: 160px; }
         .btn {
             padding: 10px 24px;
             border: none;
@@ -107,44 +86,18 @@
             align-items: center;
             gap: 8px;
         }
-        .btn:active {
-            transform: scale(0.96);
-        }
-        .btn-primary {
-            background: #1f6feb;
-            color: #fff;
-        }
-        .btn-primary:hover {
-            background: #388bfd;
-            box-shadow: 0 0 20px rgba(31, 111, 235, 0.3);
-        }
-        .btn-success {
-            background: #238636;
-            color: #fff;
-        }
-        .btn-success:hover {
-            background: #2ea043;
-            box-shadow: 0 0 20px rgba(35, 134, 54, 0.3);
-        }
-        .btn-danger {
-            background: #da3633;
-            color: #fff;
-        }
-        .btn-danger:hover {
-            background: #f85149;
-            box-shadow: 0 0 20px rgba(218, 54, 51, 0.3);
-        }
-        .btn-secondary {
-            background: #21262d;
-            color: #c9d1d9;
-        }
-        .btn-secondary:hover {
-            background: #30363d;
-        }
-        .btn-sm {
-            padding: 4px 12px;
-            font-size: 0.75rem;
-        }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: #1f6feb; color: #fff; }
+        .btn-primary:hover { background: #388bfd; box-shadow: 0 0 20px rgba(31, 111, 235, 0.3); }
+        .btn-success { background: #238636; color: #fff; }
+        .btn-success:hover { background: #2ea043; box-shadow: 0 0 20px rgba(35, 134, 54, 0.3); }
+        .btn-danger { background: #da3633; color: #fff; }
+        .btn-danger:hover { background: #f85149; box-shadow: 0 0 20px rgba(218, 54, 51, 0.3); }
+        .btn-secondary { background: #21262d; color: #c9d1d9; }
+        .btn-secondary:hover { background: #30363d; }
+        .btn-sm { padding: 4px 12px; font-size: 0.75rem; }
+        .btn-warning { background: #d29922; color: #fff; }
+        .btn-warning:hover { background: #e3b341; }
         .header {
             display: flex;
             justify-content: space-between;
@@ -165,16 +118,26 @@
             align-items: center;
             gap: 10px;
         }
+        .header .logo i { -webkit-text-fill-color: #58a6ff; }
         .header .user-info {
             display: flex;
             align-items: center;
             gap: 12px;
             font-size: 0.95rem;
         }
-        .header .user-info .username {
-            color: #f0f6fc;
-            font-weight: 600;
+        .header .user-info .username { color: #f0f6fc; font-weight: 600; }
+        .header .user-info .username i { margin-right: 6px; color: #58a6ff; }
+        .lang-toggle {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 6px 14px;
+            color: #c9d1d9;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
         }
+        .lang-toggle:hover { border-color: #58a6ff; }
         .tabs {
             display: flex;
             gap: 4px;
@@ -196,31 +159,11 @@
             align-items: center;
             gap: 8px;
         }
-        .tabs .tab.active {
-            background: #1f6feb;
-            color: #fff;
-        }
-        .tabs .tab:hover:not(.active) {
-            background: #21262d;
-            color: #f0f6fc;
-        }
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        .tabs .tab.active { background: #1f6feb; color: #fff; }
+        .tabs .tab:hover:not(.active) { background: #21262d; color: #f0f6fc; }
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .task-item {
             background: #0d1117;
             padding: 14px 18px;
@@ -234,25 +177,11 @@
             gap: 8px;
             animation: slideIn 0.3s ease;
         }
-        .task-item:hover {
-            background: #161b22;
-        }
-        .task-item .task-info {
-            flex: 1;
-        }
-        .task-item .task-title {
-            font-weight: 600;
-            font-size: 1.05rem;
-        }
-        .task-item .task-meta {
-            font-size: 0.8rem;
-            color: #8b949e;
-            margin-top: 4px;
-        }
-        .task-item .task-meta i {
-            margin-right: 4px;
-            font-size: 0.75rem;
-        }
+        .task-item:hover { background: #161b22; }
+        .task-item .task-info { flex: 1; }
+        .task-item .task-title { font-weight: 600; font-size: 1.05rem; }
+        .task-item .task-meta { font-size: 0.8rem; color: #8b949e; margin-top: 4px; }
+        .task-item .task-meta i { margin-right: 4px; font-size: 0.75rem; }
         .task-item .task-status {
             font-size: 0.75rem;
             padding: 4px 14px;
@@ -262,41 +191,13 @@
             align-items: center;
             gap: 4px;
         }
-        .task-status.pending {
-            background: #d29922;
-            color: #0d1117;
-        }
-        .task-status.in_progress {
-            background: #1f6feb;
-            color: #fff;
-        }
-        .task-status.review {
-            background: #bc8cff;
-            color: #0d1117;
-        }
-        .task-status.completed {
-            background: #238636;
-            color: #fff;
-        }
-        .task-item .task-actions {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        .task-item .task-actions .btn {
-            padding: 4px 12px;
-            font-size: 0.75rem;
-        }
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
+        .task-status.pending { background: #d29922; color: #0d1117; }
+        .task-status.in_progress { background: #1f6feb; color: #fff; }
+        .task-status.review { background: #bc8cff; color: #0d1117; }
+        .task-status.completed { background: #238636; color: #fff; }
+        .task-item .task-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+        .task-item .task-actions .btn { padding: 4px 12px; font-size: 0.75rem; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -310,21 +211,9 @@
             text-align: center;
             border: 1px solid #30363d;
         }
-        .stat-card .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #f0f6fc;
-        }
-        .stat-card .stat-label {
-            font-size: 0.8rem;
-            color: #8b949e;
-            margin-top: 4px;
-        }
-        .stat-card .stat-icon {
-            font-size: 1.5rem;
-            margin-bottom: 4px;
-            color: #1f6feb;
-        }
+        .stat-card .stat-number { font-size: 2rem; font-weight: 700; color: #f0f6fc; }
+        .stat-card .stat-label { font-size: 0.8rem; color: #8b949e; margin-top: 4px; }
+        .stat-card .stat-icon { font-size: 1.5rem; margin-bottom: 4px; color: #1f6feb; }
         #graphContainer {
             width: 100%;
             height: 500px;
@@ -362,18 +251,9 @@
             cursor: grab;
             border-left: 3px solid #1f6feb;
         }
-        .kanban-card:hover {
-            background: #21262d;
-        }
-        .kanban-card .kanban-title {
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        .kanban-card .kanban-meta {
-            font-size: 0.7rem;
-            color: #8b949e;
-            margin-top: 4px;
-        }
+        .kanban-card:hover { background: #21262d; }
+        .kanban-card .kanban-title { font-size: 0.9rem; font-weight: 500; }
+        .kanban-card .kanban-meta { font-size: 0.7rem; color: #8b949e; margin-top: 4px; }
         .modal-overlay {
             display: none;
             position: fixed;
@@ -387,9 +267,7 @@
             z-index: 1000;
             backdrop-filter: blur(4px);
         }
-        .modal-overlay.open {
-            display: flex;
-        }
+        .modal-overlay.open { display: flex; }
         .modal {
             background: #161b22;
             border: 1px solid #30363d;
@@ -401,26 +279,14 @@
             overflow-y: auto;
             animation: slideUp 0.3s ease;
         }
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         .modal .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
         }
-        .modal .modal-header h3 {
-            font-size: 1.3rem;
-            color: #f0f6fc;
-        }
+        .modal .modal-header h3 { font-size: 1.3rem; color: #f0f6fc; }
         .modal .modal-close {
             background: none;
             border: none;
@@ -428,9 +294,7 @@
             font-size: 1.5rem;
             cursor: pointer;
         }
-        .modal .modal-close:hover {
-            color: #f85149;
-        }
+        .modal .modal-close:hover { color: #f85149; }
         .toast-container {
             position: fixed;
             top: 20px;
@@ -454,31 +318,12 @@
             animation: slideInRight 0.4s ease;
             border-left: 4px solid rgba(255, 255, 255, 0.2);
         }
-        .toast i {
-            font-size: 1.2rem;
-        }
-        .toast-success {
-            background: #238636;
-        }
-        .toast-error {
-            background: #da3633;
-        }
-        .toast-warning {
-            background: #d29922;
-        }
-        .toast-info {
-            background: #1f6feb;
-        }
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
+        .toast i { font-size: 1.2rem; }
+        .toast-success { background: #238636; }
+        .toast-error { background: #da3633; }
+        .toast-warning { background: #d29922; }
+        .toast-info { background: #1f6feb; }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
         .toast .toast-close {
             margin-left: auto;
             background: none;
@@ -487,25 +332,15 @@
             cursor: pointer;
             font-size: 1.2rem;
         }
-        .toast .toast-close:hover {
-            color: #fff;
-        }
+        .toast .toast-close:hover { color: #fff; }
         .empty-state {
             text-align: center;
             padding: 40px 20px;
             color: #8b949e;
         }
-        .empty-state i {
-            font-size: 3rem;
-            color: #30363d;
-            margin-bottom: 16px;
-        }
-        .empty-state p {
-            font-size: 1rem;
-        }
-        .empty-state .btn {
-            margin-top: 12px;
-        }
+        .empty-state i { font-size: 3rem; color: #30363d; margin-bottom: 16px; }
+        .empty-state p { font-size: 1rem; }
+        .empty-state .btn { margin-top: 12px; }
         .team-card {
             background: #0d1117;
             padding: 14px 18px;
@@ -513,15 +348,8 @@
             margin-bottom: 8px;
             border-left: 4px solid #1f6feb;
         }
-        .team-card .team-name {
-            font-weight: 600;
-            font-size: 1.05rem;
-        }
-        .team-card .team-meta {
-            font-size: 0.8rem;
-            color: #8b949e;
-            margin-top: 4px;
-        }
+        .team-card .team-name { font-weight: 600; font-size: 1.05rem; }
+        .team-card .team-meta { font-size: 0.8rem; color: #8b949e; margin-top: 4px; }
         .team-member-item {
             display: inline-flex;
             align-items: center;
@@ -532,14 +360,8 @@
             font-size: 0.8rem;
             margin: 4px 4px 0 0;
         }
-        .team-member-item .remove-member {
-            color: #f85149;
-            cursor: pointer;
-            font-size: 0.7rem;
-        }
-        .team-member-item .remove-member:hover {
-            color: #ff6b6b;
-        }
+        .team-member-item .remove-member { color: #f85149; cursor: pointer; font-size: 0.7rem; }
+        .team-member-item .remove-member:hover { color: #ff6b6b; }
         .search-results {
             max-height: 150px;
             overflow-y: auto;
@@ -548,13 +370,8 @@
             border-radius: 8px;
             margin-top: 4px;
         }
-        .search-result-item {
-            padding: 8px 14px;
-            cursor: pointer;
-        }
-        .search-result-item:hover {
-            background: #21262d;
-        }
+        .search-result-item { padding: 8px 14px; cursor: pointer; }
+        .search-result-item:hover { background: #21262d; }
         #mapContainer {
             width: 100%;
             height: 400px;
@@ -567,892 +384,1174 @@
             justify-content: center;
             color: #8b949e;
         }
+        .lang-flag { margin-right: 4px; }
         @media (max-width: 600px) {
-            .form-row {
-                flex-direction: column;
-            }
-            .header {
-                flex-direction: column;
-                align-items: stretch;
-                text-align: center;
-            }
-            .header .user-info {
-                justify-content: center;
-            }
-            .tabs {
-                flex-direction: column;
-            }
-            .tabs .tab {
-                justify-content: center;
-            }
-            .modal {
-                margin: 16px;
-                padding: 20px;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .toast-container {
-                top: 10px;
-                right: 10px;
-                left: 10px;
-                max-width: 100%;
-            }
-            .kanban-columns {
-                grid-template-columns: 1fr;
-            }
-            #graphContainer {
-                height: 300px;
-            }
+            .form-row { flex-direction: column; }
+            .header { flex-direction: column; align-items: stretch; text-align: center; }
+            .header .user-info { justify-content: center; flex-wrap: wrap; }
+            .tabs { flex-direction: column; }
+            .tabs .tab { justify-content: center; }
+            .modal { margin: 16px; padding: 20px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .toast-container { top: 10px; right: 10px; left: 10px; max-width: 100%; }
+            .kanban-columns { grid-template-columns: 1fr; }
+            #graphContainer { height: 300px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container" id="app">
+<div class="container" id="app">
 
-        <!-- ===== АВТОРИЗАЦИЯ ===== -->
-        <div id="authSection">
-            <div class="auth-grid" style="display:flex; gap:24px; flex-wrap:wrap;">
-                <div class="card" style="flex:1; min-width:280px;">
-                    <h2><i class="fas fa-user-plus"></i> Регистрация</h2>
-                    <div class="form-group">
-                        <label><i class="fas fa-user"></i> Username</label>
-                        <input type="text" id="regUsername" placeholder="username" />
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="regEmail" placeholder="email@example.com" />
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-lock"></i> Password</label>
-                        <input type="password" id="regPassword" placeholder="пароль" />
-                    </div>
-                    <button class="btn btn-primary" id="registerBtn"><i class="fas fa-user-plus"></i> Зарегистрироваться</button>
+    <!-- ===== АВТОРИЗАЦИЯ ===== -->
+    <div id="authSection">
+        <div class="auth-grid" style="display:flex; gap:24px; flex-wrap:wrap;">
+            <div class="card" style="flex:1; min-width:280px;">
+                <h2><i class="fas fa-user-plus"></i> <span data-lang="register">Регистрация</span></h2>
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> <span data-lang="username">Имя пользователя</span></label>
+                    <input type="text" id="regUsername" placeholder="username" />
                 </div>
-                <div class="card" style="flex:1; min-width:280px;">
-                    <h2><i class="fas fa-sign-in-alt"></i> Вход</h2>
-                    <div class="form-group">
-                        <label><i class="fas fa-user"></i> Username</label>
-                        <input type="text" id="loginUsername" placeholder="username" />
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-lock"></i> Password</label>
-                        <input type="password" id="loginPassword" placeholder="пароль" />
-                    </div>
-                    <button class="btn btn-success" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Войти</button>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="regEmail" placeholder="email@example.com" />
                 </div>
-            </div>
-        </div>
-
-        <!-- ===== ОСНОВНОЙ ИНТЕРФЕЙС ===== -->
-        <div id="mainSection" class="hidden">
-
-            <!-- Шапка -->
-            <div class="header">
-                <div class="logo"><i class="fas fa-tasks"></i> TaskFlow</div>
-                <div class="user-info">
-                    <span class="username"><i class="fas fa-user-circle"></i> <span id="currentUsername">user</span></span>
-                    <button class="btn btn-danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> <span data-lang="password">Пароль</span></label>
+                    <input type="password" id="regPassword" placeholder="пароль" />
                 </div>
+                <button class="btn btn-primary" id="registerBtn"><i class="fas fa-user-plus"></i> <span data-lang="register">Зарегистрироваться</span></button>
             </div>
-
-            <!-- Вкладки -->
-            <div class="tabs">
-                <span class="tab active" data-tab="tab-tasks"><i class="fas fa-list-check"></i> Задачи</span>
-                <span class="tab" data-tab="tab-board"><i class="fas fa-columns"></i> Доска</span>
-                <span class="tab" data-tab="tab-graph"><i class="fas fa-project-diagram"></i> Граф</span>
-                <span class="tab" data-tab="tab-map"><i class="fas fa-map"></i> Карта</span>
-                <span class="tab" data-tab="tab-teams"><i class="fas fa-users"></i> Команды</span>
-                <span class="tab" data-tab="tab-notifications"><i class="fas fa-bell"></i> Уведомления</span>
-                <span class="tab" data-tab="tab-stats"><i class="fas fa-chart-pie"></i> Статистика</span>
-            </div>
-
-            <!-- ===== ЗАДАЧИ ===== -->
-            <div id="tab-tasks" class="tab-content active">
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                        <h2 style="margin:0; border:none; padding:0;">
-                            <i class="fas fa-list-check"></i> Список задач
-                            <span class="badge" id="taskCount">0</span>
-                        </h2>
-                        <button class="btn btn-primary" id="createTaskBtn"><i class="fas fa-plus"></i> Новая задача</button>
-                    </div>
-                    <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
-                        <select id="filterStatus" style="padding:6px 12px; background:#0d1117; border:1px solid #30363d; border-radius:8px; color:#c9d1d9;">
-                            <option value="">Все статусы</option>
-                            <option value="pending">⏳ Ожидает</option>
-                            <option value="in_progress">🔄 В работе</option>
-                            <option value="review">🔍 На проверке</option>
-                            <option value="completed">✅ Выполнена</option>
-                        </select>
-                        <select id="filterPriority" style="padding:6px 12px; background:#0d1117; border:1px solid #30363d; border-radius:8px; color:#c9d1d9;">
-                            <option value="">Все приоритеты</option>
-                            <option value="low">🟢 Низкий</option>
-                            <option value="medium">🟡 Средний</option>
-                            <option value="high">🔴 Высокий</option>
-                        </select>
-                        <button class="btn btn-secondary" id="refreshTasksBtn"><i class="fas fa-rotate"></i> Обновить</button>
-                    </div>
-                    <div id="tasksList" style="margin-top:12px;">
-                        <div class="empty-state">
-                            <i class="fas fa-tasks"></i>
-                            <p>Нет задач. Создайте первую!</p>
-                            <button class="btn btn-primary" id="emptyCreateBtn"><i class="fas fa-plus"></i> Создать задачу</button>
-                        </div>
-                    </div>
+            <div class="card" style="flex:1; min-width:280px;">
+                <h2><i class="fas fa-sign-in-alt"></i> <span data-lang="login">Вход</span></h2>
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> <span data-lang="username">Имя пользователя</span></label>
+                    <input type="text" id="loginUsername" placeholder="username" />
                 </div>
-            </div>
-
-            <!-- ===== ДОСКА ===== -->
-            <div id="tab-board" class="tab-content">
-                <div class="card">
-                    <h2><i class="fas fa-columns"></i> Доска задач</h2>
-                    <div class="kanban-columns" id="kanbanBoard">
-                        <div class="kanban-column" data-status="pending"><h3>⏳ Ожидает</h3><div class="kanban-items" id="kanban-pending"></div></div>
-                        <div class="kanban-column" data-status="in_progress"><h3>🔄 В работе</h3><div class="kanban-items" id="kanban-in_progress"></div></div>
-                        <div class="kanban-column" data-status="review"><h3>🔍 На проверке</h3><div class="kanban-items" id="kanban-review"></div></div>
-                        <div class="kanban-column" data-status="completed"><h3>✅ Выполнена</h3><div class="kanban-items" id="kanban-completed"></div></div>
-                    </div>
-                    <button class="btn btn-secondary" id="refreshBoardBtn"><i class="fas fa-rotate"></i> Обновить доску</button>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> <span data-lang="password">Пароль</span></label>
+                    <input type="password" id="loginPassword" placeholder="пароль" />
                 </div>
+                <button class="btn btn-success" id="loginBtn"><i class="fas fa-sign-in-alt"></i> <span data-lang="login">Войти</span></button>
             </div>
-
-            <!-- ===== ГРАФ ===== -->
-            <div id="tab-graph" class="tab-content">
-                <div class="card">
-                    <h2><i class="fas fa-project-diagram"></i> Граф связей задач</h2>
-                    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
-                        <input type="number" id="graphTaskId" placeholder="ID задачи" style="padding:8px 14px; background:#0d1117; border:1px solid #30363d; border-radius:8px; color:#c9d1d9; width:200px;" />
-                        <button class="btn btn-primary" id="loadGraphBtn"><i class="fas fa-eye"></i> Показать граф</button>
-                        <button class="btn btn-secondary" id="refreshGraphBtn"><i class="fas fa-rotate"></i> Обновить</button>
-                    </div>
-                    <div id="graphContainer"></div>
-                </div>
-            </div>
-
-            <!-- ===== КАРТА ===== -->
-            <div id="tab-map" class="tab-content">
-                <div class="card">
-                    <h2><i class="fas fa-map"></i> Карта задач</h2>
-                    <p style="color:#8b949e; margin-bottom:12px;">Для работы карты нужен API-ключ Google Maps.</p>
-                    <div id="mapContainer"><i class="fas fa-map" style="font-size:3rem; color:#30363d; margin-right:12px;"></i><span>Подключите API-ключ в коде</span></div>
-                </div>
-            </div>
-
-            <!-- ===== КОМАНДЫ ===== -->
-            <div id="tab-teams" class="tab-content">
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                        <h2 style="margin:0; border:none; padding:0;"><i class="fas fa-users"></i> Команды</h2>
-                        <button class="btn btn-primary" id="createTeamBtn"><i class="fas fa-plus"></i> Создать команду</button>
-                    </div>
-                    <div id="teamsList" style="margin-top:12px;"><div class="empty-state"><i class="fas fa-users"></i><p>Нет команд. Создайте первую!</p></div></div>
-                </div>
-            </div>
-
-            <!-- ===== УВЕДОМЛЕНИЯ ===== -->
-            <div id="tab-notifications" class="tab-content">
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                        <h2 style="margin:0; border:none; padding:0;"><i class="fas fa-bell"></i> Уведомления</h2>
-                        <button class="btn btn-secondary" id="refreshNotifsBtn"><i class="fas fa-rotate"></i> Обновить</button>
-                    </div>
-                    <div id="notificationsList" style="margin-top:12px;"><div class="empty-state"><i class="fas fa-bell-slash"></i><p>Нет уведомлений.</p></div></div>
-                </div>
-            </div>
-
-            <!-- ===== СТАТИСТИКА ===== -->
-            <div id="tab-stats" class="tab-content">
-                <div class="card">
-                    <h2><i class="fas fa-chart-pie"></i> Статистика задач</h2>
-                    <div class="stats-grid" id="statsGrid">
-                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-tasks"></i></div><div class="stat-number" id="statTotal">0</div><div class="stat-label">Всего задач</div></div>
-                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock" style="color:#d29922;"></i></div><div class="stat-number" id="statPending">0</div><div class="stat-label">Ожидают</div></div>
-                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-spinner" style="color:#1f6feb;"></i></div><div class="stat-number" id="statInProgress">0</div><div class="stat-label">В работе</div></div>
-                        <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle" style="color:#238636;"></i></div><div class="stat-number" id="statCompleted">0</div><div class="stat-label">Выполнено</div></div>
-                    </div>
-                    <div class="chart-container" style="max-width:400px; margin:0 auto; padding:16px;">
-                        <canvas id="statsChart"></canvas>
-                    </div>
-                    <button class="btn btn-secondary" id="refreshStatsBtn"><i class="fas fa-rotate"></i> Обновить статистику</button>
-                </div>
-            </div>
-
         </div>
     </div>
 
-    <!-- ===== ТОСТЫ ===== -->
-    <div class="toast-container" id="toastContainer"></div>
+    <!-- ===== ОСНОВНОЙ ИНТЕРФЕЙС ===== -->
+    <div id="mainSection" class="hidden">
 
-    <!-- ===== МОДАЛКА ЗАДАЧИ ===== -->
-    <div class="modal-overlay" id="taskModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 id="taskModalTitle"><i class="fas fa-plus-circle"></i> Новая задача</h3>
-                <button class="modal-close" id="taskModalClose"><i class="fas fa-times"></i></button>
+        <!-- Шапка -->
+        <div class="header">
+            <div class="logo"><i class="fas fa-tasks"></i> TaskFlow</div>
+            <div class="user-info">
+                <span class="username"><i class="fas fa-user-circle"></i> <span id="currentUsername">user</span></span>
+                <button class="lang-toggle" id="langToggle"><span class="lang-flag">🇷🇺</span> RU</button>
+                <button class="btn btn-danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span data-lang="logout">Выйти</span></button>
             </div>
-            <div class="form-group"><label><i class="fas fa-heading"></i> Название</label><input type="text" id="taskTitle" placeholder="Название задачи" /></div>
-            <div class="form-group"><label><i class="fas fa-align-left"></i> Описание</label><textarea id="taskDescription" placeholder="Описание задачи"></textarea></div>
-            <div class="form-row">
-                <div class="form-group"><label><i class="fas fa-flag"></i> Статус</label><select id="taskStatus"><option value="pending">⏳ Ожидает</option><option value="in_progress">🔄 В работе</option><option value="review">🔍 На проверке</option><option value="completed">✅ Выполнена</option></select></div>
-                <div class="form-group"><label><i class="fas fa-arrow-up"></i> Приоритет</label><select id="taskPriority"><option value="low">🟢 Низкий</option><option value="medium" selected>🟡 Средний</option><option value="high">🔴 Высокий</option></select></div>
+        </div>
+
+        <!-- Вкладки -->
+        <div class="tabs">
+            <span class="tab active" data-tab="tab-tasks"><i class="fas fa-list-check"></i> <span data-lang="tasks">Задачи</span></span>
+            <span class="tab" data-tab="tab-board"><i class="fas fa-columns"></i> <span data-lang="board">Доска</span></span>
+            <span class="tab" data-tab="tab-graph"><i class="fas fa-project-diagram"></i> <span data-lang="graph">Граф</span></span>
+            <span class="tab" data-tab="tab-map"><i class="fas fa-map"></i> <span data-lang="map">Карта</span></span>
+            <span class="tab" data-tab="tab-teams"><i class="fas fa-users"></i> <span data-lang="teams">Команды</span></span>
+            <span class="tab" data-tab="tab-notifications"><i class="fas fa-bell"></i> <span data-lang="notifications">Уведомления</span></span>
+            <span class="tab" data-tab="tab-stats"><i class="fas fa-chart-pie"></i> <span data-lang="stats">Статистика</span></span>
+        </div>
+
+        <!-- ===== ЗАДАЧИ ===== -->
+        <div id="tab-tasks" class="tab-content active">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <h2 style="margin:0; border:none; padding:0;">
+                        <i class="fas fa-list-check"></i> <span data-lang="tasks">Задачи</span>
+                        <span class="badge" id="taskCount">0</span>
+                    </h2>
+                    <button class="btn btn-primary" id="createTaskBtn"><i class="fas fa-plus"></i> <span data-lang="create_task">Новая задача</span></button>
+                </div>
+                <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+                    <select id="filterStatus" style="padding:6px 12px; background:#0d1117; border:1px solid #30363d; border-radius:8px; color:#c9d1d9;">
+                        <option value="">Все статусы</option>
+                        <option value="pending">⏳ <span data-lang="status_pending">Ожидает</span></option>
+                        <option value="in_progress">🔄 <span data-lang="status_in_progress">В работе</span></option>
+                        <option value="review">🔍 <span data-lang="status_review">На проверке</span></option>
+                        <option value="completed">✅ <span data-lang="status_completed">Выполнена</span></option>
+                    </select>
+                    <select id="filterPriority" style="padding:6px 12px; background:#0d1117; border:1px solid #30363d; border-radius:8px; color:#c9d1d9;">
+                        <option value="">Все приоритеты</option>
+                        <option value="low">🟢 <span data-lang="priority_low">Низкий</span></option>
+                        <option value="medium">🟡 <span data-lang="priority_medium">Средний</span></option>
+                        <option value="high">🔴 <span data-lang="priority_high">Высокий</span></option>
+                    </select>
+                    <button class="btn btn-secondary" id="refreshTasksBtn"><i class="fas fa-rotate"></i> <span data-lang="refresh">Обновить</span></button>
+                </div>
+                <div id="tasksList" style="margin-top:12px;">
+                    <div class="empty-state">
+                        <i class="fas fa-tasks"></i>
+                        <p data-lang="no_tasks">Нет задач. Создайте первую!</p>
+                        <button class="btn btn-primary" id="emptyCreateBtn"><i class="fas fa-plus"></i> <span data-lang="create_task">Новая задача</span></button>
+                    </div>
+                </div>
             </div>
-            <div class="form-group"><label><i class="fas fa-calendar"></i> Дедлайн</label><input type="datetime-local" id="taskDeadline" /></div>
-            <div class="form-group"><label><i class="fas fa-user-tag"></i> Назначить (ID пользователя)</label><input type="number" id="taskAssignedTo" placeholder="ID пользователя" /></div>
-            <input type="hidden" id="taskEditId" value="" />
-            <button class="btn btn-primary" id="taskSaveBtn"><i class="fas fa-save"></i> Сохранить</button>
         </div>
-    </div>
 
-    <!-- ===== МОДАЛКА СВЯЗИ ===== -->
-    <div class="modal-overlay" id="linkModal">
-        <div class="modal">
-            <div class="modal-header"><h3><i class="fas fa-link"></i> Связать задачи</h3><button class="modal-close" id="linkModalClose"><i class="fas fa-times"></i></button></div>
-            <div class="form-group"><label>Текущая задача (ID)</label><input type="number" id="linkTaskFrom" readonly /></div>
-            <div class="form-group"><label><i class="fas fa-arrow-right"></i> Связать с задачей (ID)</label><input type="number" id="linkTaskTo" placeholder="ID задачи" /></div>
-            <div class="form-group"><label><i class="fas fa-tag"></i> Тип связи</label><select id="linkType"><option value="related_to">Связана с</option><option value="depends_on">Зависит от</option><option value="blocks">Блокирует</option><option value="subtask">Подзадача</option></select></div>
-            <button class="btn btn-primary" id="linkSaveBtn"><i class="fas fa-link"></i> Связать</button>
+        <!-- ===== ДОСКА ===== -->
+        <div id="tab-board" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-columns"></i> <span data-lang="board">Доска задач</span></h2>
+                <div class="kanban-columns" id="kanbanBoard">
+                    <div class="kanban-column" data-status="pending"><h3>⏳ <span data-lang="status_pending">Ожидает</span></h3><div class="kanban-items" id="kanban-pending"></div></div>
+                    <div class="kanban-column" data-status="in_progress"><h3>🔄 <span data-lang="status_in_progress">В работе</span></h3><div class="kanban-items" id="kanban-in_progress"></div></div>
+                    <div class="kanban-column" data-status="review"><h3>🔍 <span data-lang="status_review">На проверке</span></h3><div class="kanban-items" id="kanban-review"></div></div>
+                    <div class="kanban-column" data-status="completed"><h3>✅ <span data-lang="status_completed">Выполнена</span></h3><div class="kanban-items" id="kanban-completed"></div></div>
+                </div>
+                <button class="btn btn-secondary" id="refreshBoardBtn"><i class="fas fa-rotate"></i> <span data-lang="refresh">Обновить</span></button>
+            </div>
         </div>
-    </div>
 
-    <!-- ===== МОДАЛКА КОМАНДЫ ===== -->
-    <div class="modal-overlay" id="teamModal">
-        <div class="modal">
-            <div class="modal-header"><h3 id="teamModalTitle"><i class="fas fa-users"></i> Новая команда</h3><button class="modal-close" id="teamModalClose"><i class="fas fa-times"></i></button></div>
-            <input type="hidden" id="teamEditId" value="" />
-            <div class="form-group"><label><i class="fas fa-heading"></i> Название</label><input type="text" id="teamName" placeholder="Название команды" /></div>
-            <div class="form-group"><label><i class="fas fa-align-left"></i> Описание</label><textarea id="teamDescription" placeholder="Описание команды"></textarea></div>
-            <button class="btn btn-primary" id="teamSaveBtn"><i class="fas fa-save"></i> Сохранить</button>
+        <!-- ===== ГРАФ ===== -->
+        <div id="tab-graph" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-project-diagram"></i> <span data-lang="graph">Граф связей задач</span></h2>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+                    <input type="number" id="graphTaskId" placeholder="ID задачи" style="padding:8px 14px; background:#0d1117; border:1px solid #30363d; border-radius:8px; color:#c9d1d9; width:200px;" />
+                    <button class="btn btn-primary" id="loadGraphBtn"><i class="fas fa-eye"></i> <span data-lang="show">Показать</span></button>
+                    <button class="btn btn-secondary" id="refreshGraphBtn"><i class="fas fa-rotate"></i> <span data-lang="refresh">Обновить</span></button>
+                </div>
+                <div id="graphContainer"></div>
+            </div>
         </div>
-    </div>
 
-    <!-- ===== МОДАЛКА УЧАСТНИКОВ ===== -->
-    <div class="modal-overlay" id="membersModal">
-        <div class="modal">
-            <div class="modal-header"><h3><i class="fas fa-user-plus"></i> Участники команды</h3><button class="modal-close" id="membersModalClose"><i class="fas fa-times"></i></button></div>
-            <input type="hidden" id="membersTeamId" value="" />
-            <div class="form-group"><label><i class="fas fa-search"></i> Поиск пользователя</label><input type="text" id="memberSearch" placeholder="Введите username или email" /><div id="memberSearchResults" class="search-results" style="display:none;"></div></div>
-            <button class="btn btn-success" id="addMemberBtn"><i class="fas fa-user-plus"></i> Добавить</button>
-            <hr style="border-color:#30363d; margin:16px 0;" />
-            <h4 style="margin-bottom:10px;">Текущие участники</h4>
-            <div id="membersList"></div>
+        <!-- ===== КАРТА ===== -->
+        <div id="tab-map" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-map"></i> <span data-lang="map">Карта задач</span></h2>
+                <p style="color:#8b949e; margin-bottom:12px;"><span data-lang="map_info">Для работы карты нужен API-ключ Google Maps.</span></p>
+                <div id="mapContainer"><i class="fas fa-map" style="font-size:3rem; color:#30363d; margin-right:12px;"></i><span data-lang="map_info">Подключите API-ключ в коде</span></div>
+            </div>
         </div>
+
+        <!-- ===== КОМАНДЫ ===== -->
+        <div id="tab-teams" class="tab-content">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <h2 style="margin:0; border:none; padding:0;"><i class="fas fa-users"></i> <span data-lang="teams">Команды</span></h2>
+                    <button class="btn btn-primary" id="createTeamBtn"><i class="fas fa-plus"></i> <span data-lang="create_team">Создать команду</span></button>
+                </div>
+                <div id="teamsList" style="margin-top:12px;"><div class="empty-state"><i class="fas fa-users"></i><p data-lang="no_teams">Нет команд. Создайте первую!</p></div></div>
+            </div>
+        </div>
+
+        <!-- ===== УВЕДОМЛЕНИЯ ===== -->
+        <div id="tab-notifications" class="tab-content">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <h2 style="margin:0; border:none; padding:0;"><i class="fas fa-bell"></i> <span data-lang="notifications">Уведомления</span></h2>
+                    <button class="btn btn-secondary" id="refreshNotifsBtn"><i class="fas fa-rotate"></i> <span data-lang="refresh">Обновить</span></button>
+                </div>
+                <div id="notificationsList" style="margin-top:12px;"><div class="empty-state"><i class="fas fa-bell-slash"></i><p data-lang="no_notifications">Нет уведомлений.</p></div></div>
+            </div>
+        </div>
+
+        <!-- ===== СТАТИСТИКА ===== -->
+        <div id="tab-stats" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-chart-pie"></i> <span data-lang="stats">Статистика задач</span></h2>
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-tasks"></i></div><div class="stat-number" id="statTotal">0</div><div class="stat-label" data-lang="stat_total">Всего задач</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock" style="color:#d29922;"></i></div><div class="stat-number" id="statPending">0</div><div class="stat-label" data-lang="stat_pending">Ожидают</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-spinner" style="color:#1f6feb;"></i></div><div class="stat-number" id="statInProgress">0</div><div class="stat-label" data-lang="stat_in_progress">В работе</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle" style="color:#238636;"></i></div><div class="stat-number" id="statCompleted">0</div><div class="stat-label" data-lang="stat_completed">Выполнено</div></div>
+                </div>
+                <div class="chart-container" style="max-width:400px; margin:0 auto; padding:16px;">
+                    <canvas id="statsChart"></canvas>
+                </div>
+                <button class="btn btn-secondary" id="refreshStatsBtn"><i class="fas fa-rotate"></i> <span data-lang="refresh">Обновить</span></button>
+            </div>
+        </div>
+
     </div>
+</div>
 
-    <script>
-        // ============================================================
-        //  🔧 КОНФИГ
-        // ============================================================
-        const API = 'http://127.0.0.1:8000';
-        const TOKEN_KEY = 'taskflow_token';
-        let statsChart = null;
-        let graphNetwork = null;
-        let linkTaskFrom = null;
+<!-- ===== ТОСТЫ ===== -->
+<div class="toast-container" id="toastContainer"></div>
 
-        // ============================================================
-        //  📢 TOAST
-        // ============================================================
-        function toast(message, type = 'info') {
-            const container = document.getElementById('toastContainer');
-            const el = document.createElement('div');
-            el.className = `toast toast-${type}`;
-            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-triangle-exclamation', info: 'fa-info-circle' };
-            el.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${message}</span><button class="toast-close"><i class="fas fa-times"></i></button>`;
-            el.querySelector('.toast-close').onclick = () => el.remove();
-            container.appendChild(el);
-            setTimeout(() => { if (el.parentNode) el.remove(); }, 4000);
+<!-- ===== МОДАЛКА ЗАДАЧИ ===== -->
+<div class="modal-overlay" id="taskModal">
+    <div class="modal">
+        <div class="modal-header"><h3 id="taskModalTitle"><i class="fas fa-plus-circle"></i> <span data-lang="new_task">Новая задача</span></h3><button class="modal-close" id="taskModalClose"><i class="fas fa-times"></i></button></div>
+        <div class="form-group"><label><i class="fas fa-heading"></i> <span data-lang="title">Название</span></label><input type="text" id="taskTitle" placeholder="Название задачи" /></div>
+        <div class="form-group"><label><i class="fas fa-align-left"></i> <span data-lang="description">Описание</span></label><textarea id="taskDescription" placeholder="Описание задачи"></textarea></div>
+        <div class="form-row">
+            <div class="form-group"><label><i class="fas fa-flag"></i> <span data-lang="status">Статус</span></label><select id="taskStatus"><option value="pending">⏳ <span data-lang="status_pending">Ожидает</span></option><option value="in_progress">🔄 <span data-lang="status_in_progress">В работе</span></option><option value="review">🔍 <span data-lang="status_review">На проверке</span></option><option value="completed">✅ <span data-lang="status_completed">Выполнена</span></option></select></div>
+            <div class="form-group"><label><i class="fas fa-arrow-up"></i> <span data-lang="priority">Приоритет</span></label><select id="taskPriority"><option value="low">🟢 <span data-lang="priority_low">Низкий</span></option><option value="medium" selected>🟡 <span data-lang="priority_medium">Средний</span></option><option value="high">🔴 <span data-lang="priority_high">Высокий</span></option></select></div>
+        </div>
+        <div class="form-group"><label><i class="fas fa-calendar"></i> <span data-lang="deadline">Дедлайн</span></label><input type="datetime-local" id="taskDeadline" /></div>
+        <div class="form-group"><label><i class="fas fa-user-tag"></i> <span data-lang="assign_to">Назначить (ID пользователя)</span></label><input type="number" id="taskAssignedTo" placeholder="ID пользователя" /></div>
+        <input type="hidden" id="taskEditId" value="" />
+        <button class="btn btn-primary" id="taskSaveBtn"><i class="fas fa-save"></i> <span data-lang="save">Сохранить</span></button>
+    </div>
+</div>
+
+<!-- ===== МОДАЛКА СВЯЗИ ===== -->
+<div class="modal-overlay" id="linkModal">
+    <div class="modal">
+        <div class="modal-header"><h3><i class="fas fa-link"></i> <span data-lang="link_tasks">Связать задачи</span></h3><button class="modal-close" id="linkModalClose"><i class="fas fa-times"></i></button></div>
+        <div class="form-group"><label><span data-lang="current_task">Текущая задача (ID)</span></label><input type="number" id="linkTaskFrom" readonly /></div>
+        <div class="form-group"><label><i class="fas fa-arrow-right"></i> <span data-lang="link_with">Связать с задачей (ID)</span></label><input type="number" id="linkTaskTo" placeholder="ID задачи" /></div>
+        <div class="form-group"><label><i class="fas fa-tag"></i> <span data-lang="link_type">Тип связи</span></label>
+            <select id="linkType"><option value="related_to"><span data-lang="link_related">Связана с</span></option><option value="depends_on"><span data-lang="link_depends">Зависит от</span></option><option value="blocks"><span data-lang="link_blocks">Блокирует</span></option><option value="subtask"><span data-lang="link_subtask">Подзадача</span></option></select>
+        </div>
+        <button class="btn btn-primary" id="linkSaveBtn"><i class="fas fa-link"></i> <span data-lang="link">Связать</span></button>
+    </div>
+</div>
+
+<!-- ===== МОДАЛКА РЕДАКТИРОВАНИЯ СВЯЗИ ===== -->
+<div class="modal-overlay" id="editLinkModal">
+    <div class="modal">
+        <div class="modal-header"><h3><i class="fas fa-pen"></i> <span data-lang="edit_link">Редактировать связь</span></h3><button class="modal-close" id="editLinkModalClose"><i class="fas fa-times"></i></button></div>
+        <div class="form-group"><label><span data-lang="link_id">ID связи</span></label><input type="number" id="editLinkId" readonly /></div>
+        <div class="form-group"><label><i class="fas fa-tag"></i> <span data-lang="link_type">Тип связи</span></label>
+            <select id="editLinkType"><option value="related_to"><span data-lang="link_related">Связана с</span></option><option value="depends_on"><span data-lang="link_depends">Зависит от</span></option><option value="blocks"><span data-lang="link_blocks">Блокирует</span></option><option value="subtask"><span data-lang="link_subtask">Подзадача</span></option></select>
+        </div>
+        <button class="btn btn-primary" id="editLinkSaveBtn"><i class="fas fa-save"></i> <span data-lang="save">Сохранить</span></button>
+    </div>
+</div>
+
+<!-- ===== МОДАЛКА КОМАНДЫ ===== -->
+<div class="modal-overlay" id="teamModal">
+    <div class="modal">
+        <div class="modal-header"><h3 id="teamModalTitle"><i class="fas fa-users"></i> <span data-lang="new_team">Новая команда</span></h3><button class="modal-close" id="teamModalClose"><i class="fas fa-times"></i></button></div>
+        <input type="hidden" id="teamEditId" value="" />
+        <div class="form-group"><label><i class="fas fa-heading"></i> <span data-lang="name">Название</span></label><input type="text" id="teamName" placeholder="Название команды" /></div>
+        <div class="form-group"><label><i class="fas fa-align-left"></i> <span data-lang="description">Описание</span></label><textarea id="teamDescription" placeholder="Описание команды"></textarea></div>
+        <button class="btn btn-primary" id="teamSaveBtn"><i class="fas fa-save"></i> <span data-lang="save">Сохранить</span></button>
+    </div>
+</div>
+
+<!-- ===== МОДАЛКА УЧАСТНИКОВ ===== -->
+<div class="modal-overlay" id="membersModal">
+    <div class="modal">
+        <div class="modal-header"><h3><i class="fas fa-user-plus"></i> <span data-lang="team_members">Участники команды</span></h3><button class="modal-close" id="membersModalClose"><i class="fas fa-times"></i></button></div>
+        <input type="hidden" id="membersTeamId" value="" />
+        <div class="form-group"><label><i class="fas fa-search"></i> <span data-lang="search_user">Поиск пользователя</span></label><input type="text" id="memberSearch" placeholder="Введите username или email" /><div id="memberSearchResults" class="search-results" style="display:none;"></div></div>
+        <button class="btn btn-success" id="addMemberBtn"><i class="fas fa-user-plus"></i> <span data-lang="add_user">Добавить</span></button>
+        <hr style="border-color:#30363d; margin:16px 0;" />
+        <h4 style="margin-bottom:10px;"><span data-lang="current_members">Текущие участники</span></h4>
+        <div id="membersList"></div>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    //  🔧 КОНФИГ
+    // ============================================================
+    const API = '';
+    const TOKEN_KEY = 'taskflow_token';
+    let statsChart = null;
+    let graphNetwork = null;
+    let linkTaskFrom = null;
+    let currentLang = 'ru';
+    let currentUserId = null;
+
+    // ============================================================
+    //  🌐 ПЕРЕВОД
+    // ============================================================
+    const translations = {
+        ru: {
+            register: 'Регистрация',
+            login: 'Вход',
+            logout: 'Выйти',
+            username: 'Имя пользователя',
+            password: 'Пароль',
+            tasks: 'Задачи',
+            board: 'Доска',
+            graph: 'Граф',
+            map: 'Карта',
+            teams: 'Команды',
+            notifications: 'Уведомления',
+            stats: 'Статистика',
+            create_task: 'Новая задача',
+            create_team: 'Создать команду',
+            new_task: 'Новая задача',
+            new_team: 'Новая команда',
+            edit_task: 'Редактировать задачу',
+            edit_team: 'Редактировать команду',
+            title: 'Название',
+            description: 'Описание',
+            status: 'Статус',
+            priority: 'Приоритет',
+            deadline: 'Дедлайн',
+            assign_to: 'Назначить (ID пользователя)',
+            save: 'Сохранить',
+            refresh: 'Обновить',
+            show: 'Показать',
+            delete: 'Удалить',
+            edit: 'Редактировать',
+            link: 'Связать',
+            link_tasks: 'Связать задачи',
+            edit_link: 'Редактировать связь',
+            current_task: 'Текущая задача (ID)',
+            link_with: 'Связать с задачей (ID)',
+            link_type: 'Тип связи',
+            link_related: 'Связана с',
+            link_depends: 'Зависит от',
+            link_blocks: 'Блокирует',
+            link_subtask: 'Подзадача',
+            team_members: 'Участники команды',
+            search_user: 'Поиск пользователя',
+            add_user: 'Добавить',
+            current_members: 'Текущие участники',
+            no_tasks: 'Нет задач. Создайте первую!',
+            no_teams: 'Нет команд. Создайте первую!',
+            no_notifications: 'Нет уведомлений.',
+            status_pending: 'Ожидает',
+            status_in_progress: 'В работе',
+            status_review: 'На проверке',
+            status_completed: 'Выполнена',
+            priority_low: 'Низкий',
+            priority_medium: 'Средний',
+            priority_high: 'Высокий',
+            stat_total: 'Всего задач',
+            stat_pending: 'Ожидают',
+            stat_in_progress: 'В работе',
+            stat_completed: 'Выполнено',
+            map_info: 'Для работы карты нужен API-ключ Google Maps.',
+            no_data: 'Нет данных для графа',
+            no_members: 'Нет участников',
+            link_created: 'Задачи связаны',
+            link_updated: 'Связь обновлена',
+            link_deleted: 'Связь удалена',
+            team_created: 'Команда создана',
+            team_updated: 'Команда обновлена',
+            team_deleted: 'Команда удалена',
+            member_added: 'Участник добавлен',
+            member_removed: 'Участник удалён',
+            task_created: 'Задача создана',
+            task_updated: 'Задача обновлена',
+            task_deleted: 'Задача удалена',
+            not_found: 'Не найдено',
+            error: 'Ошибка',
+            success: 'Успешно',
+            cancel: 'Отмена',
+            close: 'Закрыть',
+            name: 'Название'
+        },
+        en: {
+            register: 'Register',
+            login: 'Login',
+            logout: 'Logout',
+            username: 'Username',
+            password: 'Password',
+            tasks: 'Tasks',
+            board: 'Board',
+            graph: 'Graph',
+            map: 'Map',
+            teams: 'Teams',
+            notifications: 'Notifications',
+            stats: 'Statistics',
+            create_task: 'New task',
+            create_team: 'Create team',
+            new_task: 'New task',
+            new_team: 'New team',
+            edit_task: 'Edit task',
+            edit_team: 'Edit team',
+            title: 'Title',
+            description: 'Description',
+            status: 'Status',
+            priority: 'Priority',
+            deadline: 'Deadline',
+            assign_to: 'Assign to (User ID)',
+            save: 'Save',
+            refresh: 'Refresh',
+            show: 'Show',
+            delete: 'Delete',
+            edit: 'Edit',
+            link: 'Link',
+            link_tasks: 'Link tasks',
+            edit_link: 'Edit link',
+            current_task: 'Current task (ID)',
+            link_with: 'Link with task (ID)',
+            link_type: 'Link type',
+            link_related: 'Related to',
+            link_depends: 'Depends on',
+            link_blocks: 'Blocks',
+            link_subtask: 'Subtask',
+            team_members: 'Team members',
+            search_user: 'Search user',
+            add_user: 'Add user',
+            current_members: 'Current members',
+            no_tasks: 'No tasks. Create first!',
+            no_teams: 'No teams. Create first!',
+            no_notifications: 'No notifications.',
+            status_pending: 'Pending',
+            status_in_progress: 'In progress',
+            status_review: 'Review',
+            status_completed: 'Completed',
+            priority_low: 'Low',
+            priority_medium: 'Medium',
+            priority_high: 'High',
+            stat_total: 'Total tasks',
+            stat_pending: 'Pending',
+            stat_in_progress: 'In progress',
+            stat_completed: 'Completed',
+            map_info: 'Google Maps API key required.',
+            no_data: 'No data for graph',
+            no_members: 'No members',
+            link_created: 'Tasks linked',
+            link_updated: 'Link updated',
+            link_deleted: 'Link deleted',
+            team_created: 'Team created',
+            team_updated: 'Team updated',
+            team_deleted: 'Team deleted',
+            member_added: 'Member added',
+            member_removed: 'Member removed',
+            task_created: 'Task created',
+            task_updated: 'Task updated',
+            task_deleted: 'Task deleted',
+            not_found: 'Not found',
+            error: 'Error',
+            success: 'Success',
+            cancel: 'Cancel',
+            close: 'Close',
+            name: 'Name'
         }
+    };
 
-        // ============================================================
-        //  🧰 ВСПОМОГАТЕЛЬНЫЕ
-        // ============================================================
-        const $ = id => document.getElementById(id);
-        const getToken = () => localStorage.getItem(TOKEN_KEY);
-        const setToken = (t) => localStorage.setItem(TOKEN_KEY, t);
-        const clearToken = () => localStorage.removeItem(TOKEN_KEY);
-        const isLoggedIn = () => !!getToken();
+    function t(key) {
+        return translations[currentLang]?.[key] || translations['ru'][key] || key;
+    }
 
-        // ============================================================
-        //  🌐 API
-        // ============================================================
-        async function apiRequest(endpoint, options = {}) {
-            const token = getToken();
-            const headers = { 'Content-Type': 'application/json' };
-            if (token) headers['Authorization'] = `Bearer ${token}`;
-            const response = await fetch(`${API}/api/v1${endpoint}`, {
-                ...options,
-                headers: { ...headers, ...(options.headers || {}) }
-            });
-            const data = await response.json().catch(() => null);
-            if (!response.ok) {
-                const msg = data?.detail || data?.message || `Ошибка ${response.status}`;
-                throw new Error(msg);
-            }
-            return data;
+    function updateLanguage() {
+        document.querySelectorAll('[data-lang]').forEach(el => {
+            const key = el.dataset.lang;
+            if (key) el.textContent = t(key);
+        });
+        // Обновляем текст кнопки языка
+        const btn = document.getElementById('langToggle');
+        if (btn) {
+            btn.innerHTML = currentLang === 'ru' ? '<span class="lang-flag">🇷🇺</span> RU' : '<span class="lang-flag">🇬🇧</span> EN';
         }
+        // Обновляем title модалок
+        const taskModalTitle = document.getElementById('taskModalTitle');
+        if (taskModalTitle) {
+            const isEdit = document.getElementById('taskEditId').value;
+            taskModalTitle.innerHTML = isEdit ? `<i class="fas fa-pen"></i> ${t('edit_task')}` : `<i class="fas fa-plus-circle"></i> ${t('new_task')}`;
+        }
+        const teamModalTitle = document.getElementById('teamModalTitle');
+        if (teamModalTitle) {
+            const isEdit = document.getElementById('teamEditId').value;
+            teamModalTitle.innerHTML = isEdit ? `<i class="fas fa-pen"></i> ${t('edit_team')}` : `<i class="fas fa-users"></i> ${t('new_team')}`;
+        }
+    }
 
-        // ============================================================
-        //  🔐 АВТОРИЗАЦИЯ
-        // ============================================================
-        $('registerBtn').onclick = async () => {
-            const username = $('regUsername').value.trim();
-            const email = $('regEmail').value.trim();
-            const password = $('regPassword').value.trim();
-            if (!username || !email || !password) { toast('Заполните все поля.', 'error'); return; }
-            $('registerBtn').disabled = true;
-            $('registerBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
+    // ============================================================
+    //  📢 TOAST
+    // ============================================================
+    function toast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const el = document.createElement('div');
+        el.className = `toast toast-${type}`;
+        const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-triangle-exclamation', info: 'fa-info-circle' };
+        el.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${message}</span><button class="toast-close"><i class="fas fa-times"></i></button>`;
+        el.querySelector('.toast-close').onclick = () => el.remove();
+        container.appendChild(el);
+        setTimeout(() => { if (el.parentNode) el.remove(); }, 4000);
+    }
+
+    // ============================================================
+    //  🧰 ВСПОМОГАТЕЛЬНЫЕ
+    // ============================================================
+    const $ = id => document.getElementById(id);
+    const getToken = () => localStorage.getItem(TOKEN_KEY);
+    const setToken = (t) => localStorage.setItem(TOKEN_KEY, t);
+    const clearToken = () => localStorage.removeItem(TOKEN_KEY);
+    const isLoggedIn = () => !!getToken();
+
+    // ============================================================
+    //  🌐 API
+    // ============================================================
+    async function apiRequest(endpoint, options = {}) {
+        const token = getToken();
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        const response = await fetch(`${API}/api/v1${endpoint}`, {
+            ...options,
+            headers: { ...headers, ...(options.headers || {}) }
+        });
+        const data = await response.json().catch(() => null);
+        if (!response.ok) {
+            const msg = data?.detail || data?.message || `${t('error')} ${response.status}`;
+            throw new Error(msg);
+        }
+        return data;
+    }
+
+    // ============================================================
+    //  🔐 АВТОРИЗАЦИЯ
+    // ============================================================
+    $('registerBtn').onclick = async () => {
+        const username = $('regUsername').value.trim();
+        const email = $('regEmail').value.trim();
+        const password = $('regPassword').value.trim();
+        if (!username || !email || !password) { toast('Заполните все поля.', 'error'); return; }
+        $('registerBtn').disabled = true;
+        $('registerBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
+        try {
+            const data = await apiRequest('/auth/register', { method: 'POST', body: JSON.stringify({ username, email, password }) });
+            toast(`✅ ${t('success')}: ${data.username}`, 'success');
+            $('regUsername').value = '';
+            $('regEmail').value = '';
+            $('regPassword').value = '';
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+        $('registerBtn').disabled = false;
+        $('registerBtn').innerHTML = `<i class="fas fa-user-plus"></i> ${t('register')}`;
+    };
+
+    $('loginBtn').onclick = async () => {
+        const username = $('loginUsername').value.trim();
+        const password = $('loginPassword').value.trim();
+        if (!username || !password) { toast('Введите username и password.', 'error'); return; }
+        $('loginBtn').disabled = true;
+        $('loginBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
+        try {
+            const form = new URLSearchParams();
+            form.append('username', username);
+            form.append('password', password);
+            const response = await fetch(`${API}/api/v1/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: form });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.detail || 'Ошибка входа');
+            setToken(data.access_token);
+            // Получаем ID пользователя
             try {
-                const data = await apiRequest('/auth/register', { method: 'POST', body: JSON.stringify({ username, email, password }) });
-                toast(`✅ Зарегистрирован: ${data.username}`, 'success');
-                $('regUsername').value = '';
-                $('regEmail').value = '';
-                $('regPassword').value = '';
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-            $('registerBtn').disabled = false;
-            $('registerBtn').innerHTML = '<i class="fas fa-user-plus"></i> Зарегистрироваться';
+                const userData = await apiRequest('/users/me');
+                currentUserId = userData.id;
+            } catch(e) {}
+            toast(`✅ ${t('success')}`, 'success');
+            $('loginUsername').value = '';
+            $('loginPassword').value = '';
+            updateUI();
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+        $('loginBtn').disabled = false;
+        $('loginBtn').innerHTML = `<i class="fas fa-sign-in-alt"></i> ${t('login')}`;
+    };
+
+    $('logoutBtn').onclick = () => { clearToken(); toast('👋 ' + t('logout'), 'warning'); updateUI(); };
+
+    // ============================================================
+    //  🖥️ UI
+    // ============================================================
+    function updateUI() {
+        const auth = $('authSection');
+        const main = $('mainSection');
+        if (isLoggedIn()) {
+            auth.classList.add('hidden');
+            main.classList.remove('hidden');
+            loadUserInfo();
+            loadTasks();
+            loadKanban();
+            loadTeams();
+            loadNotifications();
+            loadStats();
+        } else {
+            auth.classList.remove('hidden');
+            main.classList.add('hidden');
+        }
+    }
+
+    async function loadUserInfo() {
+        try {
+            const data = await apiRequest('/users/me');
+            currentUserId = data.id;
+            $('currentUsername').textContent = data.username || 'user';
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    }
+
+    // ============================================================
+    //  📌 ЗАДАЧИ (только свои)
+    // ============================================================
+    async function loadTasks() {
+        const status = $('filterStatus').value;
+        const priority = $('filterPriority').value;
+        let url = '/tasks/';
+        const params = [];
+        if (status) params.push(`status=${status}`);
+        if (priority) params.push(`priority=${priority}`);
+        if (params.length) url += '?' + params.join('&');
+        try {
+            const data = await apiRequest(url);
+            // Фильтруем задачи: только свои (created_by или assigned_to)
+            let tasks = data.tasks || [];
+            tasks = tasks.filter(t => t.created_by === currentUserId || t.assigned_to === currentUserId);
+            renderTasks(tasks);
+        } catch (e) {
+            toast(`❌ ${e.message}`, 'error');
+            $('tasksList').innerHTML = `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i><p>${e.message}</p></div>`;
+        }
+    }
+
+    function renderTasks(tasks) {
+        const container = $('tasksList');
+        $('taskCount').textContent = tasks.length;
+        if (!tasks.length) {
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-tasks"></i><p>${t('no_tasks')}</p><button class="btn btn-primary" id="emptyCreateBtn"><i class="fas fa-plus"></i> ${t('create_task')}</button></div>`;
+            const emptyBtn = document.getElementById('emptyCreateBtn');
+            if (emptyBtn) emptyBtn.onclick = () => openTaskModal();
+            return;
+        }
+        const statusMap = { 'pending': `⏳ ${t('status_pending')}`, 'in_progress': `🔄 ${t('status_in_progress')}`, 'review': `🔍 ${t('status_review')}`, 'completed': `✅ ${t('status_completed')}` };
+        const priorityMap = { 'low': `🟢 ${t('priority_low')}`, 'medium': `🟡 ${t('priority_medium')}`, 'high': `🔴 ${t('priority_high')}` };
+        container.innerHTML = tasks.map(t => `
+            <div class="task-item">
+                <div class="task-info">
+                    <div class="task-title">${t.title}</div>
+                    <div class="task-meta">
+                        <i class="fas fa-align-left"></i> ${t.description || t('no_description')} &bull;
+                        <i class="fas fa-arrow-up"></i> ${priorityMap[t.priority] || t.priority} &bull;
+                        ${t.deadline ? `<i class="fas fa-calendar"></i> ${new Date(t.deadline).toLocaleDateString()}` : t('no_deadline')}
+                    </div>
+                    <div class="task-meta">
+                        <i class="fas fa-user"></i> ${t('created_by')}: ID ${t.created_by} &bull;
+                        ${t.assigned_to ? `<i class="fas fa-user-tag"></i> ${t('assigned_to')}: ID ${t.assigned_to}` : t('not_assigned')}
+                    </div>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+                    <span class="task-status ${t.status}">${statusMap[t.status] || t.status}</span>
+                    <div class="task-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="openLinkModal(${t.id})" title="${t('link')}"><i class="fas fa-link"></i></button>
+                        <button class="btn btn-secondary btn-sm" onclick="editTask(${t.id})" title="${t('edit')}"><i class="fas fa-pen"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteTask(${t.id})" title="${t('delete')}"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ============================================================
+    //  📌 МОДАЛКА ЗАДАЧИ
+    // ============================================================
+    function openTaskModal(data = null) {
+        const isEdit = !!data;
+        $('taskModalTitle').innerHTML = isEdit ? `<i class="fas fa-pen"></i> ${t('edit_task')}` : `<i class="fas fa-plus-circle"></i> ${t('new_task')}`;
+        $('taskEditId').value = isEdit ? data.id : '';
+        $('taskTitle').value = isEdit ? data.title : '';
+        $('taskDescription').value = isEdit ? (data.description || '') : '';
+        $('taskStatus').value = isEdit ? (data.status || 'pending') : 'pending';
+        $('taskPriority').value = isEdit ? (data.priority || 'medium') : 'medium';
+        $('taskDeadline').value = isEdit && data.deadline ? data.deadline.slice(0, 16) : '';
+        $('taskAssignedTo').value = isEdit ? (data.assigned_to || '') : '';
+        $('taskModal').classList.add('open');
+    }
+
+    $('createTaskBtn').onclick = () => openTaskModal();
+    document.getElementById('emptyCreateBtn')?.addEventListener('click', () => openTaskModal());
+    $('taskModalClose').onclick = () => $('taskModal').classList.remove('open');
+    $('taskModal').onclick = (e) => { if (e.target === e.currentTarget) $('taskModal').classList.remove('open'); };
+
+    window.editTask = async (id) => {
+        try {
+            const data = await apiRequest(`/tasks/${id}`);
+            openTaskModal(data);
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    };
+
+    $('taskSaveBtn').onclick = async () => {
+        const id = $('taskEditId').value;
+        const payload = {
+            title: $('taskTitle').value.trim(),
+            description: $('taskDescription').value.trim(),
+            status: $('taskStatus').value,
+            priority: $('taskPriority').value,
+            deadline: $('taskDeadline').value || null,
+            assigned_to: parseInt($('taskAssignedTo').value) || null
         };
+        if (!payload.title) { toast('Введите название.', 'error'); return; }
+        try {
+            const endpoint = id ? `/tasks/${id}` : '/tasks/';
+            const method = id ? 'PUT' : 'POST';
+            const data = await apiRequest(endpoint, { method, body: JSON.stringify(payload) });
+            toast(id ? `✅ ${t('task_updated')}` : `✅ ${t('task_created')}`, 'success');
+            $('taskModal').classList.remove('open');
+            loadTasks();
+            loadKanban();
+            loadStats();
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    };
 
-        $('loginBtn').onclick = async () => {
-            const username = $('loginUsername').value.trim();
-            const password = $('loginPassword').value.trim();
-            if (!username || !password) { toast('Введите username и password.', 'error'); return; }
-            $('loginBtn').disabled = true;
-            $('loginBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
-            try {
-                const form = new URLSearchParams();
-                form.append('username', username);
-                form.append('password', password);
-                const response = await fetch(`${API}/api/v1/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: form });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.detail || 'Ошибка входа');
-                setToken(data.access_token);
-                toast('✅ Вход выполнен!', 'success');
-                $('loginUsername').value = '';
-                $('loginPassword').value = '';
-                updateUI();
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-            $('loginBtn').disabled = false;
-            $('loginBtn').innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
-        };
+    window.deleteTask = async (id) => {
+        if (!confirm(`Удалить задачу #${id}?`)) return;
+        try {
+            await apiRequest(`/tasks/${id}`, { method: 'DELETE' });
+            toast(`🗑️ ${t('task_deleted')}`, 'warning');
+            loadTasks();
+            loadKanban();
+            loadStats();
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    };
 
-        $('logoutBtn').onclick = () => { clearToken(); toast('👋 Выход выполнен.', 'warning'); updateUI(); };
+    $('refreshTasksBtn').onclick = () => { loadTasks(); toast(t('refresh'), 'info'); };
+    $('filterStatus').onchange = () => loadTasks();
+    $('filterPriority').onchange = () => loadTasks();
 
-        // ============================================================
-        //  🖥️ UI
-        // ============================================================
-        function updateUI() {
-            const auth = $('authSection');
-            const main = $('mainSection');
-            if (isLoggedIn()) {
-                auth.classList.add('hidden');
-                main.classList.remove('hidden');
-                loadUserInfo();
-                loadTasks();
-                loadKanban();
-                loadTeams();
-                loadNotifications();
-                loadStats();
-            } else {
-                auth.classList.remove('hidden');
-                main.classList.add('hidden');
-            }
-        }
+    // ============================================================
+    //  🔗 СВЯЗИ
+    // ============================================================
+    function openLinkModal(taskId) {
+        linkTaskFrom = taskId;
+        $('linkTaskFrom').value = taskId;
+        $('linkTaskTo').value = '';
+        $('linkType').value = 'related_to';
+        $('linkModal').classList.add('open');
+    }
 
-        async function loadUserInfo() {
-            try {
-                const data = await apiRequest('/users/me');
-                $('currentUsername').textContent = data.username || 'user';
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        }
+    $('linkModalClose').onclick = () => $('linkModal').classList.remove('open');
+    $('linkModal').onclick = (e) => { if (e.target === e.currentTarget) $('linkModal').classList.remove('open'); };
 
-        // ============================================================
-        //  📌 ЗАДАЧИ
-        // ============================================================
-        async function loadTasks() {
-            const status = $('filterStatus').value;
-            const priority = $('filterPriority').value;
-            let url = '/tasks/';
-            const params = [];
-            if (status) params.push(`status=${status}`);
-            if (priority) params.push(`priority=${priority}`);
-            if (params.length) url += '?' + params.join('&');
-            try {
-                const data = await apiRequest(url);
-                renderTasks(data.tasks || []);
-            } catch (e) {
-                toast(`❌ ${e.message}`, 'error');
-                $('tasksList').innerHTML = `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i><p>${e.message}</p></div>`;
-            }
-        }
+    $('linkSaveBtn').onclick = async () => {
+        const task_from = parseInt($('linkTaskFrom').value);
+        const task_to = parseInt($('linkTaskTo').value);
+        const link_type = $('linkType').value;
+        if (!task_from || !task_to) { toast('Введите ID задачи.', 'error'); return; }
+        if (task_from === task_to) { toast('Нельзя связать задачу с собой.', 'error'); return; }
+        try {
+            await apiRequest('/links/', { method: 'POST', body: JSON.stringify({ task_from, task_to, link_type }) });
+            toast(`✅ ${t('link_created')}`, 'success');
+            $('linkModal').classList.remove('open');
+            loadTasks();
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    };
 
-        function renderTasks(tasks) {
-            const container = $('tasksList');
-            $('taskCount').textContent = tasks.length;
-            if (!tasks.length) {
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-tasks"></i><p>Нет задач. Создайте первую!</p><button class="btn btn-primary" id="emptyCreateBtn"><i class="fas fa-plus"></i> Создать задачу</button></div>`;
-                const emptyBtn = document.getElementById('emptyCreateBtn');
-                if (emptyBtn) emptyBtn.onclick = () => openTaskModal();
+    // ============================================================
+    //  ✏️ РЕДАКТИРОВАНИЕ СВЯЗИ
+    // ============================================================
+    window.editLink = async (linkId, currentType) => {
+        $('editLinkId').value = linkId;
+        $('editLinkType').value = currentType || 'related_to';
+        $('editLinkModal').classList.add('open');
+    };
+
+    $('editLinkModalClose').onclick = () => $('editLinkModal').classList.remove('open');
+    $('editLinkModal').onclick = (e) => { if (e.target === e.currentTarget) $('editLinkModal').classList.remove('open'); };
+
+    $('editLinkSaveBtn').onclick = async () => {
+        const linkId = parseInt($('editLinkId').value);
+        const link_type = $('editLinkType').value;
+        if (!linkId) { toast('Ошибка: ID связи не указан.', 'error'); return; }
+        try {
+            // PUT на обновление связи — используем тот же эндпоинт, что и для создания
+            // В бэкенде нужно добавить PUT /links/{id}
+            await apiRequest(`/links/${linkId}`, { method: 'PUT', body: JSON.stringify({ link_type }) });
+            toast(`✅ ${t('link_updated')}`, 'success');
+            $('editLinkModal').classList.remove('open');
+            // Обновляем граф, если он открыт
+            const taskId = $('graphTaskId').value.trim();
+            if (taskId) $('loadGraphBtn').click();
+            loadTasks();
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    };
+
+    // ============================================================
+    //  📋 КАНБАН (только свои задачи)
+    // ============================================================
+    async function loadKanban() {
+        try {
+            const data = await apiRequest('/tasks/');
+            let tasks = data.tasks || [];
+            tasks = tasks.filter(t => t.created_by === currentUserId || t.assigned_to === currentUserId);
+            renderKanban(tasks);
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    }
+
+    function renderKanban(tasks) {
+        const statuses = ['pending', 'in_progress', 'review', 'completed'];
+        statuses.forEach(status => {
+            const container = document.getElementById(`kanban-${status}`);
+            const filtered = tasks.filter(t => t.status === status);
+            if (!filtered.length) {
+                container.innerHTML = '<div style="color:#8b949e; text-align:center; padding:20px 0; font-size:0.85rem;">' + t('no_tasks') + '</div>';
                 return;
             }
-            const statusMap = { 'pending': '⏳ Ожидает', 'in_progress': '🔄 В работе', 'review': '🔍 На проверке', 'completed': '✅ Выполнена' };
-            const priorityMap = { 'low': '🟢 Низкий', 'medium': '🟡 Средний', 'high': '🔴 Высокий' };
-            container.innerHTML = tasks.map(t => `
-                <div class="task-item">
-                    <div class="task-info">
-                        <div class="task-title">${t.title}</div>
-                        <div class="task-meta">
-                            <i class="fas fa-align-left"></i> ${t.description || 'Нет описания'} &bull;
-                            <i class="fas fa-arrow-up"></i> ${priorityMap[t.priority] || t.priority} &bull;
-                            ${t.deadline ? `<i class="fas fa-calendar"></i> ${new Date(t.deadline).toLocaleDateString()}` : 'Без дедлайна'}
-                        </div>
-                        <div class="task-meta">
-                            <i class="fas fa-user"></i> Создал: ID ${t.created_by} &bull;
-                            ${t.assigned_to ? `<i class="fas fa-user-tag"></i> Назначена: ID ${t.assigned_to}` : 'Не назначена'}
-                        </div>
-                    </div>
-                    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
-                        <span class="task-status ${t.status}">${statusMap[t.status] || t.status}</span>
-                        <div class="task-actions">
-                            <button class="btn btn-secondary btn-sm" onclick="openLinkModal(${t.id})" title="Связать задачи"><i class="fas fa-link"></i></button>
-                            <button class="btn btn-secondary btn-sm" onclick="editTask(${t.id})"><i class="fas fa-pen"></i></button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteTask(${t.id})"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
+            container.innerHTML = filtered.map(t => `
+                <div class="kanban-card" onclick="editTask(${t.id})">
+                    <div class="kanban-title">${t.title}</div>
+                    <div class="kanban-meta">${t.priority || t('priority_medium')} ${t.assigned_to ? '• ID:'+t.assigned_to : ''}</div>
                 </div>
             `).join('');
+        });
+    }
+
+    $('refreshBoardBtn').onclick = () => { loadKanban(); toast(t('refresh'), 'info'); };
+
+    // ============================================================
+    //  🕸️ ГРАФ
+    // ============================================================
+    $('loadGraphBtn').onclick = async () => {
+        const taskId = $('graphTaskId').value.trim();
+        if (!taskId) { toast('Введите ID задачи.', 'error'); return; }
+        try {
+            const data = await apiRequest(`/tasks/${taskId}/graph`);
+            renderGraph(data);
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    };
+
+    $('refreshGraphBtn').onclick = () => { const taskId = $('graphTaskId').value.trim(); if (taskId) $('loadGraphBtn').click(); };
+
+    function renderGraph(data) {
+        const container = document.getElementById('graphContainer');
+        if (graphNetwork) { graphNetwork.destroy(); graphNetwork = null; }
+        if (!data.nodes || data.nodes.length === 0) {
+            container.innerHTML = `<div style="display:flex; align-items:center; justify-content:center; height:100%; color:#8b949e;">${t('no_data')}</div>`;
+            return;
         }
+        const nodes = new vis.DataSet(data.nodes.map(n => ({ id: n.id, label: n.label, title: n.title, color: getStatusColor(n.status) })));
+        const edges = new vis.DataSet(data.edges.map(e => ({ from: e.from, to: e.to, label: e.label || t('link_related'), arrows: 'to' })));
 
-        // ============================================================
-        //  📌 МОДАЛКА ЗАДАЧИ
-        // ============================================================
-        function openTaskModal(data = null) {
-            const isEdit = !!data;
-            $('taskModalTitle').innerHTML = isEdit ? '<i class="fas fa-pen"></i> Редактировать задачу' : '<i class="fas fa-plus-circle"></i> Новая задача';
-            $('taskEditId').value = isEdit ? data.id : '';
-            $('taskTitle').value = isEdit ? data.title : '';
-            $('taskDescription').value = isEdit ? (data.description || '') : '';
-            $('taskStatus').value = isEdit ? (data.status || 'pending') : 'pending';
-            $('taskPriority').value = isEdit ? (data.priority || 'medium') : 'medium';
-            $('taskDeadline').value = isEdit && data.deadline ? data.deadline.slice(0, 16) : '';
-            $('taskAssignedTo').value = isEdit ? (data.assigned_to || '') : '';
-            $('taskModal').classList.add('open');
+        // Добавляем событие клика по ребру для редактирования связи
+        const options = {
+            nodes: { shape: 'dot', size: 20, font: { color: '#c9d1d9', size: 14 } },
+            edges: { font: { color: '#8b949e', size: 10 }, color: { color: '#30363d' }, smooth: true },
+            physics: { enabled: true, stabilization: { iterations: 100 } },
+            interaction: { hover: true, navigationButtons: true }
+        };
+        graphNetwork = new vis.Network(container, { nodes, edges }, options);
+
+        // Обработка клика по ребру
+        graphNetwork.on('click', function(params) {
+            if (params.edges.length > 0) {
+                const edgeId = params.edges[0];
+                const edge = edges.get(edgeId);
+                if (edge) {
+                    // Ищем ID связи в data.edges
+                    const linkData = data.edges.find(e => e.from === edge.from && e.to === edge.to);
+                    if (linkData && linkData.id) {
+                        editLink(linkData.id, edge.label);
+                    } else {
+                        toast('Не удалось найти ID связи', 'warning');
+                    }
+                }
+            }
+        });
+    }
+
+    function getStatusColor(status) {
+        const colors = { 'pending': '#d29922', 'in_progress': '#1f6feb', 'review': '#bc8cff', 'completed': '#238636' };
+        return colors[status] || '#30363d';
+    }
+
+    // ============================================================
+    //  👥 КОМАНДЫ (только свои)
+    // ============================================================
+    let currentTeamId = null;
+
+    async function loadTeams() {
+        try {
+            const data = await apiRequest('/teams/');
+            let teams = data.teams || [];
+            // Фильтруем только те команды, где пользователь является создателем или участником
+            // Пока просто показываем все, но дальше можно добавить фильтрацию
+            renderTeams(teams);
+        } catch (e) {
+            if (e.message.includes('404')) {
+                $('teamsList').innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><p>${t('no_teams')}</p></div>`;
+            } else { toast(`❌ ${e.message}`, 'error'); }
         }
+    }
 
-        $('createTaskBtn').onclick = () => openTaskModal();
-        document.getElementById('emptyCreateBtn')?.addEventListener('click', () => openTaskModal());
-        $('taskModalClose').onclick = () => $('taskModal').classList.remove('open');
-        $('taskModal').onclick = (e) => { if (e.target === e.currentTarget) $('taskModal').classList.remove('open'); };
+    function renderTeams(teams) {
+        const container = $('teamsList');
+        if (!teams.length) { container.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><p>${t('no_teams')}</p></div>`; return; }
+        container.innerHTML = teams.map(t => `
+            <div class="team-card">
+                <div class="team-name"><i class="fas fa-users"></i> ${t.name} <span style="font-weight:400; font-size:0.8rem; color:#8b949e; margin-left:8px;">${t('created_by')}: ID ${t.created_by}</span></div>
+                <div class="team-meta"><i class="fas fa-align-left"></i> ${t.description || t('no_description')}</div>
+                <div style="margin-top:8px;">
+                    <button class="btn btn-secondary btn-sm" onclick="openMembersModal(${t.id})"><i class="fas fa-user-group"></i> ${t('team_members')}</button>
+                    <button class="btn btn-secondary btn-sm" onclick="editTeam(${t.id})"><i class="fas fa-pen"></i> ${t('edit')}</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteTeam(${t.id})"><i class="fas fa-trash"></i> ${t('delete')}</button>
+                </div>
+            </div>
+        `).join('');
+    }
 
-        window.editTask = async (id) => {
+    function openTeamModal(data = null) {
+        const isEdit = !!data;
+        $('teamModalTitle').innerHTML = isEdit ? `<i class="fas fa-pen"></i> ${t('edit_team')}` : `<i class="fas fa-users"></i> ${t('new_team')}`;
+        $('teamEditId').value = isEdit ? data.id : '';
+        $('teamName').value = isEdit ? data.name : '';
+        $('teamDescription').value = isEdit ? (data.description || '') : '';
+        $('teamModal').classList.add('open');
+    }
+
+    $('createTeamBtn').onclick = () => openTeamModal(null);
+    $('teamModalClose').onclick = () => $('teamModal').classList.remove('open');
+    $('teamModal').onclick = (e) => { if (e.target === e.currentTarget) $('teamModal').classList.remove('open'); };
+
+    window.editTeam = async (id) => {
+        try {
+            const data = await apiRequest(`/teams/${id}`);
+            openTeamModal(data);
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    };
+
+    $('teamSaveBtn').onclick = async () => {
+        const id = $('teamEditId').value;
+        const name = $('teamName').value.trim();
+        const description = $('teamDescription').value.trim();
+        if (!name) { toast('Введите название.', 'error'); return; }
+        try {
+            const endpoint = id ? `/teams/${id}` : '/teams/';
+            const method = id ? 'PUT' : 'POST';
+            const data = await apiRequest(endpoint, { method, body: JSON.stringify({ name, description }) });
+            toast(id ? `✅ ${t('team_updated')}` : `✅ ${t('team_created')}`, 'success');
+            $('teamModal').classList.remove('open');
+            loadTeams();
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    };
+
+    window.deleteTeam = async (id) => {
+        if (!confirm('Удалить команду?')) return;
+        try {
+            await apiRequest(`/teams/${id}`, { method: 'DELETE' });
+            toast(`🗑️ ${t('team_deleted')}`, 'warning');
+            loadTeams();
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    };
+
+    // ===== УЧАСТНИКИ =====
+    async function openMembersModal(teamId) {
+        currentTeamId = teamId;
+        $('membersTeamId').value = teamId;
+        $('memberSearch').value = '';
+        $('memberSearchResults').style.display = 'none';
+        $('membersModal').classList.add('open');
+        await loadMembers(teamId);
+    }
+
+    $('membersModalClose').onclick = () => $('membersModal').classList.remove('open');
+    $('membersModal').onclick = (e) => { if (e.target === e.currentTarget) $('membersModal').classList.remove('open'); };
+
+    async function loadMembers(teamId) {
+        try {
+            const data = await apiRequest(`/teams/${teamId}/members`);
+            renderMembers(data || []);
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    }
+
+    function renderMembers(members) {
+        const container = $('membersList');
+        if (!members.length) { container.innerHTML = `<p style="color:#8b949e;">${t('no_members')}</p>`; return; }
+        container.innerHTML = members.map(u => `
+            <div class="team-member-item">
+                ${u.username} (${u.email})
+                <span class="remove-member" onclick="removeMember(${u.id})"><i class="fas fa-times-circle"></i></span>
+            </div>
+        `).join('');
+    }
+
+    window.removeMember = async (userId) => {
+        if (!confirm('Удалить участника?')) return;
+        try {
+            await apiRequest(`/teams/${currentTeamId}/members/${userId}`, { method: 'DELETE' });
+            toast(`✅ ${t('member_removed')}`, 'success');
+            await loadMembers(currentTeamId);
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    };
+
+    let searchTimeout = null;
+    $('memberSearch').oninput = function() {
+        clearTimeout(searchTimeout);
+        const query = this.value.trim();
+        if (query.length < 2) { $('memberSearchResults').style.display = 'none'; return; }
+        searchTimeout = setTimeout(async () => {
             try {
-                const data = await apiRequest(`/tasks/${id}`);
-                openTaskModal(data);
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        };
-
-        $('taskSaveBtn').onclick = async () => {
-            const id = $('taskEditId').value;
-            const payload = {
-                title: $('taskTitle').value.trim(),
-                description: $('taskDescription').value.trim(),
-                status: $('taskStatus').value,
-                priority: $('taskPriority').value,
-                deadline: $('taskDeadline').value || null,
-                assigned_to: parseInt($('taskAssignedTo').value) || null
-            };
-            if (!payload.title) { toast('Введите название.', 'error'); return; }
-            try {
-                const endpoint = id ? `/tasks/${id}` : '/tasks/';
-                const method = id ? 'PUT' : 'POST';
-                const data = await apiRequest(endpoint, { method, body: JSON.stringify(payload) });
-                toast(id ? `✅ Задача ${data.id} обновлена` : `✅ Задача ${data.id} создана`, 'success');
-                $('taskModal').classList.remove('open');
-                loadTasks();
-                loadKanban();
-                loadStats();
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        };
-
-        window.deleteTask = async (id) => {
-            if (!confirm(`Удалить задачу #${id}?`)) return;
-            try {
-                await apiRequest(`/tasks/${id}`, { method: 'DELETE' });
-                toast(`🗑️ Задача #${id} удалена`, 'warning');
-                loadTasks();
-                loadKanban();
-                loadStats();
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        };
-
-        $('refreshTasksBtn').onclick = () => { loadTasks(); toast('Список обновлён.', 'info'); };
-        $('filterStatus').onchange = () => loadTasks();
-        $('filterPriority').onchange = () => loadTasks();
-
-        // ============================================================
-        //  🔗 СВЯЗИ
-        // ============================================================
-        function openLinkModal(taskId) {
-            linkTaskFrom = taskId;
-            $('linkTaskFrom').value = taskId;
-            $('linkTaskTo').value = '';
-            $('linkType').value = 'related_to';
-            $('linkModal').classList.add('open');
-        }
-
-        $('linkModalClose').onclick = () => $('linkModal').classList.remove('open');
-        $('linkModal').onclick = (e) => { if (e.target === e.currentTarget) $('linkModal').classList.remove('open'); };
-
-        $('linkSaveBtn').onclick = async () => {
-            const task_from = parseInt($('linkTaskFrom').value);
-            const task_to = parseInt($('linkTaskTo').value);
-            const link_type = $('linkType').value;
-            if (!task_from || !task_to) { toast('Введите ID задачи.', 'error'); return; }
-            if (task_from === task_to) { toast('Нельзя связать задачу с собой.', 'error'); return; }
-            try {
-                await apiRequest('/links/', { method: 'POST', body: JSON.stringify({ task_from, task_to, link_type }) });
-                toast(`✅ Задачи ${task_from} и ${task_to} связаны`, 'success');
-                $('linkModal').classList.remove('open');
-                loadTasks();
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        };
-
-        // ============================================================
-        //  📋 КАНБАН
-        // ============================================================
-        async function loadKanban() {
-            try {
-                const data = await apiRequest('/tasks/');
-                renderKanban(data.tasks || []);
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        }
-
-        function renderKanban(tasks) {
-            const statuses = ['pending', 'in_progress', 'review', 'completed'];
-            statuses.forEach(status => {
-                const container = document.getElementById(`kanban-${status}`);
-                const filtered = tasks.filter(t => t.status === status);
-                if (!filtered.length) {
-                    container.innerHTML = '<div style="color:#8b949e; text-align:center; padding:20px 0; font-size:0.85rem;">Нет задач</div>';
+                const data = await apiRequest(`/users/search/?query=${encodeURIComponent(query)}`);
+                const container = $('memberSearchResults');
+                if (!data.length) {
+                    container.innerHTML = `<div style="padding:10px; color:#8b949e;">${t('not_found')}</div>`;
+                    container.style.display = 'block';
                     return;
                 }
-                container.innerHTML = filtered.map(t => `
-                    <div class="kanban-card" onclick="editTask(${t.id})">
-                        <div class="kanban-title">${t.title}</div>
-                        <div class="kanban-meta">${t.priority || 'средний'} ${t.assigned_to ? '• ID:'+t.assigned_to : ''}</div>
-                    </div>
-                `).join('');
-            });
-        }
-
-        $('refreshBoardBtn').onclick = () => { loadKanban(); toast('Доска обновлена.', 'info'); };
-
-        // ============================================================
-        //  🕸️ ГРАФ
-        // ============================================================
-        $('loadGraphBtn').onclick = async () => {
-            const taskId = $('graphTaskId').value.trim();
-            if (!taskId) { toast('Введите ID задачи.', 'error'); return; }
-            try {
-                const data = await apiRequest(`/tasks/${taskId}/graph`);
-                renderGraph(data);
+                container.innerHTML = data.map(u =>
+                    `<div class="search-result-item" onclick="selectUser(${u.id}, '${u.username}')">${u.username} (${u.email})</div>`
+                ).join('');
+                container.style.display = 'block';
             } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        };
+        }, 300);
+    };
 
-        $('refreshGraphBtn').onclick = () => { const taskId = $('graphTaskId').value.trim(); if (taskId) $('loadGraphBtn').click(); };
-
-        function renderGraph(data) {
-            const container = document.getElementById('graphContainer');
-            if (graphNetwork) { graphNetwork.destroy(); graphNetwork = null; }
-            if (!data.nodes || data.nodes.length === 0) {
-                container.innerHTML = '<div style="display:flex; align-items:center; justify-content:center; height:100%; color:#8b949e;">Нет данных для графа</div>';
-                return;
-            }
-            const nodes = new vis.DataSet(data.nodes.map(n => ({ id: n.id, label: n.label, title: n.title, color: getStatusColor(n.status) })));
-            const edges = new vis.DataSet(data.edges.map(e => ({ from: e.from, to: e.to, label: e.label || 'связана', arrows: 'to' })));
-            const options = {
-                nodes: { shape: 'dot', size: 20, font: { color: '#c9d1d9', size: 14 } },
-                edges: { font: { color: '#8b949e', size: 10 }, color: { color: '#30363d' } },
-                physics: { enabled: true, stabilization: { iterations: 100 } },
-                interaction: { hover: true, navigationButtons: true }
-            };
-            graphNetwork = new vis.Network(container, { nodes, edges }, options);
-        }
-
-        function getStatusColor(status) {
-            const colors = { 'pending': '#d29922', 'in_progress': '#1f6feb', 'review': '#bc8cff', 'completed': '#238636' };
-            return colors[status] || '#30363d';
-        }
-
-        // ============================================================
-        //  👥 КОМАНДЫ
-        // ============================================================
-        let currentTeamId = null;
-
-        async function loadTeams() {
-            try {
-                const data = await apiRequest('/teams/');
-                renderTeams(data.teams || []);
-            } catch (e) {
-                if (e.message.includes('404')) {
-                    $('teamsList').innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Нет команд. Создайте первую!</p></div>';
-                } else { toast(`❌ ${e.message}`, 'error'); }
-            }
-        }
-
-        function renderTeams(teams) {
-            const container = $('teamsList');
-            if (!teams.length) { container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Нет команд. Создайте первую!</p></div>'; return; }
-            container.innerHTML = teams.map(t => `
-                <div class="team-card">
-                    <div class="team-name"><i class="fas fa-users"></i> ${t.name} <span style="font-weight:400; font-size:0.8rem; color:#8b949e; margin-left:8px;">Создатель: ID ${t.created_by}</span></div>
-                    <div class="team-meta"><i class="fas fa-align-left"></i> ${t.description || 'Нет описания'}</div>
-                    <div style="margin-top:8px;">
-                        <button class="btn btn-secondary btn-sm" onclick="openMembersModal(${t.id})"><i class="fas fa-user-group"></i> Участники</button>
-                        <button class="btn btn-secondary btn-sm" onclick="editTeam(${t.id})"><i class="fas fa-pen"></i> Редактировать</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteTeam(${t.id})"><i class="fas fa-trash"></i> Удалить</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function openTeamModal(data = null) {
-            const isEdit = !!data;
-            $('teamModalTitle').innerHTML = isEdit ? '<i class="fas fa-pen"></i> Редактировать команду' : '<i class="fas fa-users"></i> Новая команда';
-            $('teamEditId').value = isEdit ? data.id : '';
-            $('teamName').value = isEdit ? data.name : '';
-            $('teamDescription').value = isEdit ? (data.description || '') : '';
-            $('teamModal').classList.add('open');
-        }
-
-        $('createTeamBtn').onclick = () => openTeamModal(null);
-        $('teamModalClose').onclick = () => $('teamModal').classList.remove('open');
-        $('teamModal').onclick = (e) => { if (e.target === e.currentTarget) $('teamModal').classList.remove('open'); };
-
-        window.editTeam = async (id) => {
-            try {
-                const data = await apiRequest(`/teams/${id}`);
-                openTeamModal(data);
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        };
-
-        $('teamSaveBtn').onclick = async () => {
-            const id = $('teamEditId').value;
-            const name = $('teamName').value.trim();
-            const description = $('teamDescription').value.trim();
-            if (!name) { toast('Введите название.', 'error'); return; }
-            try {
-                const endpoint = id ? `/teams/${id}` : '/teams/';
-                const method = id ? 'PUT' : 'POST';
-                const data = await apiRequest(endpoint, { method, body: JSON.stringify({ name, description }) });
-                toast(id ? `✅ Команда "${data.name}" обновлена` : `✅ Команда "${data.name}" создана`, 'success');
-                $('teamModal').classList.remove('open');
-                loadTeams();
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        };
-
-        window.deleteTeam = async (id) => {
-            if (!confirm('Удалить команду?')) return;
-            try {
-                await apiRequest(`/teams/${id}`, { method: 'DELETE' });
-                toast('🗑️ Команда удалена', 'warning');
-                loadTeams();
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        };
-
-        // ===== УЧАСТНИКИ =====
-        async function openMembersModal(teamId) {
-            currentTeamId = teamId;
-            $('membersTeamId').value = teamId;
+    window.selectUser = async (userId, username) => {
+        $('memberSearch').value = username;
+        $('memberSearchResults').style.display = 'none';
+        try {
+            await apiRequest(`/teams/${currentTeamId}/members/${userId}`, { method: 'POST' });
+            toast(`✅ ${t('member_added')}`, 'success');
+            await loadMembers(currentTeamId);
             $('memberSearch').value = '';
-            $('memberSearchResults').style.display = 'none';
-            $('membersModal').classList.add('open');
-            await loadMembers(teamId);
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    };
+
+    $('addMemberBtn').onclick = async () => {
+        const userId = parseInt($('memberSearch').value.trim());
+        if (!userId) { toast('Введите ID или выберите пользователя.', 'error'); return; }
+        try {
+            await apiRequest(`/teams/${currentTeamId}/members/${userId}`, { method: 'POST' });
+            toast(`✅ ${t('member_added')}`, 'success');
+            await loadMembers(currentTeamId);
+            $('memberSearch').value = '';
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    };
+
+    // ============================================================
+    //  🔔 УВЕДОМЛЕНИЯ
+    // ============================================================
+    async function loadNotifications() {
+        try {
+            const data = await apiRequest('/notifications/');
+            renderNotifications(data || []);
+        } catch (e) {
+            if (e.message.includes('404')) {
+                $('notificationsList').innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash"></i><p>${t('no_notifications')}</p></div>`;
+            } else { toast(`❌ ${e.message}`, 'error'); }
         }
+    }
 
-        $('membersModalClose').onclick = () => $('membersModal').classList.remove('open');
-        $('membersModal').onclick = (e) => { if (e.target === e.currentTarget) $('membersModal').classList.remove('open'); };
-
-        async function loadMembers(teamId) {
-            try {
-                const data = await apiRequest(`/teams/${teamId}/members`);
-                renderMembers(data || []);
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        }
-
-        function renderMembers(members) {
-            const container = $('membersList');
-            if (!members.length) { container.innerHTML = '<p style="color:#8b949e;">Нет участников</p>'; return; }
-            container.innerHTML = members.map(u => `
-                <div class="team-member-item">
-                    ${u.username} (${u.email})
-                    <span class="remove-member" onclick="removeMember(${u.id})"><i class="fas fa-times-circle"></i></span>
+    function renderNotifications(notifs) {
+        const container = $('notificationsList');
+        if (!notifs.length) { container.innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash"></i><p>${t('no_notifications')}</p></div>`; return; }
+        container.innerHTML = notifs.map(n => `
+            <div class="notification-item" style="padding:10px 14px; background:#0d1117; border-radius:6px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; border-left:3px solid ${n.is_read ? '#30363d' : '#1f6feb'};">
+                <div>
+                    <div class="notif-text"><i class="fas fa-bell"></i> ${n.message}</div>
+                    <div class="notif-time"><i class="fas fa-clock"></i> ${new Date(n.created_at).toLocaleString()}</div>
                 </div>
-            `).join('');
+                ${!n.is_read ? `<button class="btn btn-secondary btn-sm" onclick="markNotifRead(${n.id})"><i class="fas fa-check"></i> ${t('save')}</button>` : ''}
+            </div>
+        `).join('');
+    }
+
+    window.markNotifRead = async (id) => {
+        try {
+            await apiRequest(`/notifications/${id}/read`, { method: 'PATCH' });
+            loadNotifications();
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    };
+
+    $('refreshNotifsBtn').onclick = () => { loadNotifications(); toast(t('refresh'), 'info'); };
+
+    // ============================================================
+    //  📊 СТАТИСТИКА
+    // ============================================================
+    async function loadStats() {
+        try {
+            const data = await apiRequest('/tasks/');
+            let tasks = data.tasks || [];
+            tasks = tasks.filter(t => t.created_by === currentUserId || t.assigned_to === currentUserId);
+            const total = tasks.length;
+            const pending = tasks.filter(t => t.status === 'pending').length;
+            const inProgress = tasks.filter(t => t.status === 'in_progress').length;
+            const completed = tasks.filter(t => t.status === 'completed').length;
+            $('statTotal').textContent = total;
+            $('statPending').textContent = pending;
+            $('statInProgress').textContent = inProgress;
+            $('statCompleted').textContent = completed;
+            updateChart(total, pending, inProgress, completed);
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
+    }
+
+    function updateChart(total, pending, inProgress, completed) {
+        const ctx = document.getElementById('statsChart').getContext('2d');
+        if (statsChart) { statsChart.destroy(); }
+        if (total === 0) {
+            statsChart = new Chart(ctx, { type: 'doughnut', data: { labels: [t('no_data')], datasets: [{ data: [1], backgroundColor: ['#30363d'], borderWidth: 0 }] }, options: { responsive: true, plugins: { legend: { labels: { color: '#c9d1d9' } } } } });
+            return;
         }
-
-        window.removeMember = async (userId) => {
-            if (!confirm('Удалить участника?')) return;
-            try {
-                await apiRequest(`/teams/${currentTeamId}/members/${userId}`, { method: 'DELETE' });
-                toast('✅ Участник удалён', 'success');
-                await loadMembers(currentTeamId);
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        };
-
-        let searchTimeout = null;
-        $('memberSearch').oninput = function() {
-            clearTimeout(searchTimeout);
-            const query = this.value.trim();
-            if (query.length < 2) { $('memberSearchResults').style.display = 'none'; return; }
-            searchTimeout = setTimeout(async () => {
-                try {
-                    const data = await apiRequest(`/users/search/?query=${encodeURIComponent(query)}`);
-                    const container = $('memberSearchResults');
-                    if (!data.length) {
-                        container.innerHTML = '<div style="padding:10px; color:#8b949e;">Пользователи не найдены</div>';
-                        container.style.display = 'block';
-                        return;
-                    }
-                    container.innerHTML = data.map(u =>
-                        `<div class="search-result-item" onclick="selectUser(${u.id}, '${u.username}')">${u.username} (${u.email})</div>`
-                    ).join('');
-                    container.style.display = 'block';
-                } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-            }, 300);
-        };
-
-        window.selectUser = async (userId, username) => {
-            $('memberSearch').value = username;
-            $('memberSearchResults').style.display = 'none';
-            try {
-                await apiRequest(`/teams/${currentTeamId}/members/${userId}`, { method: 'POST' });
-                toast(`✅ ${username} добавлен в команду`, 'success');
-                await loadMembers(currentTeamId);
-                $('memberSearch').value = '';
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        };
-
-        $('addMemberBtn').onclick = async () => {
-            const userId = parseInt($('memberSearch').value.trim());
-            if (!userId) { toast('Введите ID или выберите пользователя.', 'error'); return; }
-            try {
-                await apiRequest(`/teams/${currentTeamId}/members/${userId}`, { method: 'POST' });
-                toast(`✅ Пользователь ${userId} добавлен`, 'success');
-                await loadMembers(currentTeamId);
-                $('memberSearch').value = '';
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        };
-
-        // ============================================================
-        //  🔔 УВЕДОМЛЕНИЯ
-        // ============================================================
-        async function loadNotifications() {
-            try {
-                const data = await apiRequest('/notifications/');
-                renderNotifications(data || []);
-            } catch (e) {
-                if (e.message.includes('404')) {
-                    $('notificationsList').innerHTML = '<div class="empty-state"><i class="fas fa-bell-slash"></i><p>Нет уведомлений.</p></div>';
-                } else { toast(`❌ ${e.message}`, 'error'); }
-            }
-        }
-
-        function renderNotifications(notifs) {
-            const container = $('notificationsList');
-            if (!notifs.length) { container.innerHTML = '<div class="empty-state"><i class="fas fa-bell-slash"></i><p>Нет уведомлений.</p></div>'; return; }
-            container.innerHTML = notifs.map(n => `
-                <div class="notification-item" style="padding:10px 14px; background:#0d1117; border-radius:6px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; border-left:3px solid ${n.is_read ? '#30363d' : '#1f6feb'};">
-                    <div>
-                        <div class="notif-text"><i class="fas fa-bell"></i> ${n.message}</div>
-                        <div class="notif-time"><i class="fas fa-clock"></i> ${new Date(n.created_at).toLocaleString()}</div>
-                    </div>
-                    ${!n.is_read ? `<button class="btn btn-secondary btn-sm" onclick="markNotifRead(${n.id})"><i class="fas fa-check"></i> Прочитано</button>` : ''}
-                </div>
-            `).join('');
-        }
-
-        window.markNotifRead = async (id) => {
-            try {
-                await apiRequest(`/notifications/${id}/read`, { method: 'PATCH' });
-                loadNotifications();
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        };
-
-        $('refreshNotifsBtn').onclick = () => { loadNotifications(); toast('Уведомления обновлены.', 'info'); };
-
-        // ============================================================
-        //  📊 СТАТИСТИКА
-        // ============================================================
-        async function loadStats() {
-            try {
-                const data = await apiRequest('/tasks/');
-                const tasks = data.tasks || [];
-                const total = tasks.length;
-                const pending = tasks.filter(t => t.status === 'pending').length;
-                const inProgress = tasks.filter(t => t.status === 'in_progress').length;
-                const completed = tasks.filter(t => t.status === 'completed').length;
-                $('statTotal').textContent = total;
-                $('statPending').textContent = pending;
-                $('statInProgress').textContent = inProgress;
-                $('statCompleted').textContent = completed;
-                updateChart(total, pending, inProgress, completed);
-            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
-        }
-
-        function updateChart(total, pending, inProgress, completed) {
-            const ctx = document.getElementById('statsChart').getContext('2d');
-            if (statsChart) { statsChart.destroy(); }
-            if (total === 0) {
-                statsChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Нет данных'], datasets: [{ data: [1], backgroundColor: ['#30363d'], borderWidth: 0 }] }, options: { responsive: true, plugins: { legend: { labels: { color: '#c9d1d9' } } } } });
-                return;
-            }
-            statsChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Ожидают', 'В работе', 'Выполнены'],
-                    datasets: [{ data: [pending, inProgress, completed], backgroundColor: ['#d29922', '#1f6feb', '#238636'], borderWidth: 2, borderColor: '#161b22' }]
-                },
-                options: { responsive: true, plugins: { legend: { labels: { color: '#c9d1d9', font: { size: 14 } } } } }
-            });
-        }
-
-        $('refreshStatsBtn').onclick = () => { loadStats(); toast('Статистика обновлена.', 'info'); };
-
-        // ============================================================
-        //  📌 ВКЛАДКИ
-        // ============================================================
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.onclick = () => {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.tab).classList.add('active');
-                if (tab.dataset.tab === 'tab-graph') {
-                    const taskId = $('graphTaskId').value.trim();
-                    if (taskId) $('loadGraphBtn').click();
-                }
-            };
+        statsChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: [t('stat_pending'), t('stat_in_progress'), t('stat_completed')],
+                datasets: [{ data: [pending, inProgress, completed], backgroundColor: ['#d29922', '#1f6feb', '#238636'], borderWidth: 2, borderColor: '#161b22' }]
+            },
+            options: { responsive: true, plugins: { legend: { labels: { color: '#c9d1d9', font: { size: 14 } } } } }
         });
+    }
 
-        // ============================================================
-        //  🔄 АВТООБНОВЛЕНИЕ
-        // ============================================================
-        setInterval(() => {
-            if (isLoggedIn()) {
-                loadTasks();
-                loadKanban();
-                loadNotifications();
-                loadStats();
+    $('refreshStatsBtn').onclick = () => { loadStats(); toast(t('refresh'), 'info'); };
+
+    // ============================================================
+    //  🌐 ПЕРЕКЛЮЧЕНИЕ ЯЗЫКА
+    // ============================================================
+    document.getElementById('langToggle').onclick = () => {
+        currentLang = currentLang === 'ru' ? 'en' : 'ru';
+        updateLanguage();
+        // Перерисовываем задачи с новым языком
+        loadTasks();
+        loadKanban();
+        loadTeams();
+        loadNotifications();
+        loadStats();
+    };
+
+    // ============================================================
+    //  📌 ВКЛАДКИ
+    // ============================================================
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.onclick = () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
+            if (tab.dataset.tab === 'tab-graph') {
+                const taskId = $('graphTaskId').value.trim();
+                if (taskId) $('loadGraphBtn').click();
             }
-        }, 15000);
+        };
+    });
 
-        // ============================================================
-        //  🚀 СТАРТ
-        // ============================================================
-        updateUI();
-        toast('📋 TaskFlow v3.0 загружен', 'info');
-    </script>
+    // ============================================================
+    //  🔄 АВТООБНОВЛЕНИЕ
+    // ============================================================
+    setInterval(() => {
+        if (isLoggedIn()) {
+            loadTasks();
+            loadKanban();
+            loadNotifications();
+            loadStats();
+        }
+    }, 15000);
+
+    // ============================================================
+    //  🚀 СТАРТ
+    // ============================================================
+    updateUI();
+    updateLanguage();
+    toast('📋 TaskFlow v3.0 загружен', 'info');
+
+    // Добавляем недостающие переводы
+    const extraTranslations = {
+        ru: {
+            no_description: 'Нет описания',
+            no_deadline: 'Без дедлайна',
+            created_by: 'Создал',
+            assigned_to: 'Назначена',
+            not_assigned: 'Не назначена',
+            no_data: 'Нет данных'
+        },
+        en: {
+            no_description: 'No description',
+            no_deadline: 'No deadline',
+            created_by: 'Created by',
+            assigned_to: 'Assigned to',
+            not_assigned: 'Not assigned',
+            no_data: 'No data'
+        }
+    };
+    Object.keys(extraTranslations).forEach(lang => {
+        Object.assign(translations[lang], extraTranslations[lang]);
+    });
+    updateLanguage();
+</script>
 
 </body>
 </html>
