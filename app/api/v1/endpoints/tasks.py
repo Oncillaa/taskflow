@@ -30,10 +30,9 @@ def create_task(
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
-<<<<<<< HEAD
-=======
+
     create_notification(f"Задача '{new_task.title}' создана", current_user)
->>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)
+
     return new_task
 
 @router.get("/", response_model=TaskListResponse)
@@ -84,10 +83,8 @@ def update_task(
         setattr(task, key, value)
     task.updated_at = datetime.now()
     db.commit()
-<<<<<<< HEAD
-=======
-    create_notification(f"Задача '{task.title}' обновлена", current_user)
->>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)
+
+
     db.refresh(task)
     return task
 
