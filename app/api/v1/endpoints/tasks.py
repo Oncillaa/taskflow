@@ -26,32 +26,9 @@ def create_task(
         assigned_to=task_data.assigned_to,
         created_by=current_user.id
     )
-
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
-<<<<<<< HEAD
-    new_notification = Notification(
-        message=f"Задача {new_task.id} создана",
-        is_read=False,
-        created_at=datetime.now(UTC),
-        user_id=current_user.id,
-        username=current_user.username
-    )
-    db.add(new_notification)
-    db.commit()
-    db.refresh(new_notification)
-=======
-
-    # 📢 Уведомление, если задача назначена
-    if task_data.assigned_to:
-        create_notification(
-            user_id=task_data.assigned_to,
-            message=f"📌 Вам назначена задача: {task_data.title}",
-            db=db
-        )
-
->>>>>>> 6d905bf (Сохраняю локальные изменения перед pull)
     return new_task
 
 @router.get("/", response_model=TaskListResponse)
@@ -98,22 +75,10 @@ def update_task(
         raise HTTPException(status_code=404, detail="Task not found")
     if task.created_by != current_user.id and task.assigned_to != current_user.id:
         raise HTTPException(status_code=403, detail="Not enough permissions")
-
     for key, value in task_data.dict(exclude_unset=True).items():
         setattr(task, key, value)
-
     task.updated_at = datetime.now()
     db.commit()
-    new_notification = Notification(
-        message=f"Задача {task_id} обновлена",
-        is_read=False,
-        created_at=datetime.now(UTC),
-        user_id=current_user.id,
-        username=current_user.username
-    )
-    db.add(new_notification)
-    db.commit()
-    db.refresh(new_notification)
     db.refresh(task)
     return task
 
@@ -141,29 +106,14 @@ def change_task_status(
 ):
     valid_statuses = ["pending", "in_progress", "review", "completed"]
     if new_status not in valid_statuses:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Invalid status. Allowed: {valid_statuses}"
-        )
-
+        raise HTTPException(status_code=400, detail=f"Invalid status. Allowed: {valid_statuses}")
     task = db.query(Task).filter(Task.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-
-    old_status = task.status
     task.status = new_status
     task.updated_at = datetime.now()
     db.commit()
     db.refresh(task)
-
-    # 📢 Уведомление, если у задачи есть исполнитель
-    if task.assigned_to:
-        create_notification(
-            user_id=task.assigned_to,
-            message=f"🔄 Статус задачи '{task.title}' изменён: {old_status} → {new_status}",
-            db=db
-        )
-
     return task
 
 @router.get("/my/", response_model=TaskListResponse)
@@ -181,44 +131,3 @@ def get_created_tasks(
 ):
     tasks = db.query(Task).filter(Task.created_by == current_user.id).all()
     return TaskListResponse(tasks=tasks, total=len(tasks))
-
-@router.get("/{task_id}/graph")
-def get_task_graph(
-    task_id: int,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    """Возвращает граф связей задачи (nodes + edges) для визуализации"""
-    task = db.query(Task).filter(Task.id == task_id).first()
-    if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
-    
-    # Получаем все задачи пользователя (для узлов)
-    user_tasks = db.query(Task).filter(
-        (Task.created_by == current_user.id) | (Task.assigned_to == current_user.id)
-    ).all()
-    
-    # Получаем все связи, где участвует данная задача
-    links = db.query(Link).filter(
-        (Link.task_from == task_id) | (Link.task_to == task_id)
-    ).all()
-    
-    # Строим граф
-    nodes = []
-    for t in user_tasks:
-        nodes.append({
-            "id": t.id,
-            "label": t.title[:20] + ("..." if len(t.title) > 20 else ""),
-            "title": t.title,
-            "status": t.status
-        })
-    
-    edges = []
-    for link in links:
-        edges.append({
-            "from": link.task_from,
-            "to": link.task_to,
-            "label": link.link_type
-        })
-    
-    return {"nodes": nodes, "edges": edges}
