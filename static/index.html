@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TaskFlow</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.css" />
@@ -98,6 +103,8 @@
         .btn-sm { padding: 4px 12px; font-size: 0.75rem; }
         .btn-warning { background: #d29922; color: #fff; }
         .btn-warning:hover { background: #e3b341; }
+        .btn-info { background: #1f6feb; color: #fff; }
+        .btn-info:hover { background: #388bfd; }
         .header {
             display: flex;
             justify-content: space-between;
@@ -221,6 +228,43 @@
             border-radius: 8px;
             margin-top: 12px;
         }
+        #mapContainer {
+            width: 100%;
+            height: 550px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            margin-top: 12px;
+            position: relative;
+            z-index: 1;
+        }
+        #mapContainer .leaflet-control-zoom { z-index: 1000; }
+        #mapContainer .leaflet-popup-content-wrapper {
+            background: #161b22;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+        }
+        #mapContainer .leaflet-popup-tip { background: #161b22; border: 1px solid #30363d; }
+        #mapContainer .leaflet-popup-content { color: #c9d1d9; font-size: 0.9rem; }
+        #mapContainer .leaflet-popup-content strong { color: #f0f6fc; }
+        .map-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+        .map-controls select,
+        .map-controls input {
+            padding: 8px 14px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            color: #c9d1d9;
+            font-size: 0.9rem;
+        }
+        .map-controls .btn { padding: 8px 16px; }
         .kanban-columns {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -367,19 +411,6 @@
         }
         .search-result-item { padding: 8px 14px; cursor: pointer; }
         .search-result-item:hover { background: #21262d; }
-        #mapContainer {
-            width: 100%;
-            height: 400px;
-            background: #0d1117;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            margin-top: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #8b949e;
-        }
-        /* Уведомления: непрочитанные — прозрачные, прочитанные — обычные */
         .notification-item {
             padding: 10px 14px;
             border-radius: 6px;
@@ -387,40 +418,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 3px solid #1f6feb;
-            transition: all 0.3s ease;
+            border-left: 3px solid #30363d;
+            transition: background 0.2s;
         }
-        .notification-item.unread {
-            background: rgba(31, 111, 235, 0.08);
-            border-left-color: #1f6feb;
-            backdrop-filter: blur(2px);
-        }
-        .notification-item.read {
-            background: #0d1117;
-            border-left-color: #30363d;
-        }
-        .notification-item .notif-text {
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .notification-item .notif-text i {
-            color: #1f6feb;
-        }
-        .notification-item .notif-time {
-            font-size: 0.7rem;
-            color: #8b949e;
-            margin-top: 2px;
-        }
-        .notification-item .notif-actions {
-            display: flex;
-            gap: 6px;
-        }
-        .notification-item .notif-actions .btn {
-            padding: 3px 12px;
-            font-size: 0.7rem;
-        }
+        .notification-item .notif-text { font-size: 0.95rem; }
+        .notification-item .notif-text i { margin-right: 8px; color: #1f6feb; }
+        .notification-item .notif-time { font-size: 0.75rem; color: #8b949e; margin-top: 4px; }
+        .notification-item .notif-time i { margin-right: 4px; }
+        .map-task-popup { padding: 4px 0; }
+        .map-task-popup .popup-title { font-weight: 600; font-size: 1rem; color: #f0f6fc; }
+        .map-task-popup .popup-status { font-size: 0.8rem; margin-top: 4px; }
+        .map-task-popup .popup-status .badge { padding: 2px 10px; border-radius: 12px; font-size: 0.7rem; }
+        .map-task-popup .popup-actions { margin-top: 8px; display: flex; gap: 6px; }
+        .map-task-popup .popup-actions .btn { padding: 4px 12px; font-size: 0.7rem; }
         @media (max-width: 600px) {
             .form-row { flex-direction: column; }
             .header { flex-direction: column; align-items: stretch; text-align: center; }
@@ -432,6 +442,7 @@
             .toast-container { top: 10px; right: 10px; left: 10px; max-width: 100%; }
             .kanban-columns { grid-template-columns: 1fr; }
             #graphContainer { height: 300px; }
+            #mapContainer { height: 350px; }
         }
     </style>
 </head>
@@ -443,32 +454,32 @@
     <div id="authSection">
         <div class="auth-grid" style="display:flex; gap:24px; flex-wrap:wrap;">
             <div class="card" style="flex:1; min-width:280px;">
-                <h2><i class="fas fa-user-plus"></i> <span class="i18n" data-key="register">Регистрация</span></h2>
+                <h2 data-i18n="register"><i class="fas fa-user-plus"></i> Регистрация</h2>
                 <div class="form-group">
-                    <label><i class="fas fa-user"></i> <span class="i18n" data-key="username">Имя пользователя</span></label>
-                    <input type="text" id="regUsername" placeholder="username" />
+                    <label><i class="fas fa-user"></i> <span data-i18n="username">Имя пользователя</span></label>
+                    <input type="text" id="regUsername" data-i18n-placeholder="username" placeholder="username" />
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-envelope"></i> Email</label>
                     <input type="email" id="regEmail" placeholder="email@example.com" />
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-lock"></i> <span class="i18n" data-key="password">Пароль</span></label>
-                    <input type="password" id="regPassword" placeholder="пароль" />
+                    <label><i class="fas fa-lock"></i> <span data-i18n="password">Пароль</span></label>
+                    <input type="password" id="regPassword" data-i18n-placeholder="password" placeholder="пароль" />
                 </div>
-                <button class="btn btn-primary" id="registerBtn"><i class="fas fa-user-plus"></i> <span class="i18n" data-key="register">Зарегистрироваться</span></button>
+                <button class="btn btn-primary" id="registerBtn"><i class="fas fa-user-plus"></i> <span data-i18n="register">Зарегистрироваться</span></button>
             </div>
             <div class="card" style="flex:1; min-width:280px;">
-                <h2><i class="fas fa-sign-in-alt"></i> <span class="i18n" data-key="login">Вход</span></h2>
+                <h2 data-i18n="login"><i class="fas fa-sign-in-alt"></i> Вход</h2>
                 <div class="form-group">
-                    <label><i class="fas fa-user"></i> <span class="i18n" data-key="username">Имя пользователя</span></label>
-                    <input type="text" id="loginUsername" placeholder="username" />
+                    <label><i class="fas fa-user"></i> <span data-i18n="username">Имя пользователя</span></label>
+                    <input type="text" id="loginUsername" data-i18n-placeholder="username" placeholder="username" />
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-lock"></i> <span class="i18n" data-key="password">Пароль</span></label>
-                    <input type="password" id="loginPassword" placeholder="пароль" />
+                    <label><i class="fas fa-lock"></i> <span data-i18n="password">Пароль</span></label>
+                    <input type="password" id="loginPassword" data-i18n-placeholder="password" placeholder="пароль" />
                 </div>
-                <button class="btn btn-success" id="loginBtn"><i class="fas fa-sign-in-alt"></i> <span class="i18n" data-key="login">Войти</span></button>
+                <button class="btn btn-success" id="loginBtn"><i class="fas fa-sign-in-alt"></i> <span data-i18n="login">Войти</span></button>
             </div>
         </div>
     </div>
@@ -482,19 +493,19 @@
             <div class="user-info">
                 <span class="username"><i class="fas fa-user-circle"></i> <span id="currentUsername">user</span></span>
                 <button class="lang-toggle" id="langToggle">🇷🇺 RU</button>
-                <button class="btn btn-danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span class="i18n" data-key="logout">Выйти</span></button>
+                <button class="btn btn-danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span data-i18n="logout">Выйти</span></button>
             </div>
         </div>
 
         <!-- Вкладки -->
         <div class="tabs">
-            <span class="tab active" data-tab="tab-tasks"><i class="fas fa-list-check"></i> <span class="i18n" data-key="tasks">Задачи</span></span>
-            <span class="tab" data-tab="tab-board"><i class="fas fa-columns"></i> <span class="i18n" data-key="board">Доска</span></span>
-            <span class="tab" data-tab="tab-graph"><i class="fas fa-project-diagram"></i> <span class="i18n" data-key="graph">Граф</span></span>
-            <span class="tab" data-tab="tab-map"><i class="fas fa-map"></i> <span class="i18n" data-key="map">Карта</span></span>
-            <span class="tab" data-tab="tab-teams"><i class="fas fa-users"></i> <span class="i18n" data-key="teams">Команды</span></span>
-            <span class="tab" data-tab="tab-notifications"><i class="fas fa-bell"></i> <span class="i18n" data-key="notifications">Уведомления</span></span>
-            <span class="tab" data-tab="tab-stats"><i class="fas fa-chart-pie"></i> <span class="i18n" data-key="stats">Статистика</span></span>
+            <span class="tab active" data-tab="tab-tasks"><i class="fas fa-list-check"></i> <span data-i18n="tasks">Задачи</span></span>
+            <span class="tab" data-tab="tab-board"><i class="fas fa-columns"></i> <span data-i18n="board">Доска</span></span>
+            <span class="tab" data-tab="tab-graph"><i class="fas fa-project-diagram"></i> <span data-i18n="graph">Граф</span></span>
+            <span class="tab" data-tab="tab-map"><i class="fas fa-map"></i> <span data-i18n="map">Карта</span></span>
+            <span class="tab" data-tab="tab-teams"><i class="fas fa-users"></i> <span data-i18n="teams">Команды</span></span>
+            <span class="tab" data-tab="tab-notifications"><i class="fas fa-bell"></i> <span data-i18n="notifications">Уведомления</span></span>
+            <span class="tab" data-tab="tab-stats"><i class="fas fa-chart-pie"></i> <span data-i18n="stats">Статистика</span></span>
         </div>
 
         <!-- ===== ЗАДАЧИ ===== -->
@@ -502,32 +513,32 @@
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
                     <h2 style="margin:0; border:none; padding:0;">
-                        <i class="fas fa-list-check"></i> <span class="i18n" data-key="tasks">Список задач</span>
+                        <i class="fas fa-list-check"></i> <span data-i18n="tasks">Список задач</span>
                         <span class="badge" id="taskCount">0</span>
                     </h2>
-                    <button class="btn btn-primary" id="createTaskBtn"><i class="fas fa-plus"></i> <span class="i18n" data-key="new_task">Новая задача</span></button>
+                    <button class="btn btn-primary" id="createTaskBtn"><i class="fas fa-plus"></i> <span data-i18n="new_task">Новая задача</span></button>
                 </div>
                 <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
                     <select id="filterStatus" style="padding:6px 12px; background:#0d1117; border:1px solid #30363d; border-radius:8px; color:#c9d1d9;">
-                        <option value="">Все статусы</option>
-                        <option value="pending">⏳ <span class="i18n" data-key="status_pending">Ожидает</span></option>
-                        <option value="in_progress">🔄 <span class="i18n" data-key="status_in_progress">В работе</span></option>
-                        <option value="review">🔍 <span class="i18n" data-key="status_review">На проверке</span></option>
-                        <option value="completed">✅ <span class="i18n" data-key="status_completed">Выполнена</span></option>
+                        <option value=""><span data-i18n="all_statuses">Все статусы</span></option>
+                        <option value="pending">⏳ <span data-i18n="status_pending">Ожидает</span></option>
+                        <option value="in_progress">🔄 <span data-i18n="status_in_progress">В работе</span></option>
+                        <option value="review">🔍 <span data-i18n="status_review">На проверке</span></option>
+                        <option value="completed">✅ <span data-i18n="status_completed">Выполнена</span></option>
                     </select>
                     <select id="filterPriority" style="padding:6px 12px; background:#0d1117; border:1px solid #30363d; border-radius:8px; color:#c9d1d9;">
-                        <option value="">Все приоритеты</option>
-                        <option value="low">🟢 <span class="i18n" data-key="priority_low">Низкий</span></option>
-                        <option value="medium">🟡 <span class="i18n" data-key="priority_medium">Средний</span></option>
-                        <option value="high">🔴 <span class="i18n" data-key="priority_high">Высокий</span></option>
+                        <option value=""><span data-i18n="all_priorities">Все приоритеты</span></option>
+                        <option value="low">🟢 <span data-i18n="priority_low">Низкий</span></option>
+                        <option value="medium">🟡 <span data-i18n="priority_medium">Средний</span></option>
+                        <option value="high">🔴 <span data-i18n="priority_high">Высокий</span></option>
                     </select>
-                    <button class="btn btn-secondary" id="refreshTasksBtn"><i class="fas fa-rotate"></i> <span class="i18n" data-key="refresh">Обновить</span></button>
+                    <button class="btn btn-secondary" id="refreshTasksBtn"><i class="fas fa-rotate"></i> <span data-i18n="refresh">Обновить</span></button>
                 </div>
                 <div id="tasksList" style="margin-top:12px;">
                     <div class="empty-state">
                         <i class="fas fa-tasks"></i>
-                        <p><span class="i18n" data-key="no_tasks">Нет задач. Создайте первую!</span></p>
-                        <button class="btn btn-primary" id="emptyCreateBtn"><i class="fas fa-plus"></i> <span class="i18n" data-key="new_task">Новая задача</span></button>
+                        <p data-i18n="no_tasks">Нет задач. Создайте первую!</p>
+                        <button class="btn btn-primary" id="emptyCreateBtn"><i class="fas fa-plus"></i> <span data-i18n="new_task">Новая задача</span></button>
                     </div>
                 </div>
             </div>
@@ -536,25 +547,25 @@
         <!-- ===== ДОСКА ===== -->
         <div id="tab-board" class="tab-content">
             <div class="card">
-                <h2><i class="fas fa-columns"></i> <span class="i18n" data-key="board">Доска задач</span></h2>
+                <h2><i class="fas fa-columns"></i> <span data-i18n="board">Доска задач</span></h2>
                 <div class="kanban-columns" id="kanbanBoard">
-                    <div class="kanban-column" data-status="pending"><h3>⏳ <span class="i18n" data-key="status_pending">Ожидает</span></h3><div class="kanban-items" id="kanban-pending"></div></div>
-                    <div class="kanban-column" data-status="in_progress"><h3>🔄 <span class="i18n" data-key="status_in_progress">В работе</span></h3><div class="kanban-items" id="kanban-in_progress"></div></div>
-                    <div class="kanban-column" data-status="review"><h3>🔍 <span class="i18n" data-key="status_review">На проверке</span></h3><div class="kanban-items" id="kanban-review"></div></div>
-                    <div class="kanban-column" data-status="completed"><h3>✅ <span class="i18n" data-key="status_completed">Выполнена</span></h3><div class="kanban-items" id="kanban-completed"></div></div>
+                    <div class="kanban-column" data-status="pending"><h3>⏳ <span data-i18n="status_pending">Ожидает</span></h3><div class="kanban-items" id="kanban-pending"></div></div>
+                    <div class="kanban-column" data-status="in_progress"><h3>🔄 <span data-i18n="status_in_progress">В работе</span></h3><div class="kanban-items" id="kanban-in_progress"></div></div>
+                    <div class="kanban-column" data-status="review"><h3>🔍 <span data-i18n="status_review">На проверке</span></h3><div class="kanban-items" id="kanban-review"></div></div>
+                    <div class="kanban-column" data-status="completed"><h3>✅ <span data-i18n="status_completed">Выполнена</span></h3><div class="kanban-items" id="kanban-completed"></div></div>
                 </div>
-                <button class="btn btn-secondary" id="refreshBoardBtn"><i class="fas fa-rotate"></i> <span class="i18n" data-key="refresh">Обновить</span></button>
+                <button class="btn btn-secondary" id="refreshBoardBtn"><i class="fas fa-rotate"></i> <span data-i18n="refresh">Обновить</span></button>
             </div>
         </div>
 
         <!-- ===== ГРАФ ===== -->
         <div id="tab-graph" class="tab-content">
             <div class="card">
-                <h2><i class="fas fa-project-diagram"></i> <span class="i18n" data-key="graph">Граф связей задач</span></h2>
+                <h2><i class="fas fa-project-diagram"></i> <span data-i18n="graph">Граф связей задач</span></h2>
                 <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
                     <input type="number" id="graphTaskId" placeholder="ID задачи" style="padding:8px 14px; background:#0d1117; border:1px solid #30363d; border-radius:8px; color:#c9d1d9; width:200px;" />
-                    <button class="btn btn-primary" id="loadGraphBtn"><i class="fas fa-eye"></i> <span class="i18n" data-key="show">Показать</span></button>
-                    <button class="btn btn-secondary" id="refreshGraphBtn"><i class="fas fa-rotate"></i> <span class="i18n" data-key="refresh">Обновить</span></button>
+                    <button class="btn btn-primary" id="loadGraphBtn"><i class="fas fa-eye"></i> <span data-i18n="show">Показать</span></button>
+                    <button class="btn btn-secondary" id="refreshGraphBtn"><i class="fas fa-rotate"></i> <span data-i18n="refresh">Обновить</span></button>
                 </div>
                 <div id="graphContainer"></div>
             </div>
@@ -563,9 +574,20 @@
         <!-- ===== КАРТА ===== -->
         <div id="tab-map" class="tab-content">
             <div class="card">
-                <h2><i class="fas fa-map"></i> <span class="i18n" data-key="map">Карта задач</span></h2>
-                <p style="color:#8b949e; margin-bottom:12px;"><span class="i18n" data-key="map_info">Для работы карты нужен API-ключ Google Maps.</span></p>
-                <div id="mapContainer"><i class="fas fa-map" style="font-size:3rem; color:#30363d; margin-right:12px;"></i><span><span class="i18n" data-key="map_info">Подключите API-ключ в коде</span></span></div>
+                <h2><i class="fas fa-map"></i> <span data-i18n="map">Карта задач</span></h2>
+                <div class="map-controls">
+                    <select id="mapFilterStatus">
+                        <option value=""><span data-i18n="all_statuses">Все статусы</span></option>
+                        <option value="pending">⏳ <span data-i18n="status_pending">Ожидает</span></option>
+                        <option value="in_progress">🔄 <span data-i18n="status_in_progress">В работе</span></option>
+                        <option value="review">🔍 <span data-i18n="status_review">На проверке</span></option>
+                        <option value="completed">✅ <span data-i18n="status_completed">Выполнена</span></option>
+                    </select>
+                    <button class="btn btn-primary" id="mapRefreshBtn"><i class="fas fa-rotate"></i> <span data-i18n="refresh">Обновить</span></button>
+                    <button class="btn btn-secondary" id="mapCenterBtn"><i class="fas fa-crosshairs"></i> <span data-i18n="my_location">Моя позиция</span></button>
+                    <span style="color:#8b949e; font-size:0.85rem;" id="mapTaskCount"><i class="fas fa-map-pin"></i> 0 задач</span>
+                </div>
+                <div id="mapContainer"></div>
             </div>
         </div>
 
@@ -573,10 +595,10 @@
         <div id="tab-teams" class="tab-content">
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <h2 style="margin:0; border:none; padding:0;"><i class="fas fa-users"></i> <span class="i18n" data-key="teams">Команды</span></h2>
-                    <button class="btn btn-primary" id="createTeamBtn"><i class="fas fa-plus"></i> <span class="i18n" data-key="new_team">Создать команду</span></button>
+                    <h2 style="margin:0; border:none; padding:0;"><i class="fas fa-users"></i> <span data-i18n="teams">Команды</span></h2>
+                    <button class="btn btn-primary" id="createTeamBtn"><i class="fas fa-plus"></i> <span data-i18n="new_team">Создать команду</span></button>
                 </div>
-                <div id="teamsList" style="margin-top:12px;"><div class="empty-state"><i class="fas fa-users"></i><p><span class="i18n" data-key="no_teams">Нет команд. Создайте первую!</span></p></div></div>
+                <div id="teamsList" style="margin-top:12px;"><div class="empty-state"><i class="fas fa-users"></i><p data-i18n="no_teams">Нет команд. Создайте первую!</p></div></div>
             </div>
         </div>
 
@@ -584,27 +606,27 @@
         <div id="tab-notifications" class="tab-content">
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <h2 style="margin:0; border:none; padding:0;"><i class="fas fa-bell"></i> <span class="i18n" data-key="notifications">Уведомления</span></h2>
-                    <button class="btn btn-secondary" id="refreshNotifsBtn"><i class="fas fa-rotate"></i> <span class="i18n" data-key="refresh">Обновить</span></button>
+                    <h2 style="margin:0; border:none; padding:0;"><i class="fas fa-bell"></i> <span data-i18n="notifications">Уведомления</span></h2>
+                    <button class="btn btn-secondary" id="refreshNotifsBtn"><i class="fas fa-rotate"></i> <span data-i18n="refresh">Обновить</span></button>
                 </div>
-                <div id="notificationsList" style="margin-top:12px;"><div class="empty-state"><i class="fas fa-bell-slash"></i><p><span class="i18n" data-key="no_notifications">Нет уведомлений.</span></p></div></div>
+                <div id="notificationsList" style="margin-top:12px;"><div class="empty-state"><i class="fas fa-bell-slash"></i><p data-i18n="no_notifications">Нет уведомлений.</p></div></div>
             </div>
         </div>
 
         <!-- ===== СТАТИСТИКА ===== -->
         <div id="tab-stats" class="tab-content">
             <div class="card">
-                <h2><i class="fas fa-chart-pie"></i> <span class="i18n" data-key="stats">Статистика задач</span></h2>
+                <h2><i class="fas fa-chart-pie"></i> <span data-i18n="stats">Статистика задач</span></h2>
                 <div class="stats-grid" id="statsGrid">
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-tasks"></i></div><div class="stat-number" id="statTotal">0</div><div class="stat-label"><span class="i18n" data-key="stat_total">Всего задач</span></div></div>
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock" style="color:#d29922;"></i></div><div class="stat-number" id="statPending">0</div><div class="stat-label"><span class="i18n" data-key="stat_pending">Ожидают</span></div></div>
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-spinner" style="color:#1f6feb;"></i></div><div class="stat-number" id="statInProgress">0</div><div class="stat-label"><span class="i18n" data-key="stat_in_progress">В работе</span></div></div>
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle" style="color:#238636;"></i></div><div class="stat-number" id="statCompleted">0</div><div class="stat-label"><span class="i18n" data-key="stat_completed">Выполнено</span></div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-tasks"></i></div><div class="stat-number" id="statTotal">0</div><div class="stat-label" data-i18n="stat_total">Всего задач</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock" style="color:#d29922;"></i></div><div class="stat-number" id="statPending">0</div><div class="stat-label" data-i18n="stat_pending">Ожидают</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-spinner" style="color:#1f6feb;"></i></div><div class="stat-number" id="statInProgress">0</div><div class="stat-label" data-i18n="stat_in_progress">В работе</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle" style="color:#238636;"></i></div><div class="stat-number" id="statCompleted">0</div><div class="stat-label" data-i18n="stat_completed">Выполнено</div></div>
                 </div>
                 <div class="chart-container" style="max-width:400px; margin:0 auto; padding:16px;">
                     <canvas id="statsChart"></canvas>
                 </div>
-                <button class="btn btn-secondary" id="refreshStatsBtn"><i class="fas fa-rotate"></i> <span class="i18n" data-key="refresh">Обновить</span></button>
+                <button class="btn btn-secondary" id="refreshStatsBtn"><i class="fas fa-rotate"></i> <span data-i18n="refresh">Обновить</span></button>
             </div>
         </div>
 
@@ -617,65 +639,72 @@
 <!-- ===== МОДАЛКА ЗАДАЧИ ===== -->
 <div class="modal-overlay" id="taskModal">
     <div class="modal">
-        <div class="modal-header"><h3 id="taskModalTitle"><i class="fas fa-plus-circle"></i> <span class="i18n" data-key="new_task">Новая задача</span></h3><button class="modal-close" id="taskModalClose"><i class="fas fa-times"></i></button></div>
-        <div class="form-group"><label><i class="fas fa-heading"></i> <span class="i18n" data-key="title">Название</span></label><input type="text" id="taskTitle" placeholder="Название задачи" /></div>
-        <div class="form-group"><label><i class="fas fa-align-left"></i> <span class="i18n" data-key="description">Описание</span></label><textarea id="taskDescription" placeholder="Описание задачи"></textarea></div>
+        <div class="modal-header"><h3 id="taskModalTitle"><i class="fas fa-plus-circle"></i> <span data-i18n="new_task">Новая задача</span></h3><button class="modal-close" id="taskModalClose"><i class="fas fa-times"></i></button></div>
+        <div class="form-group"><label><i class="fas fa-heading"></i> <span data-i18n="title">Название</span></label><input type="text" id="taskTitle" data-i18n-placeholder="title" placeholder="Название задачи" /></div>
+        <div class="form-group"><label><i class="fas fa-align-left"></i> <span data-i18n="description">Описание</span></label><textarea id="taskDescription" data-i18n-placeholder="description" placeholder="Описание задачи"></textarea></div>
         <div class="form-row">
-            <div class="form-group"><label><i class="fas fa-flag"></i> <span class="i18n" data-key="status">Статус</span></label><select id="taskStatus"><option value="pending">⏳ <span class="i18n" data-key="status_pending">Ожидает</span></option><option value="in_progress">🔄 <span class="i18n" data-key="status_in_progress">В работе</span></option><option value="review">🔍 <span class="i18n" data-key="status_review">На проверке</span></option><option value="completed">✅ <span class="i18n" data-key="status_completed">Выполнена</span></option></select></div>
-            <div class="form-group"><label><i class="fas fa-arrow-up"></i> <span class="i18n" data-key="priority">Приоритет</span></label><select id="taskPriority"><option value="low">🟢 <span class="i18n" data-key="priority_low">Низкий</span></option><option value="medium" selected>🟡 <span class="i18n" data-key="priority_medium">Средний</span></option><option value="high">🔴 <span class="i18n" data-key="priority_high">Высокий</span></option></select></div>
+            <div class="form-group"><label><i class="fas fa-flag"></i> <span data-i18n="status">Статус</span></label><select id="taskStatus"><option value="pending">⏳ <span data-i18n="status_pending">Ожидает</span></option><option value="in_progress">🔄 <span data-i18n="status_in_progress">В работе</span></option><option value="review">🔍 <span data-i18n="status_review">На проверке</span></option><option value="completed">✅ <span data-i18n="status_completed">Выполнена</span></option></select></div>
+            <div class="form-group"><label><i class="fas fa-arrow-up"></i> <span data-i18n="priority">Приоритет</span></label><select id="taskPriority"><option value="low">🟢 <span data-i18n="priority_low">Низкий</span></option><option value="medium" selected>🟡 <span data-i18n="priority_medium">Средний</span></option><option value="high">🔴 <span data-i18n="priority_high">Высокий</span></option></select></div>
         </div>
-        <div class="form-group"><label><i class="fas fa-calendar"></i> <span class="i18n" data-key="deadline">Дедлайн</span></label><input type="datetime-local" id="taskDeadline" /></div>
-        <div class="form-group"><label><i class="fas fa-user-tag"></i> <span class="i18n" data-key="assign_to">Назначить (ID пользователя)</span></label><input type="number" id="taskAssignedTo" placeholder="ID пользователя" /></div>
+        <div class="form-group"><label><i class="fas fa-calendar"></i> <span data-i18n="deadline">Дедлайн</span></label><input type="datetime-local" id="taskDeadline" /></div>
+        <div class="form-group"><label><i class="fas fa-user-tag"></i> <span data-i18n="assign_to">Назначить (ID пользователя)</span></label><input type="number" id="taskAssignedTo" placeholder="ID пользователя" /></div>
+        <div class="form-group"><label><i class="fas fa-map-marker-alt"></i> <span data-i18n="location">Местоположение</span></label>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <input type="text" id="taskLat" placeholder="Широта (lat)" style="flex:1; min-width:80px; padding:8px 12px; background:#0d1117; border:1px solid #30363d; border-radius:8px; color:#c9d1d9;" />
+                <input type="text" id="taskLng" placeholder="Долгота (lng)" style="flex:1; min-width:80px; padding:8px 12px; background:#0d1117; border:1px solid #30363d; border-radius:8px; color:#c9d1d9;" />
+                <button class="btn btn-secondary btn-sm" id="taskGetLocationBtn"><i class="fas fa-crosshairs"></i> <span data-i18n="my_location">Моя позиция</span></button>
+            </div>
+        </div>
         <input type="hidden" id="taskEditId" value="" />
-        <button class="btn btn-primary" id="taskSaveBtn"><i class="fas fa-save"></i> <span class="i18n" data-key="save">Сохранить</span></button>
+        <button class="btn btn-primary" id="taskSaveBtn"><i class="fas fa-save"></i> <span data-i18n="save">Сохранить</span></button>
     </div>
 </div>
 
 <!-- ===== МОДАЛКА СВЯЗИ ===== -->
 <div class="modal-overlay" id="linkModal">
     <div class="modal">
-        <div class="modal-header"><h3><i class="fas fa-link"></i> <span class="i18n" data-key="link_tasks">Связать задачи</span></h3><button class="modal-close" id="linkModalClose"><i class="fas fa-times"></i></button></div>
-        <div class="form-group"><label><span class="i18n" data-key="current_task">Текущая задача (ID)</span></label><input type="number" id="linkTaskFrom" readonly /></div>
-        <div class="form-group"><label><i class="fas fa-arrow-right"></i> <span class="i18n" data-key="link_with">Связать с задачей (ID)</span></label><input type="number" id="linkTaskTo" placeholder="ID задачи" /></div>
-        <div class="form-group"><label><i class="fas fa-tag"></i> <span class="i18n" data-key="link_type">Тип связи</span></label>
-            <select id="linkType"><option value="related_to"><span class="i18n" data-key="link_related">Связана с</span></option><option value="depends_on"><span class="i18n" data-key="link_depends">Зависит от</span></option><option value="blocks"><span class="i18n" data-key="link_blocks">Блокирует</span></option><option value="subtask"><span class="i18n" data-key="link_subtask">Подзадача</span></option></select>
+        <div class="modal-header"><h3><i class="fas fa-link"></i> <span data-i18n="link_tasks">Связать задачи</span></h3><button class="modal-close" id="linkModalClose"><i class="fas fa-times"></i></button></div>
+        <div class="form-group"><label><span data-i18n="current_task">Текущая задача (ID)</span></label><input type="number" id="linkTaskFrom" readonly /></div>
+        <div class="form-group"><label><i class="fas fa-arrow-right"></i> <span data-i18n="link_with">Связать с задачей (ID)</span></label><input type="number" id="linkTaskTo" placeholder="ID задачи" /></div>
+        <div class="form-group"><label><i class="fas fa-tag"></i> <span data-i18n="link_type">Тип связи</span></label>
+            <select id="linkType"><option value="related_to"><span data-i18n="link_related">Связана с</span></option><option value="depends_on"><span data-i18n="link_depends">Зависит от</span></option><option value="blocks"><span data-i18n="link_blocks">Блокирует</span></option><option value="subtask"><span data-i18n="link_subtask">Подзадача</span></option></select>
         </div>
-        <button class="btn btn-primary" id="linkSaveBtn"><i class="fas fa-link"></i> <span class="i18n" data-key="link">Связать</span></button>
+        <button class="btn btn-primary" id="linkSaveBtn"><i class="fas fa-link"></i> <span data-i18n="link">Связать</span></button>
     </div>
 </div>
 
 <!-- ===== МОДАЛКА РЕДАКТИРОВАНИЯ СВЯЗИ ===== -->
 <div class="modal-overlay" id="editLinkModal">
     <div class="modal">
-        <div class="modal-header"><h3><i class="fas fa-pen"></i> <span class="i18n" data-key="edit_link">Редактировать связь</span></h3><button class="modal-close" id="editLinkModalClose"><i class="fas fa-times"></i></button></div>
+        <div class="modal-header"><h3><i class="fas fa-pen"></i> <span data-i18n="edit_link">Редактировать связь</span></h3><button class="modal-close" id="editLinkModalClose"><i class="fas fa-times"></i></button></div>
         <div class="form-group"><label>ID связи</label><input type="number" id="editLinkId" readonly /></div>
-        <div class="form-group"><label><i class="fas fa-tag"></i> <span class="i18n" data-key="link_type">Тип связи</span></label>
-            <select id="editLinkType"><option value="related_to"><span class="i18n" data-key="link_related">Связана с</span></option><option value="depends_on"><span class="i18n" data-key="link_depends">Зависит от</span></option><option value="blocks"><span class="i18n" data-key="link_blocks">Блокирует</span></option><option value="subtask"><span class="i18n" data-key="link_subtask">Подзадача</span></option></select>
+        <div class="form-group"><label><i class="fas fa-tag"></i> <span data-i18n="link_type">Тип связи</span></label>
+            <select id="editLinkType"><option value="related_to"><span data-i18n="link_related">Связана с</span></option><option value="depends_on"><span data-i18n="link_depends">Зависит от</span></option><option value="blocks"><span data-i18n="link_blocks">Блокирует</span></option><option value="subtask"><span data-i18n="link_subtask">Подзадача</span></option></select>
         </div>
-        <button class="btn btn-primary" id="editLinkSaveBtn"><i class="fas fa-save"></i> <span class="i18n" data-key="save">Сохранить</span></button>
+        <button class="btn btn-primary" id="editLinkSaveBtn"><i class="fas fa-save"></i> <span data-i18n="save">Сохранить</span></button>
     </div>
 </div>
 
 <!-- ===== МОДАЛКА КОМАНДЫ ===== -->
 <div class="modal-overlay" id="teamModal">
     <div class="modal">
-        <div class="modal-header"><h3 id="teamModalTitle"><i class="fas fa-users"></i> <span class="i18n" data-key="new_team">Новая команда</span></h3><button class="modal-close" id="teamModalClose"><i class="fas fa-times"></i></button></div>
+        <div class="modal-header"><h3 id="teamModalTitle"><i class="fas fa-users"></i> <span data-i18n="new_team">Новая команда</span></h3><button class="modal-close" id="teamModalClose"><i class="fas fa-times"></i></button></div>
         <input type="hidden" id="teamEditId" value="" />
-        <div class="form-group"><label><i class="fas fa-heading"></i> <span class="i18n" data-key="name">Название</span></label><input type="text" id="teamName" placeholder="Название команды" /></div>
-        <div class="form-group"><label><i class="fas fa-align-left"></i> <span class="i18n" data-key="description">Описание</span></label><textarea id="teamDescription" placeholder="Описание команды"></textarea></div>
-        <button class="btn btn-primary" id="teamSaveBtn"><i class="fas fa-save"></i> <span class="i18n" data-key="save">Сохранить</span></button>
+        <div class="form-group"><label><i class="fas fa-heading"></i> <span data-i18n="name">Название</span></label><input type="text" id="teamName" data-i18n-placeholder="name" placeholder="Название команды" /></div>
+        <div class="form-group"><label><i class="fas fa-align-left"></i> <span data-i18n="description">Описание</span></label><textarea id="teamDescription" data-i18n-placeholder="description" placeholder="Описание команды"></textarea></div>
+        <button class="btn btn-primary" id="teamSaveBtn"><i class="fas fa-save"></i> <span data-i18n="save">Сохранить</span></button>
     </div>
 </div>
 
 <!-- ===== МОДАЛКА УЧАСТНИКОВ ===== -->
 <div class="modal-overlay" id="membersModal">
     <div class="modal">
-        <div class="modal-header"><h3><i class="fas fa-user-plus"></i> <span class="i18n" data-key="team_members">Участники команды</span></h3><button class="modal-close" id="membersModalClose"><i class="fas fa-times"></i></button></div>
+        <div class="modal-header"><h3><i class="fas fa-user-plus"></i> <span data-i18n="team_members">Участники команды</span></h3><button class="modal-close" id="membersModalClose"><i class="fas fa-times"></i></button></div>
         <input type="hidden" id="membersTeamId" value="" />
-        <div class="form-group"><label><i class="fas fa-search"></i> <span class="i18n" data-key="search_user">Поиск пользователя</span></label><input type="text" id="memberSearch" placeholder="Введите username или email" /><div id="memberSearchResults" class="search-results" style="display:none;"></div></div>
-        <button class="btn btn-success" id="addMemberBtn"><i class="fas fa-user-plus"></i> <span class="i18n" data-key="add_user">Добавить</span></button>
+        <div class="form-group"><label><i class="fas fa-search"></i> <span data-i18n="search_user">Поиск пользователя</span></label><input type="text" id="memberSearch" data-i18n-placeholder="search_user" placeholder="Введите username или email" /><div id="memberSearchResults" class="search-results" style="display:none;"></div></div>
+        <button class="btn btn-success" id="addMemberBtn"><i class="fas fa-user-plus"></i> <span data-i18n="add_user">Добавить</span></button>
         <hr style="border-color:#30363d; margin:16px 0;" />
-        <h4 style="margin-bottom:10px;"><span class="i18n" data-key="current_members">Текущие участники</span></h4>
+        <h4 style="margin-bottom:10px;"><span data-i18n="current_members">Текущие участники</span></h4>
         <div id="membersList"></div>
     </div>
 </div>
@@ -690,6 +719,9 @@
     let graphNetwork = null;
     let linkTaskFrom = null;
     let currentLang = 'ru';
+    let mapInstance = null;
+    let mapMarkers = [];
+    let mapClusterGroup = null;
 
     // ============================================================
     //  🌐 ПЕРЕВОД
@@ -705,11 +737,13 @@
             'board': 'Доска',
             'graph': 'Граф',
             'map': 'Карта',
+            'my_location': 'Моя позиция',
+            'location': 'Местоположение',
             'teams': 'Команды',
             'notifications': 'Уведомления',
             'stats': 'Статистика',
             'new_task': 'Новая задача',
-            'new_team': 'Создать команду',
+            'new_team': 'Новая команда',
             'edit_task': 'Редактировать задачу',
             'edit_team': 'Редактировать команду',
             'title': 'Название',
@@ -718,10 +752,17 @@
             'priority': 'Приоритет',
             'deadline': 'Дедлайн',
             'assign_to': 'Назначить (ID пользователя)',
-            'save': 'Сохранить',
-            'delete': 'Удалить',
-            'edit': 'Редактировать',
+            'status_pending': 'Ожидает',
+            'status_in_progress': 'В работе',
+            'status_review': 'На проверке',
+            'status_completed': 'Выполнена',
+            'priority_low': 'Низкий',
+            'priority_medium': 'Средний',
+            'priority_high': 'Высокий',
+            'all_statuses': 'Все статусы',
+            'all_priorities': 'Все приоритеты',
             'refresh': 'Обновить',
+            'save': 'Сохранить',
             'link': 'Связать',
             'link_tasks': 'Связать задачи',
             'edit_link': 'Редактировать связь',
@@ -732,39 +773,30 @@
             'link_depends': 'Зависит от',
             'link_blocks': 'Блокирует',
             'link_subtask': 'Подзадача',
-            'status_pending': 'Ожидает',
-            'status_in_progress': 'В работе',
-            'status_review': 'На проверке',
-            'status_completed': 'Выполнена',
-            'priority_low': 'Низкий',
-            'priority_medium': 'Средний',
-            'priority_high': 'Высокий',
-            'no_tasks': 'Нет задач. Создайте первую!',
-            'no_teams': 'Нет команд. Создайте первую!',
-            'no_notifications': 'Нет уведомлений.',
             'team_members': 'Участники команды',
             'search_user': 'Поиск пользователя',
             'add_user': 'Добавить',
             'current_members': 'Текущие участники',
-            'no_members': 'Нет участников',
+            'no_tasks': 'Нет задач. Создайте первую!',
+            'no_teams': 'Нет команд. Создайте первую!',
+            'no_notifications': 'Нет уведомлений.',
             'stat_total': 'Всего задач',
             'stat_pending': 'Ожидают',
             'stat_in_progress': 'В работе',
             'stat_completed': 'Выполнено',
-            'map_info': 'Для работы карты нужен API-ключ Google Maps.',
-            'show': 'Показать',
+            'no_description': 'Нет описания',
+            'no_deadline': 'Без дедлайна',
             'created_by': 'Создал',
             'assigned_to': 'Назначена',
             'not_assigned': 'Не назначена',
-            'no_description': 'Нет описания',
-            'no_deadline': 'Без дедлайна',
             'no_data': 'Нет данных',
-            'error': 'Ошибка',
-            'success': 'Успешно',
-            'cancel': 'Отмена',
-            'close': 'Закрыть',
-            'name': 'Название',
-            'read': 'Прочитать'
+            'no_members': 'Нет участников',
+            'show': 'Показать',
+            'read': 'Прочитать',
+            'session_expired': '⏳ Сессия истекла. Войдите заново.',
+            'connection_lost': '🔌 Потеря связи с сервером',
+            'map_not_initialized': 'Карта ещё не загружена',
+            'task_on_map': 'Задача на карте'
         },
         en: {
             'register': 'Register',
@@ -776,11 +808,13 @@
             'board': 'Board',
             'graph': 'Graph',
             'map': 'Map',
+            'my_location': 'My Location',
+            'location': 'Location',
             'teams': 'Teams',
             'notifications': 'Notifications',
-            'stats': 'Stats',
+            'stats': 'Statistics',
             'new_task': 'New Task',
-            'new_team': 'Create Team',
+            'new_team': 'New Team',
             'edit_task': 'Edit Task',
             'edit_team': 'Edit Team',
             'title': 'Title',
@@ -789,10 +823,17 @@
             'priority': 'Priority',
             'deadline': 'Deadline',
             'assign_to': 'Assign to (User ID)',
-            'save': 'Save',
-            'delete': 'Delete',
-            'edit': 'Edit',
+            'status_pending': 'Pending',
+            'status_in_progress': 'In Progress',
+            'status_review': 'Review',
+            'status_completed': 'Completed',
+            'priority_low': 'Low',
+            'priority_medium': 'Medium',
+            'priority_high': 'High',
+            'all_statuses': 'All Statuses',
+            'all_priorities': 'All Priorities',
             'refresh': 'Refresh',
+            'save': 'Save',
             'link': 'Link',
             'link_tasks': 'Link Tasks',
             'edit_link': 'Edit Link',
@@ -803,52 +844,48 @@
             'link_depends': 'Depends on',
             'link_blocks': 'Blocks',
             'link_subtask': 'Subtask',
-            'status_pending': 'Pending',
-            'status_in_progress': 'In Progress',
-            'status_review': 'Review',
-            'status_completed': 'Completed',
-            'priority_low': 'Low',
-            'priority_medium': 'Medium',
-            'priority_high': 'High',
-            'no_tasks': 'No tasks. Create the first one!',
-            'no_teams': 'No teams. Create the first one!',
-            'no_notifications': 'No notifications.',
             'team_members': 'Team Members',
             'search_user': 'Search User',
             'add_user': 'Add',
             'current_members': 'Current Members',
-            'no_members': 'No members',
+            'no_tasks': 'No tasks. Create the first one!',
+            'no_teams': 'No teams. Create the first one!',
+            'no_notifications': 'No notifications.',
             'stat_total': 'Total Tasks',
             'stat_pending': 'Pending',
             'stat_in_progress': 'In Progress',
             'stat_completed': 'Completed',
-            'map_info': 'Google Maps API key is required.',
-            'show': 'Show',
+            'no_description': 'No description',
+            'no_deadline': 'No deadline',
             'created_by': 'Created by',
             'assigned_to': 'Assigned to',
             'not_assigned': 'Not assigned',
-            'no_description': 'No description',
-            'no_deadline': 'No deadline',
             'no_data': 'No data',
-            'error': 'Error',
-            'success': 'Success',
-            'cancel': 'Cancel',
-            'close': 'Close',
-            'name': 'Name',
-            'read': 'Read'
+            'no_members': 'No members',
+            'show': 'Show',
+            'read': 'Mark as Read',
+            'session_expired': '⏳ Session expired. Please login again.',
+            'connection_lost': '🔌 Connection lost',
+            'map_not_initialized': 'Map not initialized yet',
+            'task_on_map': 'Task on map'
         }
     };
 
     function t(key) {
-        const lang = translations[currentLang] || translations.ru;
-        return lang[key] || key;
+        return translations[currentLang]?.[key] || key;
     }
 
-    function updateLanguage() {
-        document.querySelectorAll('.i18n').forEach(el => {
-            const key = el.dataset.key;
-            if (key && translations[currentLang] && translations[currentLang][key]) {
-                el.textContent = translations[currentLang][key];
+    function updateUITexts() {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.dataset.i18n;
+            if (key && translations[currentLang]?.[key]) {
+                el.textContent = t(key);
+            }
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.dataset.i18nPlaceholder;
+            if (key && translations[currentLang]?.[key]) {
+                el.placeholder = t(key);
             }
         });
         document.getElementById('langToggle').innerHTML = currentLang === 'ru' ? '🇷🇺 RU' : '🇬🇧 EN';
@@ -878,35 +915,37 @@
     const isLoggedIn = () => !!getToken();
 
     // ============================================================
-    //  🔐 ОБРАБОТКА 401 — ВЫБРАСЫВАЕТ В ОКНО РЕГИСТРАЦИИ
-    // ============================================================
-    function handle401() {
-        clearToken();
-        updateUI();
-        toast('Сессия истекла. Войдите заново.', 'warning');
-    }
-
-    // ============================================================
-    //  🌐 API
+    //  🌐 API (с обработкой 401)
     // ============================================================
     async function apiRequest(endpoint, options = {}) {
         const token = getToken();
         const headers = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
-        const response = await fetch(`${API}/api/v1${endpoint}`, {
-            ...options,
-            headers: { ...headers, ...(options.headers || {}) }
-        });
-        const data = await response.json().catch(() => null);
-        if (response.status === 401) {
-            handle401();
-            throw new Error('Unauthorized');
+        try {
+            const response = await fetch(`${API}/api/v1${endpoint}`, {
+                ...options,
+                headers: { ...headers, ...(options.headers || {}) }
+            });
+
+            if (response.status === 401) {
+                clearToken();
+                toast(t('session_expired'), 'warning');
+                updateUI();
+                return null;
+            }
+
+            const data = await response.json().catch(() => null);
+            if (!response.ok) {
+                const msg = data?.detail || data?.message || `Ошибка ${response.status}`;
+                throw new Error(msg);
+            }
+            return data;
+        } catch (e) {
+            if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
+                toast(t('connection_lost'), 'error');
+            }
+            throw e;
         }
-        if (!response.ok) {
-            const msg = data?.detail || data?.message || `Ошибка ${response.status}`;
-            throw new Error(msg);
-        }
-        return data;
     }
 
     // ============================================================
@@ -925,9 +964,7 @@
             $('regUsername').value = '';
             $('regEmail').value = '';
             $('regPassword').value = '';
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
         $('registerBtn').disabled = false;
         $('registerBtn').innerHTML = `<i class="fas fa-user-plus"></i> ${t('register')}`;
     };
@@ -944,24 +981,35 @@
             form.append('password', password);
             const response = await fetch(`${API}/api/v1/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: form });
             const data = await response.json();
-            if (response.status === 401) {
-                toast('Неверный логин или пароль.', 'error');
-                return;
-            }
             if (!response.ok) throw new Error(data.detail || 'Ошибка входа');
             setToken(data.access_token);
             toast('✅ Вход выполнен!', 'success');
             $('loginUsername').value = '';
             $('loginPassword').value = '';
             updateUI();
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
         $('loginBtn').disabled = false;
         $('loginBtn').innerHTML = `<i class="fas fa-sign-in-alt"></i> ${t('login')}`;
     };
 
     $('logoutBtn').onclick = () => { clearToken(); toast('👋 Выход выполнен.', 'warning'); updateUI(); };
+
+    // ============================================================
+    //  🌐 ПЕРЕКЛЮЧЕНИЕ ЯЗЫКА
+    // ============================================================
+    document.getElementById('langToggle').onclick = () => {
+        currentLang = currentLang === 'ru' ? 'en' : 'ru';
+        updateUITexts();
+        toast(currentLang === 'ru' ? '🌐 Русский язык' : '🌐 English language', 'info');
+        if (isLoggedIn()) {
+            loadTasks();
+            loadKanban();
+            loadTeams();
+            loadNotifications();
+            loadStats();
+            loadMapTasks();
+        }
+    };
 
     // ============================================================
     //  🖥️ UI
@@ -978,20 +1026,21 @@
             loadTeams();
             loadNotifications();
             loadStats();
+            initMap();
+            loadMapTasks();
+            updateUITexts();
         } else {
             auth.classList.remove('hidden');
             main.classList.add('hidden');
+            updateUITexts();
         }
-        updateLanguage();
     }
 
     async function loadUserInfo() {
         try {
             const data = await apiRequest('/users/me');
-            $('currentUsername').textContent = data.username || 'user';
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+            if (data) $('currentUsername').textContent = data.username || 'user';
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     }
 
     // ============================================================
@@ -1007,12 +1056,10 @@
         if (params.length) url += '?' + params.join('&');
         try {
             const data = await apiRequest(url);
-            renderTasks(data.tasks || []);
+            if (data) renderTasks(data.tasks || []);
         } catch (e) {
-            if (e.message !== 'Unauthorized') {
-                toast(`❌ ${e.message}`, 'error');
-                $('tasksList').innerHTML = `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i><p>${e.message}</p></div>`;
-            }
+            toast(`❌ ${e.message}`, 'error');
+            $('tasksList').innerHTML = `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i><p>${e.message}</p></div>`;
         }
     }
 
@@ -1035,6 +1082,7 @@
                         <i class="fas fa-align-left"></i> ${task.description || t('no_description')} &bull;
                         <i class="fas fa-arrow-up"></i> ${priorityMap[task.priority] || task.priority} &bull;
                         ${task.deadline ? `<i class="fas fa-calendar"></i> ${new Date(task.deadline).toLocaleDateString()}` : t('no_deadline')}
+                        ${task.lat && task.lng ? `&bull; <i class="fas fa-map-marker-alt"></i> ${task.lat}, ${task.lng}` : ''}
                     </div>
                     <div class="task-meta">
                         <i class="fas fa-user"></i> ${t('created_by')}: ID ${task.created_by} &bull;
@@ -1045,7 +1093,7 @@
                     <span class="task-status ${task.status}">${statusMap[task.status] || task.status}</span>
                     <div class="task-actions">
                         <button class="btn btn-secondary btn-sm" onclick="openLinkModal(${task.id})" title="${t('link')}"><i class="fas fa-link"></i></button>
-                        <button class="btn btn-secondary btn-sm" onclick="editTask(${task.id})" title="${t('edit')}"><i class="fas fa-pen"></i></button>
+                        <button class="btn btn-secondary btn-sm" onclick="editTask(${task.id})" title="${t('edit_task')}"><i class="fas fa-pen"></i></button>
                         <button class="btn btn-danger btn-sm" onclick="deleteTask(${task.id})" title="${t('delete')}"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>
@@ -1054,7 +1102,7 @@
     }
 
     // ============================================================
-    //  📌 МОДАЛКА ЗАДАЧИ
+    //  📌 МОДАЛКА ЗАДАЧИ (с координатами)
     // ============================================================
     function openTaskModal(data = null) {
         const isEdit = !!data;
@@ -1066,7 +1114,10 @@
         $('taskPriority').value = isEdit ? (data.priority || 'medium') : 'medium';
         $('taskDeadline').value = isEdit && data.deadline ? data.deadline.slice(0, 16) : '';
         $('taskAssignedTo').value = isEdit ? (data.assigned_to || '') : '';
+        $('taskLat').value = isEdit && data.lat ? data.lat : '';
+        $('taskLng').value = isEdit && data.lng ? data.lng : '';
         $('taskModal').classList.add('open');
+        updateUITexts();
     }
 
     $('createTaskBtn').onclick = () => openTaskModal();
@@ -1074,51 +1125,70 @@
     $('taskModalClose').onclick = () => $('taskModal').classList.remove('open');
     $('taskModal').onclick = (e) => { if (e.target === e.currentTarget) $('taskModal').classList.remove('open'); };
 
+    // Кнопка "Моя позиция" в модалке задачи
+    $('taskGetLocationBtn').onclick = () => {
+        if (!navigator.geolocation) {
+            toast('❌ Геолокация не поддерживается', 'error');
+            return;
+        }
+        toast('📍 Определяем позицию...', 'info');
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                $('taskLat').value = pos.coords.latitude;
+                $('taskLng').value = pos.coords.longitude;
+                toast('✅ Позиция получена', 'success');
+            },
+            (err) => {
+                toast(`❌ Ошибка: ${err.message}`, 'error');
+            }
+        );
+    };
+
     window.editTask = async (id) => {
         try {
             const data = await apiRequest(`/tasks/${id}`);
-            openTaskModal(data);
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+            if (data) openTaskModal(data);
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     };
 
     $('taskSaveBtn').onclick = async () => {
         const id = $('taskEditId').value;
+        const lat = parseFloat($('taskLat').value);
+        const lng = parseFloat($('taskLng').value);
         const payload = {
             title: $('taskTitle').value.trim(),
             description: $('taskDescription').value.trim(),
             status: $('taskStatus').value,
             priority: $('taskPriority').value,
             deadline: $('taskDeadline').value || null,
-            assigned_to: parseInt($('taskAssignedTo').value) || null
+            assigned_to: parseInt($('taskAssignedTo').value) || null,
+            lat: isNaN(lat) ? null : lat,
+            lng: isNaN(lng) ? null : lng
         };
         if (!payload.title) { toast('Введите название.', 'error'); return; }
         try {
             const endpoint = id ? `/tasks/${id}` : '/tasks/';
             const method = id ? 'PUT' : 'POST';
             const data = await apiRequest(endpoint, { method, body: JSON.stringify(payload) });
-            toast(id ? `✅ ${t('success')}` : `✅ ${t('success')}`, 'success');
+            toast(id ? `✅ ${t('task_updated')}` : `✅ ${t('task_created')}`, 'success');
             $('taskModal').classList.remove('open');
             loadTasks();
             loadKanban();
             loadStats();
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+            loadMapTasks();
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     };
 
     window.deleteTask = async (id) => {
         if (!confirm(`Удалить задачу #${id}?`)) return;
         try {
             await apiRequest(`/tasks/${id}`, { method: 'DELETE' });
-            toast(`🗑️ ${t('delete')}`, 'warning');
+            toast(`🗑️ ${t('task_deleted')}`, 'warning');
             loadTasks();
             loadKanban();
             loadStats();
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+            loadMapTasks();
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     };
 
     $('refreshTasksBtn').onclick = () => { loadTasks(); toast(t('refresh'), 'info'); };
@@ -1126,7 +1196,7 @@
     $('filterPriority').onchange = () => loadTasks();
 
     // ============================================================
-    //  🔗 СВЯЗИ
+    //  🔗 СВЯЗИ (без изменений)
     // ============================================================
     function openLinkModal(taskId) {
         linkTaskFrom = taskId;
@@ -1134,6 +1204,7 @@
         $('linkTaskTo').value = '';
         $('linkType').value = 'related_to';
         $('linkModal').classList.add('open');
+        updateUITexts();
     }
 
     $('linkModalClose').onclick = () => $('linkModal').classList.remove('open');
@@ -1147,21 +1218,17 @@
         if (task_from === task_to) { toast('Нельзя связать задачу с собой.', 'error'); return; }
         try {
             await apiRequest('/links/', { method: 'POST', body: JSON.stringify({ task_from, task_to, link_type }) });
-            toast(`✅ ${t('success')}`, 'success');
+            toast(`✅ ${t('link_created')}`, 'success');
             $('linkModal').classList.remove('open');
             loadTasks();
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     };
 
-    // ============================================================
-    //  ✏️ РЕДАКТИРОВАНИЕ СВЯЗИ
-    // ============================================================
     window.editLink = async (linkId, currentType) => {
         $('editLinkId').value = linkId;
         $('editLinkType').value = currentType || 'related_to';
         $('editLinkModal').classList.add('open');
+        updateUITexts();
     };
 
     $('editLinkModalClose').onclick = () => $('editLinkModal').classList.remove('open');
@@ -1173,14 +1240,12 @@
         if (!linkId) { toast('Ошибка: ID связи не указан.', 'error'); return; }
         try {
             await apiRequest(`/links/${linkId}`, { method: 'PUT', body: JSON.stringify({ link_type }) });
-            toast(`✅ ${t('success')}`, 'success');
+            toast(`✅ ${t('link_updated')}`, 'success');
             $('editLinkModal').classList.remove('open');
             const taskId = $('graphTaskId').value.trim();
             if (taskId) $('loadGraphBtn').click();
             loadTasks();
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     };
 
     // ============================================================
@@ -1189,10 +1254,8 @@
     async function loadKanban() {
         try {
             const data = await apiRequest('/tasks/');
-            renderKanban(data.tasks || []);
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+            if (data) renderKanban(data.tasks || []);
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     }
 
     function renderKanban(tasks) {
@@ -1223,10 +1286,8 @@
         if (!taskId) { toast('Введите ID задачи.', 'error'); return; }
         try {
             const data = await apiRequest(`/tasks/${taskId}/graph`);
-            renderGraph(data);
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+            if (data) renderGraph(data);
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     };
 
     $('refreshGraphBtn').onclick = () => { const taskId = $('graphTaskId').value.trim(); if (taskId) $('loadGraphBtn').click(); };
@@ -1271,6 +1332,169 @@
     }
 
     // ============================================================
+    //  🗺️ КАРТА (LEAFLET)
+    // ============================================================
+    let mapInitialized = false;
+
+    function initMap() {
+        if (mapInitialized) return;
+        const container = document.getElementById('mapContainer');
+        // Если карта уже есть — не пересоздаём
+        if (mapInstance) {
+            mapInstance.invalidateSize();
+            return;
+        }
+
+        try {
+            mapInstance = L.map('mapContainer', {
+                center: [55.751244, 37.618423], // Москва по умолчанию
+                zoom: 12,
+                zoomControl: true,
+                fadeAnimation: true,
+                attributionControl: true
+            });
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(mapInstance);
+
+            // Кластеры для маркеров
+            mapClusterGroup = L.markerClusterGroup({
+                maxClusterRadius: 50,
+                spiderfyOnMaxZoom: true,
+                showCoverageOnHover: false,
+                zoomToBoundsOnClick: true
+            });
+            mapInstance.addLayer(mapClusterGroup);
+
+            mapInitialized = true;
+            toast('🗺️ Карта загружена', 'success');
+        } catch (e) {
+            toast(`❌ Ошибка загрузки карты: ${e.message}`, 'error');
+        }
+    }
+
+    async function loadMapTasks() {
+        if (!mapInstance || !mapClusterGroup) {
+            initMap();
+            if (!mapInstance || !mapClusterGroup) {
+                setTimeout(loadMapTasks, 500);
+                return;
+            }
+        }
+
+        try {
+            const data = await apiRequest('/tasks/');
+            if (!data) return;
+            const tasks = data.tasks || [];
+            renderMapTasks(tasks);
+        } catch (e) {
+            toast(`❌ ${e.message}`, 'error');
+        }
+    }
+
+    function renderMapTasks(tasks) {
+        // Очищаем старые маркеры
+        mapClusterGroup.clearLayers();
+        mapMarkers = [];
+
+        // Фильтр по статусу
+        const statusFilter = $('mapFilterStatus').value;
+        let filtered = tasks;
+        if (statusFilter) {
+            filtered = tasks.filter(t => t.status === statusFilter);
+        }
+
+        // Только задачи с координатами
+        const withCoords = filtered.filter(t => t.lat && t.lng && !isNaN(t.lat) && !isNaN(t.lng));
+
+        // Обновляем счётчик
+        $('mapTaskCount').innerHTML = `<i class="fas fa-map-pin"></i> ${withCoords.length} задач на карте`;
+
+        if (!withCoords.length) {
+            return;
+        }
+
+        // Цвета для статусов
+        const statusColors = {
+            'pending': '#d29922',
+            'in_progress': '#1f6feb',
+            'review': '#bc8cff',
+            'completed': '#238636'
+        };
+
+        const statusNames = {
+            'pending': t('status_pending'),
+            'in_progress': t('status_in_progress'),
+            'review': t('status_review'),
+            'completed': t('status_completed')
+        };
+
+        // Создаём маркеры
+        withCoords.forEach(task => {
+            const color = statusColors[task.status] || '#1f6feb';
+            const icon = L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div style="background:${color}; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #0d1117; box-shadow: 0 0 10px rgba(0,0,0,0.5);"><span style="color:#fff; font-size:10px; font-weight:bold;">${task.id}</span></div>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+
+            const popupContent = `
+                <div class="map-task-popup">
+                    <div class="popup-title"><strong>${task.title}</strong></div>
+                    <div class="popup-status"><span class="badge" style="background:${color}; padding:2px 10px; border-radius:12px; color:#fff;">${statusNames[task.status] || task.status}</span></div>
+                    <div style="font-size:0.8rem; color:#8b949e; margin-top:4px;">${task.description || t('no_description')}</div>
+                    <div style="font-size:0.75rem; color:#8b949e; margin-top:4px;">
+                        <i class="fas fa-user"></i> ${t('created_by')}: ${task.created_by}
+                        ${task.assigned_to ? `&bull; <i class="fas fa-user-tag"></i> ${t('assigned_to')}: ${task.assigned_to}` : ''}
+                    </div>
+                    <div class="popup-actions">
+                        <button class="btn btn-primary btn-sm" onclick="editTask(${task.id})"><i class="fas fa-pen"></i> ${t('edit_task')}</button>
+                        <button class="btn btn-secondary btn-sm" onclick="openLinkModal(${task.id})"><i class="fas fa-link"></i> ${t('link')}</button>
+                    </div>
+                </div>
+            `;
+
+            const marker = L.marker([task.lat, task.lng], { icon })
+                .bindPopup(popupContent, { className: 'dark-popup', maxWidth: 280 });
+
+            mapClusterGroup.addLayer(marker);
+            mapMarkers.push(marker);
+        });
+
+        // Если есть маркеры — приближаем к ним
+        if (mapMarkers.length > 0) {
+            const group = L.featureGroup(mapMarkers);
+            mapInstance.fitBounds(group.getBounds().pad(0.1));
+        }
+    }
+
+    // Кнопки на карте
+    $('mapRefreshBtn').onclick = () => { loadMapTasks(); toast(t('refresh'), 'info'); };
+
+    $('mapCenterBtn').onclick = () => {
+        if (!navigator.geolocation) {
+            toast('❌ Геолокация не поддерживается', 'error');
+            return;
+        }
+        toast('📍 Определяем вашу позицию...', 'info');
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                mapInstance.setView([pos.coords.latitude, pos.coords.longitude], 15);
+                toast('✅ Позиция определена', 'success');
+            },
+            (err) => {
+                toast(`❌ Ошибка: ${err.message}`, 'error');
+                mapInstance.setView([55.751244, 37.618423], 12);
+            }
+        );
+    };
+
+    $('mapFilterStatus').onchange = () => loadMapTasks();
+
+    // ============================================================
     //  👥 КОМАНДЫ
     // ============================================================
     let currentTeamId = null;
@@ -1278,13 +1502,11 @@
     async function loadTeams() {
         try {
             const data = await apiRequest('/teams/');
-            renderTeams(data.teams || []);
+            if (data) renderTeams(data.teams || []);
         } catch (e) {
-            if (e.message !== 'Unauthorized') {
-                if (e.message.includes('404')) {
-                    $('teamsList').innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><p>${t('no_teams')}</p></div>`;
-                } else { toast(`❌ ${e.message}`, 'error'); }
-            }
+            if (e.message.includes('404')) {
+                $('teamsList').innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><p>${t('no_teams')}</p></div>`;
+            } else { toast(`❌ ${e.message}`, 'error'); }
         }
     }
 
@@ -1297,7 +1519,7 @@
                 <div class="team-meta"><i class="fas fa-align-left"></i> ${team.description || t('no_description')}</div>
                 <div style="margin-top:8px;">
                     <button class="btn btn-secondary btn-sm" onclick="openMembersModal(${team.id})"><i class="fas fa-user-group"></i> ${t('team_members')}</button>
-                    <button class="btn btn-secondary btn-sm" onclick="editTeam(${team.id})"><i class="fas fa-pen"></i> ${t('edit')}</button>
+                    <button class="btn btn-secondary btn-sm" onclick="editTeam(${team.id})"><i class="fas fa-pen"></i> ${t('edit_team')}</button>
                     <button class="btn btn-danger btn-sm" onclick="deleteTeam(${team.id})"><i class="fas fa-trash"></i> ${t('delete')}</button>
                 </div>
             </div>
@@ -1311,6 +1533,7 @@
         $('teamName').value = isEdit ? data.name : '';
         $('teamDescription').value = isEdit ? (data.description || '') : '';
         $('teamModal').classList.add('open');
+        updateUITexts();
     }
 
     $('createTeamBtn').onclick = () => openTeamModal(null);
@@ -1320,10 +1543,8 @@
     window.editTeam = async (id) => {
         try {
             const data = await apiRequest(`/teams/${id}`);
-            openTeamModal(data);
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+            if (data) openTeamModal(data);
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     };
 
     $('teamSaveBtn').onclick = async () => {
@@ -1335,23 +1556,19 @@
             const endpoint = id ? `/teams/${id}` : '/teams/';
             const method = id ? 'PUT' : 'POST';
             const data = await apiRequest(endpoint, { method, body: JSON.stringify({ name, description }) });
-            toast(id ? `✅ ${t('success')}` : `✅ ${t('success')}`, 'success');
+            toast(id ? `✅ ${t('team_updated')}` : `✅ ${t('team_created')}`, 'success');
             $('teamModal').classList.remove('open');
             loadTeams();
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     };
 
     window.deleteTeam = async (id) => {
         if (!confirm('Удалить команду?')) return;
         try {
             await apiRequest(`/teams/${id}`, { method: 'DELETE' });
-            toast(`🗑️ ${t('delete')}`, 'warning');
+            toast(`🗑️ ${t('team_deleted')}`, 'warning');
             loadTeams();
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     };
 
     // ===== УЧАСТНИКИ =====
@@ -1361,6 +1578,7 @@
         $('memberSearch').value = '';
         $('memberSearchResults').style.display = 'none';
         $('membersModal').classList.add('open');
+        updateUITexts();
         await loadMembers(teamId);
     }
 
@@ -1370,10 +1588,8 @@
     async function loadMembers(teamId) {
         try {
             const data = await apiRequest(`/teams/${teamId}/members`);
-            renderMembers(data || []);
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+            if (data) renderMembers(data || []);
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     }
 
     function renderMembers(members) {
@@ -1391,11 +1607,9 @@
         if (!confirm('Удалить участника?')) return;
         try {
             await apiRequest(`/teams/${currentTeamId}/members/${userId}`, { method: 'DELETE' });
-            toast(`✅ ${t('success')}`, 'success');
+            toast(`✅ ${t('member_removed')}`, 'success');
             await loadMembers(currentTeamId);
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     };
 
     let searchTimeout = null;
@@ -1407,7 +1621,7 @@
             try {
                 const data = await apiRequest(`/users/search/?query=${encodeURIComponent(query)}`);
                 const container = $('memberSearchResults');
-                if (!data.length) {
+                if (!data || !data.length) {
                     container.innerHTML = `<div style="padding:10px; color:#8b949e;">${t('no_data')}</div>`;
                     container.style.display = 'block';
                     return;
@@ -1416,9 +1630,7 @@
                     `<div class="search-result-item" onclick="selectUser(${u.id}, '${u.username}')">${u.username} (${u.email})</div>`
                 ).join('');
                 container.style.display = 'block';
-            } catch (e) {
-                if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-            }
+            } catch (e) { toast(`❌ ${e.message}`, 'error'); }
         }, 300);
     };
 
@@ -1427,12 +1639,10 @@
         $('memberSearchResults').style.display = 'none';
         try {
             await apiRequest(`/teams/${currentTeamId}/members/${userId}`, { method: 'POST' });
-            toast(`✅ ${t('success')}`, 'success');
+            toast(`✅ ${t('member_added')}`, 'success');
             await loadMembers(currentTeamId);
             $('memberSearch').value = '';
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     };
 
     $('addMemberBtn').onclick = async () => {
@@ -1440,12 +1650,10 @@
         if (!userId) { toast('Введите ID или выберите пользователя.', 'error'); return; }
         try {
             await apiRequest(`/teams/${currentTeamId}/members/${userId}`, { method: 'POST' });
-            toast(`✅ ${t('success')}`, 'success');
+            toast(`✅ ${t('member_added')}`, 'success');
             await loadMembers(currentTeamId);
             $('memberSearch').value = '';
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     };
 
     // ============================================================
@@ -1454,26 +1662,32 @@
     async function loadNotifications() {
         try {
             const data = await apiRequest('/notifications/');
-            renderNotifications(data || []);
+            const sorted = (data || []).sort((a, b) => {
+                return new Date(b.created_at) - new Date(a.created_at);
+            });
+            renderNotifications(sorted);
         } catch (e) {
-            if (e.message !== 'Unauthorized') {
-                if (e.message.includes('404')) {
-                    $('notificationsList').innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash"></i><p>${t('no_notifications')}</p></div>`;
-                } else { toast(`❌ ${e.message}`, 'error'); }
+            if (e.message.includes('404')) {
+                $('notificationsList').innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash"></i><p>${t('no_notifications')}</p></div>`;
+            } else {
+                toast(`❌ ${e.message}`, 'error');
             }
         }
     }
 
     function renderNotifications(notifs) {
         const container = $('notificationsList');
-        if (!notifs.length) { container.innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash"></i><p>${t('no_notifications')}</p></div>`; return; }
+        if (!notifs.length) {
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash"></i><p>${t('no_notifications')}</p></div>`;
+            return;
+        }
         container.innerHTML = notifs.map(n => `
-            <div class="notification-item ${n.is_read ? 'read' : 'unread'}">
+            <div class="notification-item" style="background:${n.is_read ? '#0d1117' : 'rgba(31, 111, 235, 0.15)'}; border-left-color: ${n.is_read ? '#30363d' : '#1f6feb'};">
                 <div>
                     <div class="notif-text"><i class="fas fa-bell"></i> ${n.message}</div>
                     <div class="notif-time"><i class="fas fa-clock"></i> ${new Date(n.created_at).toLocaleString()}</div>
                 </div>
-                ${!n.is_read ? `<div class="notif-actions"><button class="btn btn-success btn-sm" onclick="markNotifRead(${n.id})"><i class="fas fa-check"></i> ${t('read')}</button></div>` : '<span style="color:#8b949e; font-size:0.7rem;">✓ Прочитано</span>'}
+                ${!n.is_read ? `<button class="btn btn-primary btn-sm" onclick="markNotifRead(${n.id})"><i class="fas fa-check"></i> ${t('read')}</button>` : ''}
             </div>
         `).join('');
     }
@@ -1482,9 +1696,7 @@
         try {
             await apiRequest(`/notifications/${id}/read`, { method: 'PATCH' });
             loadNotifications();
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     };
 
     $('refreshNotifsBtn').onclick = () => { loadNotifications(); toast(t('refresh'), 'info'); };
@@ -1495,6 +1707,7 @@
     async function loadStats() {
         try {
             const data = await apiRequest('/tasks/');
+            if (!data) return;
             const tasks = data.tasks || [];
             const total = tasks.length;
             const pending = tasks.filter(t => t.status === 'pending').length;
@@ -1505,9 +1718,7 @@
             $('statInProgress').textContent = inProgress;
             $('statCompleted').textContent = completed;
             updateChart(total, pending, inProgress, completed);
-        } catch (e) {
-            if (e.message !== 'Unauthorized') toast(`❌ ${e.message}`, 'error');
-        }
+        } catch (e) { toast(`❌ ${e.message}`, 'error'); }
     }
 
     function updateChart(total, pending, inProgress, completed) {
@@ -1530,23 +1741,6 @@
     $('refreshStatsBtn').onclick = () => { loadStats(); toast(t('refresh'), 'info'); };
 
     // ============================================================
-    //  🌐 ПЕРЕКЛЮЧЕНИЕ ЯЗЫКА
-    // ============================================================
-    document.getElementById('langToggle').onclick = () => {
-        currentLang = currentLang === 'ru' ? 'en' : 'ru';
-        updateLanguage();
-        toast(currentLang === 'ru' ? '🌐 Русский язык' : '🌐 English language', 'info');
-        // Обновляем все данные, чтобы перевод применился
-        if (isLoggedIn()) {
-            loadTasks();
-            loadKanban();
-            loadTeams();
-            loadNotifications();
-            loadStats();
-        }
-    };
-
-    // ============================================================
     //  📌 ВКЛАДКИ
     // ============================================================
     document.querySelectorAll('.tab').forEach(tab => {
@@ -1559,6 +1753,13 @@
                 const taskId = $('graphTaskId').value.trim();
                 if (taskId) $('loadGraphBtn').click();
             }
+            if (tab.dataset.tab === 'tab-map') {
+                setTimeout(() => {
+                    if (mapInstance) mapInstance.invalidateSize();
+                    loadMapTasks();
+                }, 300);
+            }
+            updateUITexts();
         };
     });
 
@@ -1571,14 +1772,16 @@
             loadKanban();
             loadNotifications();
             loadStats();
+            loadMapTasks();
         }
-    }, 15000);
+    }, 30000);
 
     // ============================================================
     //  🚀 СТАРТ
     // ============================================================
     updateUI();
-    toast('📋 TaskFlow v4.0 загружен', 'info');
+    updateUITexts();
+    toast('🗺️ TaskFlow v5.0 с картой загружен!', 'info');
 </script>
 
 </body>
