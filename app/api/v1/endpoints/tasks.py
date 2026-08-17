@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, UTC
 
 from app.core.database import get_db
 from app.api.v1.endpoints.users import get_current_user
+from app.models.notifications import Notification
 from app.models.user import User
 from app.models.task import Task
 from app.schemas.task import TaskCreate, TaskUpdate, TaskResponse, TaskListResponse
@@ -26,9 +27,20 @@ def create_task(
         assigned_to=task_data.assigned_to,
         created_by=current_user.id
     )
+
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
+    new_notification = Notification(
+        message=f"Задача {new_task.id} создана",
+        is_read=False,
+        created_at=datetime.now(UTC),
+        user_id=current_user.id,
+        username=current_user.username
+    )
+    db.add(new_notification)
+    db.commit()
+    db.refresh(new_notification)
     return new_task
 
 @router.get("/", response_model=TaskListResponse)
@@ -76,6 +88,16 @@ def update_task(
         setattr(task, key, value)
     task.updated_at = datetime.now()
     db.commit()
+    new_notification = Notification(
+        message=f"Задача {task_id} обновлена",
+        is_read=False,
+        created_at=datetime.now(UTC),
+        user_id=current_user.id,
+        username=current_user.username
+    )
+    db.add(new_notification)
+    db.commit()
+    db.refresh(new_notification)
     db.refresh(task)
     return task
 
