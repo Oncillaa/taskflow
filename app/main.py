@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from app.api.v1.endpoints import auth, users, tasks
 from app.core.database import engine, Base
@@ -29,4 +30,4 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
 def root():
-    return {"message": "TaskFlow is running. Documentation: /docs"}
+    return FileResponse("static/index.html")
