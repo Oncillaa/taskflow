@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import time
 
-from app.api.v1.endpoints import auth, users, tasks
+from app.api.v1.endpoints import auth, users, tasks, teams
 from app.core.database import engine, Base
 from app.utils.logger import setup_logger
 
@@ -43,6 +43,8 @@ async def log_requests(request: Request, call_next):
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(users.router, prefix="/api/v1")
 app.include_router(tasks.router, prefix="/api/v1")
+app.include_router(teams.router, prefix="/api/v1")
+
 
 # Статика
 app.mount("/static", StaticFiles(directory="static"), name="static")
