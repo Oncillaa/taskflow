@@ -60,6 +60,7 @@ async def get_task_by_id(update_task: TaskCreate, id: int, current_user: User = 
     task.title = update_task.title
     db.commit()
     db.refresh(task)
+    create_notification(message=f"Задача {task.title} обновлена.", user_id=current_user.id)
     return task
 
 @router.delete("/{id}")
@@ -73,6 +74,6 @@ async def get_task_by_id(id: int, current_user: User = Depends(get_current_user)
         raise HTTPException(status_code=403, detail="Нет прав на удаление")
     db.delete(task)
     db.commit()
-
+    create_notification(message=f"Задача {task.title} удалена.", user_id=current_user.id)
     # 5️⃣ Возвращаем ответ
     return {"message": f"Задача {id} удалена"}

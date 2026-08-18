@@ -977,7 +977,7 @@
         async function loadTeams() {
             try {
                 const data = await apiRequest('/teams/');
-                renderTeams(data.teams || []);
+                renderTeams(data || []);
             } catch (e) {
                 log(`❌ Ошибка загрузки команд: ${e.message}`, 'error');
                 $('teamsList').innerHTML = `<p style="color:#f85149;">Ошибка: ${e.message}</p>`;
@@ -1077,7 +1077,7 @@
         async function loadStats() {
             try {
                 const data = await apiRequest('/tasks/');
-                const tasks = data.tasks || [];
+                const tasks = data || [];
                 const total = tasks.length;
                 const pending = tasks.filter(t => t.status === 'pending').length;
                 const inProgress = tasks.filter(t => t.status === 'in_progress').length;
