@@ -1,18 +1,13 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 from app.config import settings
 
-engine = create_engine(
-    settings.DATABASE_URL,
-    connect_args={"check_same_thread": False} if "sqlite" in settings.DATABASE_URL else {}
-)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = create_engine(settings.DATABASE_URL, echo=True) # Создание движка для работы с бд
+Base = declarative_base() # Создание класса для таблиц бд
+SessionLocal = sessionmaker(bind=engine) # Создание сессии бд
 
-Base = declarative_base()
-
-def get_db():
+def get_db(): # Функция для импорта сессии
     db = SessionLocal()
     try:
         yield db

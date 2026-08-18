@@ -1,0 +1,145 @@
+Index: app/main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from fastapi import FastAPI\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom fastapi.staticfiles import StaticFiles\n\nfrom app.core.database import engine, Base\n<<<<<<< HEAD\nfrom app.api.v1.endpoints import (\n    auth_router,\n    users_router,\n    tasks_router,\n    teams_router,\n    comments_router,\n    notifications_router,\n    links_router\n)\n=======\nfrom app.api.v1.endpoints import notifications\n>>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)\n\nBase.metadata.create_all(bind=engine)\n\napp = FastAPI(\n    title=\"TaskFlow\",\n    description=\"Task management system for teams\",\n    version=\"1.0.0\"\n)\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n\n<<<<<<< HEAD\n# Подключаем роутеры\napp.include_router(auth_router, prefix=\"/api/v1\")\napp.include_router(users_router, prefix=\"/api/v1\")\napp.include_router(tasks_router, prefix=\"/api/v1\")\napp.include_router(teams_router, prefix=\"/api/v1\")\napp.include_router(comments_router, prefix=\"/api/v1\")\napp.include_router(notifications_router, prefix=\"/api/v1\")\napp.include_router(links_router, prefix=\"/api/v1\")\n=======\napp.include_router(auth.router, prefix=\"/api/v1\")\napp.include_router(users.router, prefix=\"/api/v1\")\napp.include_router(tasks.router, prefix=\"/api/v1\")\napp.include_router(teams.router, prefix=\"/api/v1\")\napp.include_router(notifications.router, prefix=\"/api/v1\")\n\n>>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)\n\napp.mount(\"/static\", StaticFiles(directory=\"static\"), name=\"static\")\n\n@app.get(\"/\")\ndef root():\n    return {\"message\": \"TaskFlow is running. Documentation: /docs\"}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/main.py b/app/main.py
+--- a/app/main.py	(revision 014753f1694de7aefbefae1d38e196c348435264)
++++ b/app/main.py	(date 1786994935965)
+@@ -3,7 +3,7 @@
+ from fastapi.staticfiles import StaticFiles
+ 
+ from app.core.database import engine, Base
+-<<<<<<< HEAD
++
+ from app.api.v1.endpoints import (
+     auth_router,
+     users_router,
+@@ -11,11 +11,11 @@
+     teams_router,
+     comments_router,
+     notifications_router,
+-    links_router
++    links_router, auth, users, tasks, teams
+ )
+-=======
++
+ from app.api.v1.endpoints import notifications
+->>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)
++
+ 
+ Base.metadata.create_all(bind=engine)
+ 
+@@ -33,7 +33,7 @@
+     allow_headers=["*"],
+ )
+ 
+-<<<<<<< HEAD
++
+ # Подключаем роутеры
+ app.include_router(auth_router, prefix="/api/v1")
+ app.include_router(users_router, prefix="/api/v1")
+@@ -42,14 +42,14 @@
+ app.include_router(comments_router, prefix="/api/v1")
+ app.include_router(notifications_router, prefix="/api/v1")
+ app.include_router(links_router, prefix="/api/v1")
+-=======
++
+ app.include_router(auth.router, prefix="/api/v1")
+ app.include_router(users.router, prefix="/api/v1")
+ app.include_router(tasks.router, prefix="/api/v1")
+ app.include_router(teams.router, prefix="/api/v1")
+ app.include_router(notifications.router, prefix="/api/v1")
+ 
+->>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)
++
+ 
+ app.mount("/static", StaticFiles(directory="static"), name="static")
+ 
+Index: app/api/v1/endpoints/tasks.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from fastapi import APIRouter, Depends, HTTPException, status\nfrom sqlalchemy.orm import Session\nfrom typing import List, Optional\nfrom datetime import datetime\n\nfrom app.api.v1.endpoints.notifications import create_notification\nfrom app.core.database import get_db\nfrom app.api.v1.endpoints.users import get_current_user\nfrom app.models.user import User\nfrom app.models.task import Task\nfrom app.schemas.task import TaskCreate, TaskUpdate, TaskResponse, TaskListResponse\n\nrouter = APIRouter(prefix=\"/tasks\", tags=[\"tasks\"])\n\n@router.post(\"/\", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)\ndef create_task(\n    task_data: TaskCreate,\n    current_user: User = Depends(get_current_user),\n    db: Session = Depends(get_db)\n):\n    new_task = Task(\n        title=task_data.title,\n        description=task_data.description,\n        status=task_data.status or \"pending\",\n        priority=task_data.priority or \"medium\",\n        deadline=task_data.deadline,\n        assigned_to=task_data.assigned_to,\n        created_by=current_user.id\n    )\n    db.add(new_task)\n    db.commit()\n    db.refresh(new_task)\n<<<<<<< HEAD\n=======\n    create_notification(f\"Задача '{new_task.title}' создана\", current_user)\n>>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)\n    return new_task\n\n@router.get(\"/\", response_model=TaskListResponse)\ndef list_tasks(\n    skip: int = 0,\n    limit: int = 20,\n    status: Optional[str] = None,\n    priority: Optional[str] = None,\n    assigned_to: Optional[int] = None,\n    current_user: User = Depends(get_current_user),\n    db: Session = Depends(get_db)\n):\n    query = db.query(Task)\n    if status:\n        query = query.filter(Task.status == status)\n    if priority:\n        query = query.filter(Task.priority == priority)\n    if assigned_to:\n        query = query.filter(Task.assigned_to == assigned_to)\n    total = query.count()\n    tasks = query.offset(skip).limit(limit).all()\n    return TaskListResponse(tasks=tasks, total=total)\n\n@router.get(\"/{task_id}\", response_model=TaskResponse)\ndef get_task(\n    task_id: int,\n    current_user: User = Depends(get_current_user),\n    db: Session = Depends(get_db)\n):\n    task = db.query(Task).filter(Task.id == task_id).first()\n    if not task:\n        raise HTTPException(status_code=404, detail=\"Task not found\")\n    return task\n\n@router.put(\"/{task_id}\", response_model=TaskResponse)\ndef update_task(\n    task_id: int,\n    task_data: TaskUpdate,\n    current_user: User = Depends(get_current_user),\n    db: Session = Depends(get_db)\n):\n    task = db.query(Task).filter(Task.id == task_id).first()\n    if not task:\n        raise HTTPException(status_code=404, detail=\"Task not found\")\n    if task.created_by != current_user.id and task.assigned_to != current_user.id:\n        raise HTTPException(status_code=403, detail=\"Not enough permissions\")\n    for key, value in task_data.dict(exclude_unset=True).items():\n        setattr(task, key, value)\n    task.updated_at = datetime.now()\n    db.commit()\n<<<<<<< HEAD\n=======\n    create_notification(f\"Задача '{task.title}' обновлена\", current_user)\n>>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)\n    db.refresh(task)\n    return task\n\n@router.delete(\"/{task_id}\", status_code=status.HTTP_204_NO_CONTENT)\ndef delete_task(\n    task_id: int,\n    current_user: User = Depends(get_current_user),\n    db: Session = Depends(get_db)\n):\n    task = db.query(Task).filter(Task.id == task_id).first()\n    if not task:\n        raise HTTPException(status_code=404, detail=\"Task not found\")\n    if task.created_by != current_user.id:\n        raise HTTPException(status_code=403, detail=\"Only creator can delete task\")\n    db.delete(task)\n    db.commit()\n    create_notification(message=f\"Задача '{task.title}' удалена\", current_user=current_user)\n    return None\n\n@router.patch(\"/{task_id}/status\", response_model=TaskResponse)\ndef change_task_status(\n    task_id: int,\n    new_status: str,\n    current_user: User = Depends(get_current_user),\n    db: Session = Depends(get_db)\n):\n    valid_statuses = [\"pending\", \"in_progress\", \"review\", \"completed\"]\n    if new_status not in valid_statuses:\n        raise HTTPException(status_code=400, detail=f\"Invalid status. Allowed: {valid_statuses}\")\n    task = db.query(Task).filter(Task.id == task_id).first()\n    if not task:\n        raise HTTPException(status_code=404, detail=\"Task not found\")\n    task.status = new_status\n    task.updated_at = datetime.now()\n    db.commit()\n    db.refresh(task)\n    create_notification(message=f\"Задача '{task.title}' обновлена\", current_user=current_user)\n    return task\n\n@router.get(\"/my/\", response_model=TaskListResponse)\ndef get_my_tasks(\n    current_user: User = Depends(get_current_user),\n    db: Session = Depends(get_db)\n):\n    tasks = db.query(Task).filter(Task.assigned_to == current_user.id).all()\n    return TaskListResponse(tasks=tasks, total=len(tasks))\n\n@router.get(\"/created/\", response_model=TaskListResponse)\ndef get_created_tasks(\n    current_user: User = Depends(get_current_user),\n    db: Session = Depends(get_db)\n):\n    tasks = db.query(Task).filter(Task.created_by == current_user.id).all()\n    return TaskListResponse(tasks=tasks, total=len(tasks))
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/api/v1/endpoints/tasks.py b/app/api/v1/endpoints/tasks.py
+--- a/app/api/v1/endpoints/tasks.py	(revision 014753f1694de7aefbefae1d38e196c348435264)
++++ b/app/api/v1/endpoints/tasks.py	(date 1786994964243)
+@@ -30,10 +30,9 @@
+     db.add(new_task)
+     db.commit()
+     db.refresh(new_task)
+-<<<<<<< HEAD
+-=======
++
+     create_notification(f"Задача '{new_task.title}' создана", current_user)
+->>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)
++
+     return new_task
+ 
+ @router.get("/", response_model=TaskListResponse)
+@@ -84,10 +83,9 @@
+         setattr(task, key, value)
+     task.updated_at = datetime.now()
+     db.commit()
+-<<<<<<< HEAD
+-=======
++
+     create_notification(f"Задача '{task.title}' обновлена", current_user)
+->>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)
++
+     db.refresh(task)
+     return task
+ 
+Index: app/api/v1/endpoints/notifications.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><<<<<<< HEAD\nfrom fastapi import APIRouter, Depends, HTTPException\nfrom sqlalchemy.orm import Session\nfrom typing import List\n\nfrom app.core.database import get_db\nfrom app.api.v1.endpoints.users import get_current_user\n=======\nfrom datetime import datetime, UTC\n\nfrom fastapi import APIRouter, Depends\nfrom sqlalchemy.orm import Session\nfrom sqlalchemy.sql.functions import current_user\nfrom app.api.v1.endpoints.users import get_current_user\nfrom app.core.database import get_db, SessionLocal\nfrom app.models.notifications import Notification\n>>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)\nfrom app.models.user import User\nfrom app.models.notification import Notification\nfrom app.schemas.notification import NotificationResponse\n\nrouter = APIRouter(prefix=\"/notifications\", tags=[\"notifications\"])\n\n@router.get(\"/\", response_model=List[NotificationResponse])\ndef get_notifications(\n    current_user: User = Depends(get_current_user),\n    db: Session = Depends(get_db)\n):\n    notifications = db.query(Notification).filter(\n        Notification.user_id == current_user.id\n    ).order_by(Notification.created_at.desc()).all()\n    return notifications\n\n@router.patch(\"/{notification_id}/read\")\ndef mark_as_read(\n    notification_id: int,\n    current_user: User = Depends(get_current_user),\n    db: Session = Depends(get_db)\n):\n    notification = db.query(Notification).filter(Notification.id == notification_id).first()\n    if not notification:\n        raise HTTPException(status_code=404, detail=\"Notification not found\")\n    if notification.user_id != current_user.id:\n        raise HTTPException(status_code=403, detail=\"Not your notification\")\n\n    notification.is_read = True\n    db.commit()\n<<<<<<< HEAD\n    return {\"message\": \"Notification marked as read\"}\n=======\n    return {\"detail\": \"Уведомление помечено как прочитанное.\"}\n\ndef create_notification(message: str, current_user: User):\n    with SessionLocal() as db:\n        new_notification = Notification(\n            message=message,\n            is_read=False,\n            created_at=datetime.now(UTC),\n            user_id=current_user.id,\n            username=current_user.username\n        )\n        db.add(new_notification)\n        db.commit()\n        db.refresh(new_notification)\n>>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)\n
+===================================================================
+diff --git a/app/api/v1/endpoints/notifications.py b/app/api/v1/endpoints/notifications.py
+--- a/app/api/v1/endpoints/notifications.py	(revision 014753f1694de7aefbefae1d38e196c348435264)
++++ b/app/api/v1/endpoints/notifications.py	(date 1786994984819)
+@@ -1,11 +1,11 @@
+-<<<<<<< HEAD
++
+ from fastapi import APIRouter, Depends, HTTPException
+ from sqlalchemy.orm import Session
+ from typing import List
+ 
+ from app.core.database import get_db
+ from app.api.v1.endpoints.users import get_current_user
+-=======
++
+ from datetime import datetime, UTC
+ 
+ from fastapi import APIRouter, Depends
+@@ -14,7 +14,7 @@
+ from app.api.v1.endpoints.users import get_current_user
+ from app.core.database import get_db, SessionLocal
+ from app.models.notifications import Notification
+->>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)
++
+ from app.models.user import User
+ from app.models.notification import Notification
+ from app.schemas.notification import NotificationResponse
+@@ -45,9 +45,9 @@
+ 
+     notification.is_read = True
+     db.commit()
+-<<<<<<< HEAD
++
+     return {"message": "Notification marked as read"}
+-=======
++
+     return {"detail": "Уведомление помечено как прочитанное."}
+ 
+ def create_notification(message: str, current_user: User):
+@@ -62,4 +62,4 @@
+         db.add(new_notification)
+         db.commit()
+         db.refresh(new_notification)
+->>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)
++

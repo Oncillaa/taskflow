@@ -1,0 +1,22 @@
+Index: app/api/v1/endpoints/__init__.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><<<<<<< HEAD\nfrom .auth import router as auth_router\nfrom .users import router as users_router\nfrom .tasks import router as tasks_router\nfrom .teams import router as teams_router\nfrom .comments import router as comments_router\nfrom .notifications import router as notifications_router\nfrom .links import router as links_router\n=======\n>>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/api/v1/endpoints/__init__.py b/app/api/v1/endpoints/__init__.py
+--- a/app/api/v1/endpoints/__init__.py	(revision 014753f1694de7aefbefae1d38e196c348435264)
++++ b/app/api/v1/endpoints/__init__.py	(date 1786994897626)
+@@ -1,10 +1,1 @@
+-<<<<<<< HEAD
+-from .auth import router as auth_router
+-from .users import router as users_router
+-from .tasks import router as tasks_router
+-from .teams import router as teams_router
+-from .comments import router as comments_router
+-from .notifications import router as notifications_router
+-from .links import router as links_router
+-=======
+->>>>>>> 61bb31d (Добавлены ручки команд (не все) и некоторые уведомления)
++

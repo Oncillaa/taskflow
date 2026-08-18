@@ -1,130 +1,76 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+import datetime
+from datetime import UTC
+
+from fastapi import APIRouter, HTTPException
+from fastapi.params import Depends
 from sqlalchemy.orm import Session
-from typing import List, Optional
-from datetime import datetime
 
 from app.core.database import get_db
-from app.api.v1.endpoints.users import get_current_user
-from app.models.user import User
+from app.core.security import get_current_user
 from app.models.task import Task
-from app.schemas.task import TaskCreate, TaskUpdate, TaskResponse, TaskListResponse
+from app.models.user import User
+from app.schemas.task import TaskCreate
 
-router = APIRouter(prefix="/tasks", tags=["tasks"])
+router = APIRouter(prefix="/tasks", tags=["Задачи"])
 
-@router.post("/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
-def create_task(
-    task_data: TaskCreate,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
+@router.post("")
+async def create_task(task: TaskCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     new_task = Task(
-        title=task_data.title,
-        description=task_data.description,
-        status=task_data.status or "pending",
-        priority=task_data.priority or "medium",
-        deadline=task_data.deadline,
-        assigned_to=task_data.assigned_to,
-        created_by=current_user.id
+        title=task.title,
+        description=task.description,
+        status=task.status,
+        priority=task.priority,
+        deadline=task.deadline,
+        assigned_to=task.assigned_to,
+        created_by=current_user.id,
+        created_at=datetime.datetime.now(UTC)
     )
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
     return new_task
 
-@router.get("/", response_model=TaskListResponse)
-def list_tasks(
-    skip: int = 0,
-    limit: int = 20,
-    status: Optional[str] = None,
-    assigned_to: Optional[int] = None,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    query = db.query(Task)
-    if status:
-        query = query.filter(Task.status == status)
-    if assigned_to:
-        query = query.filter(Task.assigned_to == assigned_to)
-    total = query.count()
-    tasks = query.offset(skip).limit(limit).all()
-    return TaskListResponse(tasks=tasks, total=total)
+@router.get("")
+async def get_tasks(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    user_id = current_user.id
+    tasks = db.query(Task).filter(Task.created_by == user_id).all()
+    return tasks
 
-@router.get("/{task_id}", response_model=TaskResponse)
-def get_task(
-    task_id: int,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    task = db.query(Task).filter(Task.id == task_id).first()
-    if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
+@router.get("/{id}")
+async def get_task_by_id(id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    task = db.query(Task).filter(Task.id == id).first()
     return task
 
-@router.put("/{task_id}", response_model=TaskResponse)
-def update_task(
-    task_id: int,
-    task_data: TaskUpdate,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    task = db.query(Task).filter(Task.id == task_id).first()
+@router.put("/{id}")
+async def get_task_by_id(update_task: TaskCreate, id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    task = db.query(Task).filter(Task.id == id).first()
     if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
-    if task.created_by != current_user.id and task.assigned_to != current_user.id:
-        raise HTTPException(status_code=403, detail="Not enough permissions")
-    for key, value in task_data.dict(exclude_unset=True).items():
-        setattr(task, key, value)
-    task.updated_at = datetime.now()
+        raise HTTPException(status_code=404, detail="Задача не найдена")
+
+    # 3️⃣ Проверяем, что это задача текущего пользователя (опционально)
+    if task.created_by != current_user.id:
+        raise HTTPException(status_code=403, detail="Нет прав на редактирование")
+    task.assigned_to = update_task.assigned_to
+    task.deadline = update_task.deadline
+    task.description = update_task.description
+    task.priority = update_task.priority
+    task.status = update_task.status
+    task.title = update_task.title
     db.commit()
     db.refresh(task)
     return task
 
-@router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_task(
-    task_id: int,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    task = db.query(Task).filter(Task.id == task_id).first()
+@router.delete("/{id}")
+async def get_task_by_id(id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    task = db.query(Task).filter(Task.id == id).first()
     if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise HTTPException(status_code=404, detail="Задача не найдена")
+
+        # 3️⃣ Проверяем, что это задача текущего пользователя
     if task.created_by != current_user.id:
-        raise HTTPException(status_code=403, detail="Only creator can delete task")
+        raise HTTPException(status_code=403, detail="Нет прав на удаление")
     db.delete(task)
     db.commit()
-    return None
 
-@router.patch("/{task_id}/status", response_model=TaskResponse)
-def change_task_status(
-    task_id: int,
-    new_status: str,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    valid_statuses = ["pending", "in_progress", "review", "completed"]
-    if new_status not in valid_statuses:
-        raise HTTPException(status_code=400, detail=f"Invalid status. Allowed: {valid_statuses}")
-    task = db.query(Task).filter(Task.id == task_id).first()
-    if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
-    task.status = new_status
-    task.updated_at = datetime.now()
-    db.commit()
-    db.refresh(task)
-    return task
-
-@router.get("/my/", response_model=TaskListResponse)
-def get_my_tasks(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    tasks = db.query(Task).filter(Task.assigned_to == current_user.id).all()
-    return TaskListResponse(tasks=tasks, total=len(tasks))
-
-@router.get("/created/", response_model=TaskListResponse)
-def get_created_tasks(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    tasks = db.query(Task).filter(Task.created_by == current_user.id).all()
-    return TaskListResponse(tasks=tasks, total=len(tasks))
+    # 5️⃣ Возвращаем ответ
+    return {"message": f"Задача {id} удалена"}

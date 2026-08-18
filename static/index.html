@@ -683,7 +683,8 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { notify } from './static/notifications.js';
         // ============================================================
         //  🔧 КОНФИГУРАЦИЯ
         // ============================================================
@@ -740,6 +741,7 @@
             const password = $('regPassword').value.trim();
             if (!username || !email || !password) {
                 log('Заполните все поля регистрации.', 'error');
+                notify.error("Заполните все поля регистрации!");
                 return;
             }
             registerBtn.disabled = true;
@@ -750,11 +752,13 @@
                     body: JSON.stringify({ username, email, password })
                 });
                 log(`✅ Зарегистрирован: ${data.username} (ID: ${data.id})`, 'success');
+                notify.success("Успешная регистрация!");
                 $('regUsername').value = '';
                 $('regEmail').value = '';
                 $('regPassword').value = '';
             } catch (e) {
                 log(`❌ Ошибка регистрации: ${e.message}`, 'error');
+                notify.error("Ошибка регистрации!")
             }
             registerBtn.disabled = false;
             registerBtn.textContent = 'Зарегистрироваться';
@@ -766,6 +770,7 @@
             const password = $('loginPassword').value.trim();
             if (!username || !password) {
                 log('Введите username и password.', 'error');
+                notify.error("Введите username и password!");
                 return;
             }
             loginBtn.disabled = true;
@@ -776,18 +781,20 @@
                 form.append('password', password);
                 const response = await fetch(`${API}/auth/login`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: form
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
                 });
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.detail || 'Ошибка входа');
                 setToken(data.access_token);
                 log('✅ Вход выполнен!', 'success');
+                notify.success("Вход выполнен!");
                 $('loginUsername').value = '';
                 $('loginPassword').value = '';
                 updateUI();
             } catch (e) {
                 log(`❌ Ошибка входа: ${e.message}`, 'error');
+                notify.error("Ошибка входа!");
             }
             loginBtn.disabled = false;
             loginBtn.textContent = 'Войти';
@@ -797,6 +804,7 @@
         logoutBtn.onclick = () => {
             clearToken();
             log('Выход выполнен.', 'warning');
+            notify.success("Выход выполнен");
             updateUI();
         };
 
@@ -826,6 +834,7 @@
                 $('currentUsername').textContent = data.username || 'user';
             } catch (e) {
                 log(`❌ Ошибка загрузки профиля: ${e.message}`, 'error');
+                notify.error("Ошибка загрузки профиля");
             }
         }
 
@@ -838,9 +847,10 @@
             if (status) url += `?status=${status}`;
             try {
                 const data = await apiRequest(url);
-                renderTasks(data.tasks || []);
+                renderTasks(data || []);
             } catch (e) {
                 log(`❌ Ошибка загрузки задач: ${e.message}`, 'error');
+                notify.error("Ошибка загрузки задач");
                 $('tasksList').innerHTML = `<p style="color:#f85149;">Ошибка: ${e.message}</p>`;
             }
         }
