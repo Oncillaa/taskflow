@@ -1037,6 +1037,7 @@
                 renderNotifications(data || []);
             } catch (e) {
                 log(`❌ Ошибка загрузки уведомлений: ${e.message}`, 'error');
+                notify.error("Ошибка загрузки уведомлений");
                 $('notificationsList').innerHTML = `<p style="color:#f85149;">Ошибка: ${e.message}</p>`;
             }
         }

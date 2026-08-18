@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
 
+from app.api.v1.endpoints.notifications import create_notification
 from app.core.database import get_db
 from app.core.security import get_current_user
 from app.models.task import Task
@@ -28,6 +29,7 @@ async def create_task(task: TaskCreate, current_user: User = Depends(get_current
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
+    create_notification(message=f"Задача {new_task.title} создана.", user_id=current_user.id)
     return new_task
 
 @router.get("")
