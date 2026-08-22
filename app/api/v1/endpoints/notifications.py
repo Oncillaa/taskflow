@@ -26,7 +26,7 @@ def create_notification(message: str, user_id: int):
     return True
 @router.get("")
 async def get_notifications(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    notifications = db.query(Notification).filter(Notification.user_id == current_user.id).all()
+    notifications = db.query(Notification).filter(Notification.user_id == current_user.id).order_by(Notification.id.desc()).all()
     if notifications:
         return notifications
     return []
